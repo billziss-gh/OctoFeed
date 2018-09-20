@@ -46,5 +46,72 @@
 - (void)unarchiveToURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion
 {
+    NSString *lastPathComponent = [self.url lastPathComponent];
+
+    NSString *exec = nil;
+    NSArray *args = nil;
+    if ([lastPathComponent hasSuffix:@".zip"])
+    {
+        exec = @"/usr/bin/ditto";
+        args = [NSArray arrayWithObjects:@"-xk", [self.url path], @".", nil];
+    }
+    else
+    if ([lastPathComponent hasSuffix:@".tar.gz"] || [lastPathComponent hasSuffix:@".tgz"] ||
+        [lastPathComponent hasSuffix:@".tar.bz2"] || [lastPathComponent hasSuffix:@".tbz"] ||
+        [lastPathComponent hasSuffix:@".tar.xz"] || [lastPathComponent hasSuffix:@".txz"])
+    {
+        exec = @"/usr/bin/tar";
+        args = [NSArray arrayWithObjects:@"xf", [self.url path], nil];
+    }
+    else
+    {
+        [self unarchiveToURLErrorCompletion:completion];
+        return;
+    }
+
+    NSTask *task = [[[NSTask alloc] init] autorelease];
+    task.launchPath = exec;
+    task.arguments = args;
+    task.currentDirectoryPath = [dst path];
+    task.terminationHandler = ^(NSTask *task)
+    {
+        NSError *error = nil;
+
+        NSTaskTerminationReason reason = task.terminationReason;
+        int status = task.terminationStatus;
+        if (NSTaskTerminationReasonExit != reason || 0 != status)
+            error = [NSError
+                errorWithDomain:[[NSBundle bundleForClass:[self class]] bundleIdentifier]
+                code:'exit'
+                userInfo:nil];
+        completion(error);
+    };
+
+    @try
+    {
+        [task launch];
+    }
+    @catch (NSException *ex)
+    {
+        [self unarchiveToURLErrorCompletion:completion];
+    }
+}
+
+- (void)unarchiveToURLErrorCompletion:(void (^)(NSError *))completion
+{
+    completion = [[completion copy] autorelease];
+    [self
+        performSelector:@selector(delayedUnarchiveToURLErrorCompletion:)
+        withObject:completion
+        afterDelay:0];
+}
+
+- (void)delayedUnarchiveToURLErrorCompletion:(void (^)(NSError *error))completion
+{
+    NSError *error = [NSError
+        errorWithDomain:NSPOSIXErrorDomain
+        code:EINVAL
+        userInfo:nil];
+    completion(error);
 }
 @end
