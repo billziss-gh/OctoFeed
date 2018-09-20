@@ -57,13 +57,11 @@
 
     BOOL scannerAtEnd = [scanner isAtEnd];
     BOOL oscannerAtEnd = [oscanner isAtEnd];
-    if (scannerAtEnd && !oscannerAtEnd)
-        return NSOrderedDescending;
-    if (!scannerAtEnd && oscannerAtEnd)
+    if (scannerAtEnd)
+        return oscannerAtEnd ? NSOrderedSame : NSOrderedDescending;
+    else if (oscannerAtEnd)
         return NSOrderedAscending;
-
-    return [self
-        compare:other
-        options:NSNumericSearch];
+    else
+        return [self compare:other options:NSNumericSearch];
 }
 @end

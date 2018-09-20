@@ -11,22 +11,45 @@
 		3C39AFB92153609200604505 /* NSString+OctoVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C39AFB72153609200604505 /* NSString+OctoVersion.h */; };
 		3C39AFBC21537DBF00604505 /* OctoUnarchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */; };
 		3C39AFBD21537DBF00604505 /* OctoUnarchiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */; };
+		3C39AFC721540CD400604505 /* OctoFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C73E23D2152E1740053CC38 /* OctoFeed.framework */; };
 		3C72F2442152E3A700970D87 /* OctoFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C72F2432152E3A700970D87 /* OctoFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3C72F2462152E3B200970D87 /* OctoFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C72F2452152E3B200970D87 /* OctoFeed.m */; };
+		3CC866F021541097003956A9 /* NSString+OctoVersion-Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC866EE21541081003956A9 /* NSString+OctoVersion-Test.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3C39AFC821540CD400604505 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3C73E2342152E1740053CC38 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3C73E23C2152E1740053CC38;
+			remoteInfo = OctoFeed;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		3C39AFB62153609100604505 /* NSString+OctoVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OctoVersion.m"; sourceTree = "<group>"; };
 		3C39AFB72153609200604505 /* NSString+OctoVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OctoVersion.h"; sourceTree = "<group>"; };
 		3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoUnarchiver.h; sourceTree = "<group>"; };
 		3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoUnarchiver.m; sourceTree = "<group>"; };
-		3C72F2412152E39C00970D87 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3C39AFC221540CD400604505 /* OctoFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OctoFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C39AFCE21540D5500604505 /* OctoFeedTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OctoFeedTests-Info.plist"; sourceTree = "<group>"; };
+		3C39AFD421540EAF00604505 /* OctoFeed-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OctoFeed-Info.plist"; sourceTree = "<group>"; };
 		3C72F2432152E3A700970D87 /* OctoFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoFeed.h; sourceTree = "<group>"; };
 		3C72F2452152E3B200970D87 /* OctoFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoFeed.m; sourceTree = "<group>"; };
 		3C73E23D2152E1740053CC38 /* OctoFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OctoFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CC866EE21541081003956A9 /* NSString+OctoVersion-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OctoVersion-Test.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3C39AFBF21540CD400604505 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C39AFC721540CD400604505 /* OctoFeed.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3C73E2392152E1740053CC38 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -37,12 +60,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3C39AFCD21540D3900604505 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				3CC866EE21541081003956A9 /* NSString+OctoVersion-Test.m */,
+				3C39AFCE21540D5500604505 /* OctoFeedTests-Info.plist */,
+			);
+			name = Test;
+			path = ../../tst;
+			sourceTree = SOURCE_ROOT;
+		};
 		3C73E2332152E1740053CC38 = {
 			isa = PBXGroup;
 			children = (
-				3C73E2482152E2850053CC38 /* Resource */,
 				3C73E24B2152E2E60053CC38 /* Include */,
 				3C73E24C2152E31F0053CC38 /* Source */,
+				3C39AFCD21540D3900604505 /* Test */,
 				3C73E23E2152E1740053CC38 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,18 +84,10 @@
 			isa = PBXGroup;
 			children = (
 				3C73E23D2152E1740053CC38 /* OctoFeed.framework */,
+				3C39AFC221540CD400604505 /* OctoFeedTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
-		};
-		3C73E2482152E2850053CC38 /* Resource */ = {
-			isa = PBXGroup;
-			children = (
-				3C72F2412152E39C00970D87 /* Info.plist */,
-			);
-			name = Resource;
-			path = ../../rsc;
-			sourceTree = SOURCE_ROOT;
 		};
 		3C73E24B2152E2E60053CC38 /* Include */ = {
 			isa = PBXGroup;
@@ -81,6 +106,7 @@
 				3C72F2452152E3B200970D87 /* OctoFeed.m */,
 				3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */,
 				3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */,
+				3C39AFD421540EAF00604505 /* OctoFeed-Info.plist */,
 			);
 			name = Source;
 			path = ../../src;
@@ -102,6 +128,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		3C39AFC121540CD400604505 /* OctoFeedTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3C39AFCA21540CD400604505 /* Build configuration list for PBXNativeTarget "OctoFeedTests" */;
+			buildPhases = (
+				3C39AFBE21540CD400604505 /* Sources */,
+				3C39AFBF21540CD400604505 /* Frameworks */,
+				3C39AFC021540CD400604505 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3C39AFC921540CD400604505 /* PBXTargetDependency */,
+			);
+			name = OctoFeedTests;
+			productName = OctoFeedTests;
+			productReference = 3C39AFC221540CD400604505 /* OctoFeedTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		3C73E23C2152E1740053CC38 /* OctoFeed */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3C73E2452152E1740053CC38 /* Build configuration list for PBXNativeTarget "OctoFeed" */;
@@ -130,6 +174,9 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Bill Zissimopoulos";
 				TargetAttributes = {
+					3C39AFC121540CD400604505 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
 					3C73E23C2152E1740053CC38 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
@@ -148,11 +195,19 @@
 			projectRoot = "";
 			targets = (
 				3C73E23C2152E1740053CC38 /* OctoFeed */,
+				3C39AFC121540CD400604505 /* OctoFeedTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3C39AFC021540CD400604505 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3C73E23B2152E1740053CC38 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -181,6 +236,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3C39AFBE21540CD400604505 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CC866F021541097003956A9 /* NSString+OctoVersion-Test.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3C73E2382152E1740053CC38 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -193,7 +256,49 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3C39AFC921540CD400604505 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3C73E23C2152E1740053CC38 /* OctoFeed */;
+			targetProxy = 3C39AFC821540CD400604505 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		3C39AFCB21540CD400604505 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "../../tst/$(TARGET_NAME:c99extidentifier)-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = billziss.OctoFeedTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3C39AFCC21540CD400604505 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "../../tst/$(TARGET_NAME:c99extidentifier)-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = billziss.OctoFeedTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		3C73E2432152E1740053CC38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -322,7 +427,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = ../../rsc/Info.plist;
+				INFOPLIST_FILE = "../../src/$(TARGET_NAME:c99extidentifier)-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -348,7 +453,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = ../../rsc/Info.plist;
+				INFOPLIST_FILE = "../../src/$(TARGET_NAME:c99extidentifier)-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -364,6 +469,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3C39AFCA21540CD400604505 /* Build configuration list for PBXNativeTarget "OctoFeedTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3C39AFCB21540CD400604505 /* Debug */,
+				3C39AFCC21540CD400604505 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3C73E2372152E1740053CC38 /* Build configuration list for PBXProject "OctoFeed" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
