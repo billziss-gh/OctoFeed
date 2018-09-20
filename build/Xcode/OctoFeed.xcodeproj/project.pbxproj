@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3C39AFB82153609200604505 /* NSString+SemVer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C39AFB62153609100604505 /* NSString+SemVer.m */; };
-		3C39AFB92153609200604505 /* NSString+SemVer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C39AFB72153609200604505 /* NSString+SemVer.h */; };
+		3C39AFB82153609200604505 /* NSString+OctoVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C39AFB62153609100604505 /* NSString+OctoVersion.m */; };
+		3C39AFB92153609200604505 /* NSString+OctoVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C39AFB72153609200604505 /* NSString+OctoVersion.h */; };
 		3C39AFBC21537DBF00604505 /* OctoUnarchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */; };
 		3C39AFBD21537DBF00604505 /* OctoUnarchiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */; };
 		3C72F2442152E3A700970D87 /* OctoFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C72F2432152E3A700970D87 /* OctoFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -16,8 +16,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3C39AFB62153609100604505 /* NSString+SemVer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SemVer.m"; sourceTree = "<group>"; };
-		3C39AFB72153609200604505 /* NSString+SemVer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SemVer.h"; sourceTree = "<group>"; };
+		3C39AFB62153609100604505 /* NSString+OctoVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OctoVersion.m"; sourceTree = "<group>"; };
+		3C39AFB72153609200604505 /* NSString+OctoVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OctoVersion.h"; sourceTree = "<group>"; };
 		3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoUnarchiver.h; sourceTree = "<group>"; };
 		3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoUnarchiver.m; sourceTree = "<group>"; };
 		3C72F2412152E39C00970D87 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -76,8 +76,8 @@
 		3C73E24C2152E31F0053CC38 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				3C39AFB72153609200604505 /* NSString+SemVer.h */,
-				3C39AFB62153609100604505 /* NSString+SemVer.m */,
+				3C39AFB72153609200604505 /* NSString+OctoVersion.h */,
+				3C39AFB62153609100604505 /* NSString+OctoVersion.m */,
 				3C72F2452152E3B200970D87 /* OctoFeed.m */,
 				3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */,
 				3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */,
@@ -94,7 +94,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C39AFBC21537DBF00604505 /* OctoUnarchiver.h in Headers */,
-				3C39AFB92153609200604505 /* NSString+SemVer.h in Headers */,
+				3C39AFB92153609200604505 /* NSString+OctoVersion.h in Headers */,
 				3C72F2442152E3A700970D87 /* OctoFeed.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,7 +187,7 @@
 			files = (
 				3C72F2462152E3B200970D87 /* OctoFeed.m in Sources */,
 				3C39AFBD21537DBF00604505 /* OctoUnarchiver.m in Sources */,
-				3C39AFB82153609200604505 /* NSString+SemVer.m in Sources */,
+				3C39AFB82153609200604505 /* NSString+OctoVersion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

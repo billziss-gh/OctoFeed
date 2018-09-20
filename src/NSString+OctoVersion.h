@@ -1,5 +1,5 @@
 /**
- * @file NSString+SemVer.h
+ * @file NSString+OctoVersion.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -12,7 +12,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (SemVer)
-- (BOOL)semverValidate;
-- (NSComparisonResult)semverCompare:(NSString *)other;
+@interface NSString (OctoVersion)
+- (BOOL)octoVersionValidate;
+- (NSComparisonResult)octoVersionCompare:(NSString *)other;
 @end

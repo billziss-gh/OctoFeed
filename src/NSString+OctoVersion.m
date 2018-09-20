@@ -1,5 +1,5 @@
 /**
- * @file NSString+SemVer.m
+ * @file NSString+OctoVersion.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -10,10 +10,10 @@
  * in the License.txt file at the root of this project.
  */
 
-#import "NSString+SemVer.h"
+#import "NSString+OctoVersion.h"
 
-@implementation NSString (SemVer)
-- (BOOL)semverValidate
+@implementation NSString (OctoVersion)
+- (BOOL)octoVersionValidate
 {
     BOOL valid = YES;
 
@@ -26,7 +26,7 @@
     return valid;
 }
 
-- (NSComparisonResult)semverCompare:(NSString *)other
+- (NSComparisonResult)octoVersionCompare:(NSString *)other
 {
     BOOL valid;
 
