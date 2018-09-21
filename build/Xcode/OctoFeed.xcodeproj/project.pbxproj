@@ -28,6 +28,7 @@
 		3CC867092154A395003956A9 /* NSObject+OctoExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CC867072154A395003956A9 /* NSObject+OctoExtensions.h */; };
 		3CC8670B2154AA8B003956A9 /* NSString+Version.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CC8670A2154AA8B003956A9 /* NSString+Version.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3CC8670D2154AC36003956A9 /* OctoRelease-Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC8670C2154AC36003956A9 /* OctoRelease-Test.m */; };
+		3CC8670F215570F1003956A9 /* OctoRelease+Extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CC8670E215570F1003956A9 /* OctoRelease+Extensions.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		3CC867072154A395003956A9 /* NSObject+OctoExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+OctoExtensions.h"; sourceTree = "<group>"; };
 		3CC8670A2154AA8B003956A9 /* NSString+Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Version.h"; sourceTree = "<group>"; };
 		3CC8670C2154AC36003956A9 /* OctoRelease-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OctoRelease-Test.m"; sourceTree = "<group>"; };
+		3CC8670E215570F1003956A9 /* OctoRelease+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OctoRelease+Extensions.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 				3C72F2452152E3B200970D87 /* OctoFeed.m */,
 				3CC866FF21544FEB003956A9 /* OctoGitHubRelease.h */,
 				3CC866FE21544FEB003956A9 /* OctoGitHubRelease.m */,
+				3CC8670E215570F1003956A9 /* OctoRelease+Extensions.h */,
 				3CC866FC21544C6C003956A9 /* OctoRelease.m */,
 				3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */,
 				3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */,
@@ -165,6 +168,7 @@
 				3CC866FB21544BC6003956A9 /* OctoRelease.h in Headers */,
 				3C72F2442152E3A700970D87 /* OctoFeed.h in Headers */,
 				3CC8670B2154AA8B003956A9 /* NSString+Version.h in Headers */,
+				3CC8670F215570F1003956A9 /* OctoRelease+Extensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

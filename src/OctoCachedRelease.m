@@ -13,6 +13,7 @@
 #import "OctoCachedRelease.h"
 #import "NSObject+OctoExtensions.h"
 #import "NSString+Version.h"
+#import "OctoRelease+Extensions.h"
 
 @implementation OctoCachedRelease
 + (void)load

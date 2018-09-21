@@ -11,6 +11,7 @@
  */
 
 #import <OctoFeed/OctoRelease.h>
+#import "OctoRelease+Extensions.h"
 #import "OctoUnarchiver.h"
 
 static NSMutableDictionary *classDictionary;
