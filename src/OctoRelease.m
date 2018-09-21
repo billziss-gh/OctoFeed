@@ -18,7 +18,7 @@ static NSMutableDictionary *classDictionary;
 @property (copy) NSString *repository;
 @property (copy) NSArray<NSBundle *> *targetBundles;
 @property (retain) NSURLSession *session;
-@property (copy) NSURL *cacheURL;
+@property (copy) NSURL *cacheBaseURL;
 @property (copy) NSArray<NSURL *> *downloadedAssets;
 @property (copy) NSArray<NSURL *> *extractedAssets;
 @property (copy) NSArray<NSURL *> *verifiedAssets;
@@ -39,7 +39,7 @@ static NSMutableDictionary *classDictionary;
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session
 {
-    NSString *service = [[repository pathComponents] firstObject];
+    NSString *service = 0 != [repository length] ? [[repository pathComponents] firstObject] : @"";
     Class cls = [classDictionary objectForKey:service];
     return [[[cls alloc]
         initWithRepository:repository targetBundles:bundles session:session] autorelease];
@@ -52,22 +52,28 @@ static NSMutableDictionary *classDictionary;
     if (nil == self)
         return nil;
 
+    NSString *mainIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *octoIdentifier = [[NSBundle bundleForClass:[self class]] bundleIdentifier];
+    if (nil == mainIdentifier) /* happens during XCTest! */
+        mainIdentifier = octoIdentifier;
+
     self.repository = repository;
     self.targetBundles = bundles;
     self.session = session;
-    self.cacheURL = [[[[[NSFileManager defaultManager]
+    self.cacheBaseURL = [[[[[NSFileManager defaultManager]
         URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject]
-        URLByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]]
-        URLByAppendingPathComponent:[[NSBundle bundleForClass:[self class]] bundleIdentifier]];
+        URLByAppendingPathComponent:mainIdentifier]
+        URLByAppendingPathComponent:octoIdentifier];
 
     return self;
 }
 
 - (void)dealloc
 {
+    self.repository = nil;
     self.targetBundles = nil;
     self.session = nil;
-    self.cacheURL = nil;
+    self.cacheBaseURL = nil;
     self.downloadedAssets = nil;
     self.extractedAssets = nil;
     self.verifiedAssets = nil;
@@ -95,6 +101,14 @@ static NSMutableDictionary *classDictionary;
 {
 }
 
+- (NSURL *)cacheURL
+{
+    if (0 == [self.releaseVersion length])
+        [NSException raise:NSInvalidArgumentException format:@"%s empty releaseVersion", __FUNCTION__];
+
+    return [self.cacheBaseURL URLByAppendingPathComponent:self.releaseVersion];
+}
+
 - (NSString *)releaseVersion
 {
     return nil;
@@ -119,12 +133,18 @@ static NSMutableDictionary *classDictionary;
     }
 
     if (0 == [self.releaseVersion length])
-        return;
+        [NSException raise:NSInvalidArgumentException format:@"%s empty releaseVersion", __FUNCTION__];
 
     NSString *str = [NSString stringWithFormat:@"%@\n%d\n%c\n",
-        self.releaseVersion, self.prerelease, (char)self.state];
-    BOOL res = [str
-        writeToURL:[self.cacheURL URLByAppendingPathComponent:@"state"]
+        self.releaseVersion, self.prerelease, (char)state];
+    NSURL *cacheURL = self.cacheURL;
+    BOOL res = [[NSFileManager defaultManager]
+        createDirectoryAtURL:cacheURL
+        withIntermediateDirectories:YES
+        attributes:nil
+        error:0];
+    res = res && [str
+        writeToURL:[cacheURL URLByAppendingPathComponent:@"state"]
         atomically:YES
         encoding:NSUTF8StringEncoding
         error:0];

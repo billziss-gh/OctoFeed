@@ -54,7 +54,7 @@
     }
 
     NSURL *releaseURL = [NSURL
-        URLWithString:[NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/releases",
+        URLWithString:[NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/releases/latest",
             [parts objectAtIndex:1],
             [parts objectAtIndex:2]]];
     [[self.session

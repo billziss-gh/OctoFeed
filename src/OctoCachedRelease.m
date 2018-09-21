@@ -39,7 +39,7 @@
 {
     NSError *error = nil;
     NSArray<NSURL *> *urls = [[NSFileManager defaultManager]
-        contentsOfDirectoryAtURL:self.cacheURL
+        contentsOfDirectoryAtURL:self.cacheBaseURL
         includingPropertiesForKeys:nil
         options:0
         error:&error];

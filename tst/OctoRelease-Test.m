@@ -17,9 +17,32 @@
 @end
 
 @implementation OctoReleaseTest
+- (void)testGitHubReleaseInvalid
+{
+    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
+    NSURLSession *session = [NSURLSession
+        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+        delegate:nil
+        delegateQueue:[NSOperationQueue mainQueue]];
+    OctoRelease *release = [OctoRelease
+        releaseWithRepository:@"github.com/billziss-gh"
+        targetBundles:bundles
+        session:session];
+
+    XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
+
+    [release fetch:^(NSError *error)
+    {
+        XCTAssertNotNil(error);
+
+        [exp fulfill];
+    }];
+
+    [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+}
+
 - (void)testGitHubRelease
 {
-#if 0
     NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
     NSURLSession *session = [NSURLSession
         sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
@@ -29,9 +52,24 @@
         releaseWithRepository:@"github.com/billziss-gh/EnergyBar"
         targetBundles:bundles
         session:session];
-    [release fetchFromRepository:@"github.com/billziss-gh/EnergyBar" completion:^(NSError *error)
+
+    XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
+
+    [release fetch:^(NSError *error)
     {
+        XCTAssertNil(error);
+
+        XCTAssertNotNil(release.releaseVersion);
+        XCTAssertNotNil(release.releaseAssets);
+
+        NSLog(@"%@%@%@",
+            release.releaseVersion,
+            release.prerelease ? @" pre " : @" ",
+            release.releaseAssets);
+
+        [exp fulfill];
     }];
-#endif
+
+    [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
 }
 @end

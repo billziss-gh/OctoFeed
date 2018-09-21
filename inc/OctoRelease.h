@@ -36,6 +36,7 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
 - (void)installAssets:(void (^)(NSError *))completion;
 - (NSString *)repository;
 - (NSArray<NSBundle *> *)targetBundles;
+- (NSURL *)cacheBaseURL;
 - (NSURL *)cacheURL;
 - (NSURLSession *)session;
 - (NSString *)releaseVersion;
