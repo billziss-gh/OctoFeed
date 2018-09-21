@@ -11,6 +11,7 @@
  */
 
 #import "OctoRelease.h"
+#import "NSString+Version.h"
 #import "OctoRelease+Extensions.h"
 #import "OctoUnarchiver.h"
 
@@ -147,8 +148,8 @@ static NSMutableDictionary *classDictionary;
         }
 
         completion(
-            0 != downloadedAssets.count ? downloadedAssets : nil,
-            0 != errors.count ? errors : nil);
+            0 < downloadedAssets.count ? downloadedAssets : nil,
+            0 < errors.count ? errors : nil);
 
         dispatch_release(group);
     });
@@ -198,8 +199,8 @@ static NSMutableDictionary *classDictionary;
         }
 
         completion(
-            0 != extractedAssets.count ? extractedAssets : nil,
-            0 != errors.count ? errors : nil);
+            0 < extractedAssets.count ? extractedAssets : nil,
+            0 < errors.count ? errors : nil);
 
         dispatch_release(group);
     });
@@ -228,14 +229,22 @@ static NSMutableDictionary *classDictionary;
                     [value boolValue];
                 if (isPkg)
                 {
-                    NSString *bundleIdentifier = [[NSBundle bundleWithURL:url] bundleIdentifier];
+                    NSBundle *bundle = [NSBundle bundleWithURL:url];
+                    NSString *bundleIdentifier = [bundle bundleIdentifier];
                     if (nil == bundleIdentifier)
                         continue;
 
-                    for (NSBundle *b in self._targetBundles)
-                        if ([b.bundleIdentifier isEqualToString:bundleIdentifier])
+                    for (NSBundle *targetBundle in self._targetBundles)
+                        if ([targetBundle.bundleIdentifier isEqualToString:bundleIdentifier])
                         {
-                            // !!!: check newer version
+                            NSString *version = [bundle
+                                objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+                            NSString *targetVersion = [targetBundle
+                                objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+                            if (nil == version ||
+                                NSOrderedAscending != [targetVersion versionCompare:version])
+                                continue;
+
                             // !!!: verify signature
                             // !!!: install bundle
                         }
@@ -252,8 +261,8 @@ static NSMutableDictionary *classDictionary;
             [self _setState:OctoReleaseInstalled persistent:YES];
 
         completion(
-            0 != installedAssets.count ? installedAssets : nil,
-            0 != errors.count ? errors : nil);
+            0 < installedAssets.count ? installedAssets : nil,
+            0 < errors.count ? errors : nil);
 
         dispatch_release(group);
     });
