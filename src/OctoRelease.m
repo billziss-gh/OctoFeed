@@ -135,8 +135,11 @@ static NSMutableDictionary *classDictionary;
     if (0 == [self.releaseVersion length])
         [NSException raise:NSInvalidArgumentException format:@"%s empty releaseVersion", __FUNCTION__];
 
-    NSString *str = [NSString stringWithFormat:@"%@\n%d\n%c\n",
+    NSMutableString *str = [NSMutableString stringWithFormat:@"%@\n%d\n%c\n",
         self.releaseVersion, self.prerelease, (char)state];
+    for (id asset in self.releaseAssets)
+        [str appendFormat:@"%@\n", [asset absoluteString]];
+
     NSURL *cacheURL = self.cacheURL;
     BOOL res = [[NSFileManager defaultManager]
         createDirectoryAtURL:cacheURL

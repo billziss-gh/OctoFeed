@@ -61,6 +61,7 @@
             NSString *releaseVersion = nil;
             unsigned long long prerelease = 0;
             NSString *state = nil;
+            NSMutableArray<NSURL *> *urls = [NSMutableArray array];
             BOOL res = YES;
 
             res = res && [scanner scanUpToString:@"\n" intoString:&releaseVersion];
@@ -70,6 +71,19 @@
             res = res && [scanner scanUpToString:@"\n" intoString:&state];
             res = res && [scanner scanString:@"\n" intoString:0];
             res = res && 1 == [state length];
+            while (res && ![scanner isAtEnd])
+            {
+                NSString *str = nil;
+                res = res && [scanner scanUpToString:@"\n" intoString:&str];
+                res = res && [scanner scanString:@"\n" intoString:0];
+                if (res)
+                {
+                    NSURL *url = [NSURL URLWithString:str];
+                    res = res && nil != url;
+                    if (res)
+                        [urls addObject:url]
+                }
+            }
             if (res)
             {
                 unichar c = [state characterAtIndex:0];
@@ -83,6 +97,7 @@
                 case OctoReleaseLaunched:
                     self.releaseVersion = releaseVersion;
                     self.prerelease = !!prerelease;
+                    self.releaseAssets = urls;
                     [self _setState:c persistent:NO];
                     break;
                 default:
