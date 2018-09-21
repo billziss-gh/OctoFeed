@@ -67,6 +67,13 @@
                 goto fail;
             }
 
+            if ([response respondsToSelector:@selector(statusCode)])
+                if (200 != [(id)response statusCode])
+                {
+                    NSLog(@"OctoFeed: bad HTTP status %d", (int)[(id)response statusCode]);
+                    goto corrupt_fail;
+                }
+
             id obj = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
             if (nil != error)
             {

@@ -41,6 +41,30 @@
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
 }
 
+- (void)testGitHubReleaseUnknown
+{
+    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
+    NSURLSession *session = [NSURLSession
+        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+        delegate:nil
+        delegateQueue:[NSOperationQueue mainQueue]];
+    OctoRelease *release = [OctoRelease
+        releaseWithRepository:@"github.com/billziss-gh/NONEXISTENT-4dca3ed744f421f3187e54dc10e7e6b8"
+        targetBundles:bundles
+        session:session];
+
+    XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
+
+    [release fetch:^(NSError *error)
+    {
+        XCTAssertNotNil(error);
+
+        [exp fulfill];
+    }];
+
+    [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+}
+
 - (void)testGitHubRelease
 {
     NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
