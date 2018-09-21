@@ -207,6 +207,36 @@ static NSMutableDictionary *classDictionary;
 
     for (NSURL *extractedAsset in self.extractedAssets)
     {
+        NSError *error = nil;
+        NSArray<NSURL *> *urls = [[NSFileManager defaultManager]
+            contentsOfDirectoryAtURL:extractedAsset
+            includingPropertiesForKeys:[NSArray arrayWithObject:NSURLIsPackageKey]
+            options:0
+            error:&error];
+        if (nil == error)
+        {
+            for (NSURL *url in urls)
+            {
+                NSNumber *value;
+                BOOL isPkg = [url getResourceValue:&value forKey:NSURLIsPackageKey error:0] &&
+                    [value boolValue];
+                if (isPkg)
+                {
+                    NSString *bundleIdentifier = [[NSBundle bundleWithURL:url] bundleIdentifier];
+                    if (nil == bundleIdentifier)
+                        continue;
+
+                    for (NSBundle *b in self.targetBundles)
+                        if ([b.bundleIdentifier isEqualToString:bundleIdentifier])
+                        {
+                            // !!!: missing signature verification
+                            [verifiedAssets addObject:url];
+                        }
+                }
+            }
+        }
+        else
+            [errors addObject:error];
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
