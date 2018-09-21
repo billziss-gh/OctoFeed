@@ -65,7 +65,7 @@
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
 }
 
-- (void)testGitHubRelease
+- (OctoRelease *)_githubRelease
 {
     NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
     NSURLSession *session = [NSURLSession
@@ -95,11 +95,18 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    return release;
+}
+
+- (void)testGitHubRelease
+{
+    [self _githubRelease];
 }
 
 - (void)testCachedRelease
 {
-    [self testGitHubRelease];
+    OctoRelease *githubRelease = [self _githubRelease];
 
     NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
     NSURLSession *session = [NSURLSession
@@ -129,5 +136,13 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    XCTAssertEqualObjects(githubRelease.releaseVersion, release.releaseVersion);
+    XCTAssertEqual(githubRelease.prerelease, release.prerelease);
+    XCTAssertEqual(githubRelease.releaseAssets.count, release.releaseAssets.count);
+    for (NSUInteger index = 0, count = githubRelease.releaseAssets.count; count > index; index++)
+        XCTAssertEqualObjects(
+            [githubRelease.releaseAssets objectAtIndex:index],
+            [release.releaseAssets objectAtIndex:index]);
 }
 @end
