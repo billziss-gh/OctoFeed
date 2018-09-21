@@ -184,41 +184,119 @@
 
 - (void)testCachedFetch
 {
-    OctoRelease *githubRelease = [self _githubRelease];
+    OctoRelease *release = [self _githubRelease];
 
     NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
     NSURLSession *session = [NSURLSession
         sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
         delegate:nil
         delegateQueue:[NSOperationQueue mainQueue]];
-    OctoRelease *release = [OctoRelease
+    OctoRelease *cachedRelease = [OctoRelease
         releaseWithRepository:nil
         targetBundles:bundles
         session:session];
 
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
-    [release fetch:^(NSError *error)
+    [cachedRelease fetch:^(NSError *error)
     {
         XCTAssertNil(error);
 
-        XCTAssertNotNil(release.releaseVersion);
-        XCTAssertNotNil(release.releaseAssets);
+        XCTAssertNotNil(cachedRelease.releaseVersion);
+        XCTAssertNotNil(cachedRelease.releaseAssets);
 
         NSLog(@"%@%@%@",
-            release.releaseVersion,
-            release.prerelease ? @" pre " : @" ",
-            release.releaseAssets);
+            cachedRelease.releaseVersion,
+            cachedRelease.prerelease ? @" pre " : @" ",
+            cachedRelease.releaseAssets);
 
         [exp fulfill];
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
 
-    XCTAssertEqualObjects(githubRelease.releaseVersion, release.releaseVersion);
-    XCTAssertEqual(githubRelease.prerelease, release.prerelease);
-    XCTAssertEqualObjects(githubRelease.releaseAssets, release.releaseAssets);
+    XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
+    XCTAssertEqual(release.prerelease, cachedRelease.prerelease);
+    XCTAssertEqualObjects(release.releaseAssets, cachedRelease.releaseAssets);
+    XCTAssertEqual(release.state, cachedRelease.state);
 
-    [self _clearRelease:release];
+    [self _clearRelease:cachedRelease];
+}
+
+- (void)testGitHubDownloadAndExtractCachedFetch
+{
+    OctoRelease *release = [self _githubRelease];
+
+    XCTestExpectation *exp = [self expectationWithDescription:@"downloadAssets:"];
+
+    [release downloadAssets:^(
+        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+    {
+        XCTAssertEqual(1, assets.count);
+        XCTAssertNil(errors);
+
+        XCTAssertEqual(OctoReleaseDownloaded, release.state);
+
+        NSSet *set0 = [NSSet setWithArray:release.downloadedAssets];
+        NSSet *set1 = [NSSet setWithArray:[assets allValues]];
+        XCTAssertEqualObjects(set0, set1);
+
+        [release extractAssets:^(
+            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+        {
+            XCTAssertEqual(1, assets.count);
+            XCTAssertNil(errors);
+
+            XCTAssertEqual(OctoReleaseExtracted, release.state);
+
+            NSSet *set0 = [NSSet setWithArray:release.extractedAssets];
+            NSSet *set1 = [NSSet setWithArray:[assets allValues]];
+            XCTAssertEqualObjects(set0, set1);
+
+            NSLog(@"%@", assets);
+
+            [exp fulfill];
+        }];
+    }];
+
+    [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
+    NSURLSession *session = [NSURLSession
+        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+        delegate:nil
+        delegateQueue:[NSOperationQueue mainQueue]];
+    OctoRelease *cachedRelease = [OctoRelease
+        releaseWithRepository:nil
+        targetBundles:bundles
+        session:session];
+
+    XCTestExpectation *exp1 = [self expectationWithDescription:@"fetch:"];
+
+    [cachedRelease fetch:^(NSError *error)
+    {
+        XCTAssertNil(error);
+
+        XCTAssertNotNil(cachedRelease.releaseVersion);
+        XCTAssertNotNil(cachedRelease.releaseAssets);
+
+        NSLog(@"%@%@%@",
+            cachedRelease.releaseVersion,
+            cachedRelease.prerelease ? @" pre " : @" ",
+            cachedRelease.releaseAssets);
+
+        [exp1 fulfill];
+    }];
+
+    [self waitForExpectations:[NSArray arrayWithObject:exp1] timeout:10];
+
+    XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
+    XCTAssertEqual(release.prerelease, cachedRelease.prerelease);
+    XCTAssertEqualObjects(release.releaseAssets, cachedRelease.releaseAssets);
+    XCTAssertEqualObjects(release.downloadedAssets, cachedRelease.downloadedAssets);
+    XCTAssertEqualObjects(release.extractedAssets, cachedRelease.extractedAssets);
+    XCTAssertEqual(release.state, cachedRelease.state);
+
+    [self _clearRelease:cachedRelease];
 }
 @end

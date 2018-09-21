@@ -174,7 +174,7 @@ static NSMutableDictionary *classDictionary;
     {
         NSURL *extractedAsset = [[[self cacheURL]
             URLByAppendingPathComponent:@"extractedAssets"]
-            URLByAppendingPathComponent:[downloadedAsset lastPathComponent]];
+            URLByAppendingPathComponent:[downloadedAsset lastPathComponent] isDirectory:YES];
         NSError *error = nil;
         [[NSFileManager defaultManager]
             removeItemAtURL:extractedAsset
