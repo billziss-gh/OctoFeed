@@ -14,25 +14,10 @@
 #import "NSObject+OctoExtensions.h"
 #import "NSString+Version.h"
 
-@interface OctoCachedRelease ()
-@property (copy) NSString *releaseVersion;
-@property (assign) BOOL prerelease;
-@property (copy) NSArray<NSURL *> *releaseAssets;
-@end
-
 @implementation OctoCachedRelease
 + (void)load
 {
     [self registerClass:@""];
-}
-
-- (void)dealloc
-{
-    self.releaseVersion = nil;
-    self.prerelease = NO;
-    self.releaseAssets = nil;
-
-    [super dealloc];
 }
 
 - (void)fetch:(void (^)(NSError *))completion
@@ -96,9 +81,9 @@
                 case OctoReleaseVerified:
                 case OctoReleaseInstalled:
                 case OctoReleaseLaunched:
-                    self.releaseVersion = releaseVersion;
-                    self.prerelease = !!prerelease;
-                    self.releaseAssets = urls;
+                    self._releaseVersion = releaseVersion;
+                    self._prerelease = !!prerelease;
+                    self._releaseAssets = urls;
                     [self _setState:c persistent:NO];
                     break;
                 default:

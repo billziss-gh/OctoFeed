@@ -16,14 +16,17 @@
 static NSMutableDictionary *classDictionary;
 
 @interface OctoRelease ()
-@property (copy) NSString *repository;
-@property (copy) NSArray<NSBundle *> *targetBundles;
-@property (retain) NSURLSession *session;
-@property (copy) NSURL *cacheBaseURL;
-@property (copy) NSArray<NSURL *> *downloadedAssets;
-@property (copy) NSArray<NSURL *> *extractedAssets;
-@property (copy) NSArray<NSURL *> *verifiedAssets;
-@property (assign) OctoReleaseState state;
+@property (copy) NSString *_repository;
+@property (copy) NSArray<NSBundle *> *_targetBundles;
+@property (retain) NSURLSession *_session;
+@property (copy) NSURL *_cacheBaseURL;
+@property (copy) NSString *_releaseVersion;
+@property (assign) BOOL _prerelease;
+@property (copy) NSArray<NSURL *> *_releaseAssets;
+@property (copy) NSArray<NSURL *> *_downloadedAssets;
+@property (copy) NSArray<NSURL *> *_extractedAssets;
+@property (copy) NSArray<NSURL *> *_verifiedAssets;
+@property (assign) OctoReleaseState _state;
 @end
 
 @implementation OctoRelease
@@ -58,10 +61,10 @@ static NSMutableDictionary *classDictionary;
     if (nil == mainIdentifier) /* happens during XCTest! */
         mainIdentifier = octoIdentifier;
 
-    self.repository = repository;
-    self.targetBundles = bundles;
-    self.session = session;
-    self.cacheBaseURL = [[[[[NSFileManager defaultManager]
+    self._repository = repository;
+    self._targetBundles = bundles;
+    self._session = session;
+    self._cacheBaseURL = [[[[[NSFileManager defaultManager]
         URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject]
         URLByAppendingPathComponent:mainIdentifier]
         URLByAppendingPathComponent:octoIdentifier];
@@ -71,13 +74,15 @@ static NSMutableDictionary *classDictionary;
 
 - (void)dealloc
 {
-    self.repository = nil;
-    self.targetBundles = nil;
-    self.session = nil;
-    self.cacheBaseURL = nil;
-    self.downloadedAssets = nil;
-    self.extractedAssets = nil;
-    self.verifiedAssets = nil;
+    self._repository = nil;
+    self._targetBundles = nil;
+    self._session = nil;
+    self._cacheBaseURL = nil;
+    self._releaseVersion = nil;
+    self._releaseAssets = nil;
+    self._downloadedAssets = nil;
+    self._extractedAssets = nil;
+    self._verifiedAssets = nil;
 
     [super dealloc];
 }
@@ -93,10 +98,10 @@ static NSMutableDictionary *classDictionary;
     __block NSMutableArray *errors = [NSMutableArray array];
 
     NSMutableArray *releaseAssets = nil;
-    if (1 < self.releaseAssets.count)
+    if (1 < self._releaseAssets.count)
     {
         releaseAssets = [NSMutableArray array];
-        for (NSURL *releaseAsset in self.releaseAssets)
+        for (NSURL *releaseAsset in self._releaseAssets)
         {
             NSString *name = [[releaseAsset lastPathComponent] stringByDeletingPathExtension];
             if ([name hasSuffix:@"-mac"] || [name containsString:@"-mac-"] ||
@@ -105,19 +110,19 @@ static NSMutableDictionary *classDictionary;
         }
     }
     if (0 == releaseAssets.count)
-        releaseAssets = [NSMutableArray arrayWithArray:self.releaseAssets];
+        releaseAssets = [NSMutableArray arrayWithArray:self._releaseAssets];
 
     for (NSURL *releaseAsset in releaseAssets)
     {
         dispatch_group_enter(group);
 
-        [self.session
+        [self._session
             downloadTaskWithURL:releaseAsset
             completionHandler:^(NSURL *url, NSURLResponse *response, NSError *error)
             {
                 if (nil != url)
                 {
-                    NSURL *downloadedAsset = [[self.cacheURL
+                    NSURL *downloadedAsset = [[[self cacheURL]
                         URLByAppendingPathComponent:@"downloadedAssets"]
                         URLByAppendingPathComponent:[url lastPathComponent]];
                     BOOL res = [[NSFileManager defaultManager]
@@ -139,7 +144,7 @@ static NSMutableDictionary *classDictionary;
         NSError *error = [errors firstObject];
         if (nil == error)
         {
-            self.downloadedAssets = downloadedAssets;
+            self._downloadedAssets = downloadedAssets;
             [self _setState:OctoReleaseDownloaded persistent:YES];
         }
 
@@ -155,9 +160,9 @@ static NSMutableDictionary *classDictionary;
     __block NSMutableArray *extractedAssets = [NSMutableArray array];
     __block NSMutableArray *errors = [NSMutableArray array];
 
-    for (NSURL *downloadedAsset in self.downloadedAssets)
+    for (NSURL *downloadedAsset in self._downloadedAssets)
     {
-        NSURL *extractedAsset = [[self.cacheURL
+        NSURL *extractedAsset = [[[self cacheURL]
             URLByAppendingPathComponent:@"extractedAssets"]
             URLByAppendingPathComponent:[downloadedAsset lastPathComponent]];
         NSError *error = nil;
@@ -189,7 +194,7 @@ static NSMutableDictionary *classDictionary;
         NSError *error = [errors firstObject];
         if (nil == error)
         {
-            self.extractedAssets = extractedAssets;
+            self._extractedAssets = extractedAssets;
             [self _setState:OctoReleaseExtracted persistent:YES];
         }
 
@@ -205,7 +210,7 @@ static NSMutableDictionary *classDictionary;
     __block NSMutableArray *verifiedAssets = [NSMutableArray array];
     __block NSMutableArray *errors = [NSMutableArray array];
 
-    for (NSURL *extractedAsset in self.extractedAssets)
+    for (NSURL *extractedAsset in self._extractedAssets)
     {
         NSError *error = nil;
         NSArray<NSURL *> *urls = [[NSFileManager defaultManager]
@@ -226,7 +231,7 @@ static NSMutableDictionary *classDictionary;
                     if (nil == bundleIdentifier)
                         continue;
 
-                    for (NSBundle *b in self.targetBundles)
+                    for (NSBundle *b in self._targetBundles)
                         if ([b.bundleIdentifier isEqualToString:bundleIdentifier])
                         {
                             // !!!: missing signature verification
@@ -244,7 +249,7 @@ static NSMutableDictionary *classDictionary;
         NSError *error = [errors firstObject];
         if (nil == error)
         {
-            self.verifiedAssets = verifiedAssets;
+            self._verifiedAssets = verifiedAssets;
             [self _setState:OctoReleaseVerified persistent:YES];
         }
 
@@ -258,46 +263,86 @@ static NSMutableDictionary *classDictionary;
 {
 }
 
+- (NSString *)repository
+{
+    return self._repository;
+}
+
+- (NSArray<NSBundle *> *)targetBundles
+{
+    return self._targetBundles;
+}
+
+- (NSURL *)cacheBaseURL
+{
+    return self._cacheBaseURL;
+}
+
 - (NSURL *)cacheURL
 {
-    if (0 == [self.releaseVersion length])
+    if (0 == [self._releaseVersion length])
         [NSException raise:NSInvalidArgumentException format:@"%s empty releaseVersion", __FUNCTION__];
 
-    return [self.cacheBaseURL URLByAppendingPathComponent:self.releaseVersion];
+    return [self._cacheBaseURL URLByAppendingPathComponent:self._releaseVersion];
+}
+
+- (NSURLSession *)session
+{
+    return self._session;
 }
 
 - (NSString *)releaseVersion
 {
-    return nil;
+    return self._releaseVersion;
 }
 
 - (BOOL)prerelease
 {
-    return NO;
+    return self._prerelease;
 }
 
 - (NSArray<NSURL *> *)releaseAssets
 {
-    return nil;
+    return self._releaseAssets;
+}
+
+- (NSArray<NSURL *> *)downloadedAssets
+{
+    return self._downloadedAssets;
+}
+
+- (NSArray<NSURL *> *)extractedAssets
+{
+    return self._extractedAssets;
+}
+
+- (NSArray<NSURL *> *)verifiedAssets
+{
+    return self._verifiedAssets;
+}
+
+- (OctoReleaseState)state
+{
+    return self._state;
 }
 
 - (void)_setState:(OctoReleaseState)state persistent:(BOOL)persistent
 {
     if (!persistent)
     {
-        self.state = state;
+        self._state = state;
         return;
     }
 
-    if (0 == [self.releaseVersion length])
+    if (0 == [self._releaseVersion length])
         [NSException raise:NSInvalidArgumentException format:@"%s empty releaseVersion", __FUNCTION__];
 
     NSMutableString *str = [NSMutableString stringWithFormat:@"%@\n%d\n%c\n",
-        self.releaseVersion, self.prerelease, (char)state];
-    for (id asset in self.releaseAssets)
+        self._releaseVersion, self._prerelease, (char)state];
+    for (id asset in self._releaseAssets)
         [str appendFormat:@"%@\n", [asset absoluteString]];
 
-    NSURL *cacheURL = self.cacheURL;
+    NSURL *cacheURL = [self cacheURL];
     BOOL res = [[NSFileManager defaultManager]
         createDirectoryAtURL:cacheURL
         withIntermediateDirectories:YES
@@ -311,6 +356,6 @@ static NSMutableDictionary *classDictionary;
     if (!res)
         return;
 
-    self.state = state;
+    self._state = state;
 }
 @end

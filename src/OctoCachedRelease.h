@@ -14,7 +14,4 @@
 
 @interface OctoCachedRelease : OctoRelease
 - (void)fetch:(void (^)(NSError *))completion;
-@property (readonly) NSString *releaseVersion;
-@property (readonly) BOOL prerelease;
-@property (readonly) NSArray<NSURL *> *releaseAssets;
 @end

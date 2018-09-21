@@ -14,25 +14,10 @@
 #import "NSObject+OctoExtensions.h"
 #import "NSString+Version.h"
 
-@interface OctoGitHubRelease ()
-@property (copy) NSString *releaseVersion;
-@property (assign) BOOL prerelease;
-@property (copy) NSArray<NSURL *> *releaseAssets;
-@end
-
 @implementation OctoGitHubRelease
 + (void)load
 {
     [self registerClass:@"github.com"];
-}
-
-- (void)dealloc
-{
-    self.releaseVersion = nil;
-    self.prerelease = NO;
-    self.releaseAssets = nil;
-
-    [super dealloc];
 }
 
 - (void)fetch:(void (^)(NSError *))completion
@@ -136,9 +121,9 @@
                 goto corrupt_fail;
             }
 
-            self.releaseVersion = tag;
-            self.prerelease = [prerelease boolValue];
-            self.releaseAssets = urls;
+            self._releaseVersion = tag;
+            self._prerelease = [prerelease boolValue];
+            self._releaseAssets = urls;
             [self _setState:OctoReleaseFetched persistent:YES];
 
             completion(nil);
