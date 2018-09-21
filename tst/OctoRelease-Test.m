@@ -11,7 +11,7 @@
  */
 
 #import <XCTest/XCTest.h>
-#import <OctoFeed/OctoRelease.h>
+#import "OctoRelease.h"
 
 @interface OctoReleaseTest : XCTestCase
 @end

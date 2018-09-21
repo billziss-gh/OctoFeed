@@ -10,7 +10,7 @@
  * in the License.txt file at the root of this project.
  */
 
-#import <OctoFeed/OctoRelease.h>
+#import "OctoRelease.h"
 
 @interface OctoRelease (Extensions)
 @property (copy) NSString *_releaseVersion;

@@ -10,7 +10,7 @@
  * in the License.txt file at the root of this project.
  */
 
-#import <OctoFeed/OctoFeed.h>
+#import "OctoFeed.h"
 
 @interface OctoFeed ()
 @property (retain) NSURLSession *session;
