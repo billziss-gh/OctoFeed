@@ -97,7 +97,7 @@ static NSMutableDictionary *classDictionary;
     NSMutableDictionary *downloadedAssets = [NSMutableDictionary dictionary];
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
-    NSMutableArray *releaseAssets = nil;
+    NSArray *releaseAssets = nil;
     if (1 < self._releaseAssets.count)
     {
         releaseAssets = [NSMutableArray array];
@@ -106,28 +106,37 @@ static NSMutableDictionary *classDictionary;
             NSString *name = [[releaseAsset lastPathComponent] stringByDeletingPathExtension];
             if ([name hasSuffix:@"-mac"] || [name containsString:@"-mac-"] ||
                 [name hasSuffix:@"-osx"] || [name containsString:@"-osx-"])
-                [releaseAssets addObject:releaseAsset];
+                [(id)releaseAssets addObject:releaseAsset];
         }
     }
     if (0 == releaseAssets.count)
-        releaseAssets = [NSMutableArray arrayWithArray:self._releaseAssets];
+        releaseAssets = self._releaseAssets;
 
     for (NSURL *releaseAsset in releaseAssets)
     {
         dispatch_group_enter(group);
 
-        [self._session
+        [[self._session
             downloadTaskWithURL:releaseAsset
             completionHandler:^(NSURL *url, NSURLResponse *response, NSError *error)
             {
                 if (nil != url)
                 {
-                    NSURL *downloadedAsset = [[[self cacheURL]
-                        URLByAppendingPathComponent:@"downloadedAssets"]
-                        URLByAppendingPathComponent:[url lastPathComponent]];
+                    NSURL *downloadedAssetDir = [[self cacheURL]
+                        URLByAppendingPathComponent:@"downloadedAssets"];
+                    NSURL *downloadedAsset = [downloadedAssetDir
+                        URLByAppendingPathComponent:[releaseAsset lastPathComponent]];
                     BOOL res = [[NSFileManager defaultManager]
-                        moveItemAtURL:url
-                        toURL:downloadedAsset
+                        createDirectoryAtURL:downloadedAssetDir
+                        withIntermediateDirectories:YES
+                        attributes:0
+                        error:&error];
+                    res = res && [[NSFileManager defaultManager]
+                        replaceItemAtURL:downloadedAsset
+                        withItemAtURL:url
+                        backupItemName:nil
+                        options:0
+                        resultingItemURL:0
                         error:&error];
                     if (res)
                         [downloadedAssets setObject:downloadedAsset forKey:releaseAsset];
@@ -136,7 +145,7 @@ static NSMutableDictionary *classDictionary;
                     [errors setObject:error forKey:releaseAsset];
 
                 dispatch_group_leave(group);
-            }];
+            }] resume];
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
