@@ -90,11 +90,11 @@ static NSMutableDictionary *classDictionary;
 {
 }
 
-- (void)downloadAssets:(void (^)(NSError *))completion
+- (void)downloadAssets:(OctoReleaseCompletion)completion
 {
     dispatch_group_t group = dispatch_group_create();
-    __block NSMutableArray *downloadedAssets = [NSMutableArray array];
-    __block NSMutableArray *errors = [NSMutableArray array];
+    NSMutableDictionary *downloadedAssets = [NSMutableDictionary dictionary];
+    NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
     NSMutableArray *releaseAssets = nil;
     if (1 < self._releaseAssets.count)
@@ -129,10 +129,10 @@ static NSMutableDictionary *classDictionary;
                         toURL:downloadedAsset
                         error:&error];
                     if (res)
-                        [downloadedAssets addObject:downloadedAsset];
+                        [downloadedAssets setObject:downloadedAsset forKey:releaseAsset];
                 }
                 if (nil != error)
-                    [errors addObject:error];
+                    [errors setObject:error forKey:releaseAsset];
 
                 dispatch_group_leave(group);
             }];
@@ -140,24 +140,25 @@ static NSMutableDictionary *classDictionary;
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
-        NSError *error = [errors firstObject];
-        if (nil == error)
+        if (0 < downloadedAssets.count)
         {
-            self._downloadedAssets = downloadedAssets;
+            self._downloadedAssets = [downloadedAssets allValues];
             [self _setState:OctoReleaseDownloaded persistent:YES];
         }
 
-        completion(error);
+        completion(
+            0 != downloadedAssets.count ? downloadedAssets : nil,
+            0 != errors.count ? errors : nil);
 
         dispatch_release(group);
     });
 }
 
-- (void)extractAssets:(void (^)(NSError *))completion
+- (void)extractAssets:(OctoReleaseCompletion)completion
 {
     dispatch_group_t group = dispatch_group_create();
-    __block NSMutableArray *extractedAssets = [NSMutableArray array];
-    __block NSMutableArray *errors = [NSMutableArray array];
+    NSMutableDictionary *extractedAssets = [NSMutableDictionary dictionary];
+    NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
     for (NSURL *downloadedAsset in self._downloadedAssets)
     {
@@ -177,36 +178,38 @@ static NSMutableDictionary *classDictionary;
             [OctoUnarchiver unarchiveURL:downloadedAsset toURL:extractedAsset completion:^(NSError *error)
             {
                 if (nil == error)
-                    [extractedAssets addObject:extractedAsset];
+                    [extractedAssets setObject:extractedAsset forKey:downloadedAsset];
                 else
-                    [errors addObject:error];
+                    [errors setObject:error forKey:downloadedAsset];
 
                 dispatch_group_leave(group);
             }];
         }
         else
-            [errors addObject:error];
+            [errors setObject:error forKey:downloadedAsset];
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
-        NSError *error = [errors firstObject];
-        if (nil == error)
+        if (0 < extractedAssets.count)
         {
-            self._extractedAssets = extractedAssets;
+            self._extractedAssets = [extractedAssets allValues];
             [self _setState:OctoReleaseExtracted persistent:YES];
         }
 
-        completion(error);
+        completion(
+            0 != extractedAssets.count ? extractedAssets : nil,
+            0 != errors.count ? errors : nil);
 
         dispatch_release(group);
     });
 }
 
-- (void)installAssets:(void (^)(NSError *))completion
+- (void)installAssets:(OctoReleaseCompletion)completion
 {
     dispatch_group_t group = dispatch_group_create();
-    __block NSMutableArray *errors = [NSMutableArray array];
+    NSMutableDictionary *installedAssets = [NSMutableDictionary dictionary];
+    NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
     for (NSURL *extractedAsset in self._extractedAssets)
     {
@@ -240,16 +243,17 @@ static NSMutableDictionary *classDictionary;
             }
         }
         else
-            [errors addObject:error];
+            [errors setObject:error forKey:extractedAsset];
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
-        NSError *error = [errors firstObject];
-        if (nil == error)
+        if (0 < installedAssets.count)
             [self _setState:OctoReleaseInstalled persistent:YES];
 
-        completion(error);
+        completion(
+            0 != installedAssets.count ? installedAssets : nil,
+            0 != errors.count ? errors : nil);
 
         dispatch_release(group);
     });

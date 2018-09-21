@@ -21,6 +21,9 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
     OctoReleaseInstalled                = 'I',
 };
 
+typedef void (^OctoReleaseCompletion)(
+    NSDictionary<NSURL *, NSURL *> *, NSDictionary<NSURL *, NSError *> *);
+
 @interface OctoRelease : NSObject
 + (void)registerClass:(NSString *)service;
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
@@ -28,9 +31,9 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
 - (id)initWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
 - (void)fetch:(void (^)(NSError *))completion;
-- (void)downloadAssets:(void (^)(NSError *))completion;
-- (void)extractAssets:(void (^)(NSError *))completion;
-- (void)installAssets:(void (^)(NSError *))completion;
+- (void)downloadAssets:(OctoReleaseCompletion)completion;
+- (void)extractAssets:(OctoReleaseCompletion)completion;
+- (void)installAssets:(OctoReleaseCompletion)completion;
 - (NSString *)repository;
 - (NSArray<NSBundle *> *)targetBundles;
 - (NSURL *)cacheBaseURL;
