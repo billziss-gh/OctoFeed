@@ -139,11 +139,7 @@
 
     XCTAssertEqualObjects(githubRelease.releaseVersion, release.releaseVersion);
     XCTAssertEqual(githubRelease.prerelease, release.prerelease);
-    XCTAssertEqual(githubRelease.releaseAssets.count, release.releaseAssets.count);
-    for (NSUInteger index = 0, count = githubRelease.releaseAssets.count; count > index; index++)
-        XCTAssertEqualObjects(
-            [githubRelease.releaseAssets objectAtIndex:index],
-            [release.releaseAssets objectAtIndex:index]);
+    XCTAssertEqualObjects(githubRelease.releaseAssets, release.releaseAssets);
 }
 
 - (void)testDownload
@@ -152,10 +148,16 @@
 
     XCTestExpectation *exp = [self expectationWithDescription:@"downloadAssets:"];
     [release downloadAssets:^(
-        NSDictionary<NSURL *,NSURL *> *assets, NSDictionary<NSURL *,NSError *> *errors)
+        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
         XCTAssertEqual(1, assets.count);
         XCTAssertNil(errors);
+
+        XCTAssertEqual(OctoReleaseDownloaded, release.state);
+
+        NSSet *set0 = [NSSet setWithArray:release.downloadedAssets];
+        NSSet *set1 = [NSSet setWithArray:[assets allValues]];
+        XCTAssertEqualObjects(set0, set1);
 
         NSLog(@"%@", assets);
 
@@ -163,8 +165,6 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
-
-    XCTAssertEqual(1, release.downloadedAssets.count);
 }
 
 - (void)testDownloadAndExtract
@@ -173,16 +173,28 @@
 
     XCTestExpectation *exp = [self expectationWithDescription:@"downloadAssets:"];
     [release downloadAssets:^(
-        NSDictionary<NSURL *,NSURL *> *assets, NSDictionary<NSURL *,NSError *> *errors)
+        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
         XCTAssertEqual(1, assets.count);
         XCTAssertNil(errors);
 
+        XCTAssertEqual(OctoReleaseDownloaded, release.state);
+
+        NSSet *set0 = [NSSet setWithArray:release.downloadedAssets];
+        NSSet *set1 = [NSSet setWithArray:[assets allValues]];
+        XCTAssertEqualObjects(set0, set1);
+
         [release extractAssets:^(
-            NSDictionary<NSURL *,NSURL *> *assets, NSDictionary<NSURL *,NSError *> *errors)
+            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
         {
             XCTAssertEqual(1, assets.count);
             XCTAssertNil(errors);
+
+            XCTAssertEqual(OctoReleaseExtracted, release.state);
+
+            NSSet *set0 = [NSSet setWithArray:release.extractedAssets];
+            NSSet *set1 = [NSSet setWithArray:[assets allValues]];
+            XCTAssertEqualObjects(set0, set1);
 
             NSLog(@"%@", assets);
 
@@ -191,8 +203,5 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
-
-    XCTAssertEqual(1, release.downloadedAssets.count);
-    XCTAssertEqual(1, release.extractedAssets.count);
 }
 @end
