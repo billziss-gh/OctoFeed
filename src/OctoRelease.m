@@ -92,7 +92,22 @@ static NSMutableDictionary *classDictionary;
     __block NSMutableArray *downloadedAssets = [NSMutableArray array];
     __block NSMutableArray *errors = [NSMutableArray array];
 
-    for (NSURL *releaseAsset in self.releaseAssets)
+    NSMutableArray *releaseAssets = nil;
+    if (1 < self.releaseAssets.count)
+    {
+        releaseAssets = [NSMutableArray array];
+        for (NSURL *releaseAsset in self.releaseAssets)
+        {
+            NSString *name = [[releaseAsset lastPathComponent] stringByDeletingPathExtension];
+            if ([name hasSuffix:@"-mac"] || [name containsString:@"-mac-"] ||
+                [name hasSuffix:@"-osx"] || [name containsString:@"-osx-"])
+                [releaseAssets addObject:releaseAsset];
+        }
+    }
+    if (0 == releaseAssets.count)
+        releaseAssets = [NSMutableArray arrayWithArray:self.releaseAssets];
+
+    for (NSURL *releaseAsset in releaseAssets)
     {
         dispatch_group_enter(group);
 
@@ -186,6 +201,27 @@ static NSMutableDictionary *classDictionary;
 
 - (void)verifyAssets:(void (^)(NSError *))completion
 {
+    dispatch_group_t group = dispatch_group_create();
+    __block NSMutableArray *verifiedAssets = [NSMutableArray array];
+    __block NSMutableArray *errors = [NSMutableArray array];
+
+    for (NSURL *extractedAsset in self.extractedAssets)
+    {
+    }
+
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^
+    {
+        NSError *error = [errors firstObject];
+        if (nil == error)
+        {
+            self.verifiedAssets = verifiedAssets;
+            [self _setState:OctoReleaseVerified persistent:YES];
+        }
+
+        completion(error);
+
+        dispatch_release(group);
+    });
 }
 
 - (void)installAssets:(void (^)(NSError *))completion
