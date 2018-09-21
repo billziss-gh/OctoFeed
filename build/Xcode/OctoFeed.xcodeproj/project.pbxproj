@@ -19,6 +19,12 @@
 		3CC866F7215417E4003956A9 /* test.tar.gz in Resources */ = {isa = PBXBuildFile; fileRef = 3CC866F4215417E4003956A9 /* test.tar.gz */; };
 		3CC866F8215417E4003956A9 /* test.tar.bz2 in Resources */ = {isa = PBXBuildFile; fileRef = 3CC866F5215417E4003956A9 /* test.tar.bz2 */; };
 		3CC866F9215417E4003956A9 /* test.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3CC866F6215417E4003956A9 /* test.zip */; };
+		3CC866FB21544BC6003956A9 /* OctoRelease.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CC866FA21544BC6003956A9 /* OctoRelease.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3CC866FD21544C6C003956A9 /* OctoRelease.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC866FC21544C6C003956A9 /* OctoRelease.m */; };
+		3CC8670021544FEB003956A9 /* OctoGitHubRelease.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC866FE21544FEB003956A9 /* OctoGitHubRelease.m */; };
+		3CC8670121544FEB003956A9 /* OctoGitHubRelease.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CC866FF21544FEB003956A9 /* OctoGitHubRelease.h */; };
+		3CC867042154658A003956A9 /* OctoCachedRelease.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC867022154658A003956A9 /* OctoCachedRelease.m */; };
+		3CC867052154658A003956A9 /* OctoCachedRelease.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CC867032154658A003956A9 /* OctoCachedRelease.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +53,12 @@
 		3CC866F4215417E4003956A9 /* test.tar.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = test.tar.gz; sourceTree = "<group>"; };
 		3CC866F5215417E4003956A9 /* test.tar.bz2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.tar.bz2; sourceTree = "<group>"; };
 		3CC866F6215417E4003956A9 /* test.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = test.zip; sourceTree = "<group>"; };
+		3CC866FA21544BC6003956A9 /* OctoRelease.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoRelease.h; sourceTree = "<group>"; };
+		3CC866FC21544C6C003956A9 /* OctoRelease.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoRelease.m; sourceTree = "<group>"; };
+		3CC866FE21544FEB003956A9 /* OctoGitHubRelease.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoGitHubRelease.m; sourceTree = "<group>"; };
+		3CC866FF21544FEB003956A9 /* OctoGitHubRelease.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoGitHubRelease.h; sourceTree = "<group>"; };
+		3CC867022154658A003956A9 /* OctoCachedRelease.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoCachedRelease.m; sourceTree = "<group>"; };
+		3CC867032154658A003956A9 /* OctoCachedRelease.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoCachedRelease.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				3C72F2432152E3A700970D87 /* OctoFeed.h */,
+				3CC866FA21544BC6003956A9 /* OctoRelease.h */,
 			);
 			name = Include;
 			path = ../../inc;
@@ -115,7 +128,12 @@
 			children = (
 				3C39AFB72153609200604505 /* NSString+OctoVersion.h */,
 				3C39AFB62153609100604505 /* NSString+OctoVersion.m */,
+				3CC867032154658A003956A9 /* OctoCachedRelease.h */,
+				3CC867022154658A003956A9 /* OctoCachedRelease.m */,
 				3C72F2452152E3B200970D87 /* OctoFeed.m */,
+				3CC866FF21544FEB003956A9 /* OctoGitHubRelease.h */,
+				3CC866FE21544FEB003956A9 /* OctoGitHubRelease.m */,
+				3CC866FC21544C6C003956A9 /* OctoRelease.m */,
 				3C39AFBA21537DBF00604505 /* OctoUnarchiver.h */,
 				3C39AFBB21537DBF00604505 /* OctoUnarchiver.m */,
 				3C39AFD421540EAF00604505 /* OctoFeed-Info.plist */,
@@ -132,6 +150,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C39AFBC21537DBF00604505 /* OctoUnarchiver.h in Headers */,
+				3CC867052154658A003956A9 /* OctoCachedRelease.h in Headers */,
+				3CC8670121544FEB003956A9 /* OctoGitHubRelease.h in Headers */,
+				3CC866FB21544BC6003956A9 /* OctoRelease.h in Headers */,
 				3C39AFB92153609200604505 /* NSString+OctoVersion.h in Headers */,
 				3C72F2442152E3A700970D87 /* OctoFeed.h in Headers */,
 			);
@@ -265,7 +286,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C72F2462152E3B200970D87 /* OctoFeed.m in Sources */,
+				3CC8670021544FEB003956A9 /* OctoGitHubRelease.m in Sources */,
 				3C39AFBD21537DBF00604505 /* OctoUnarchiver.m in Sources */,
+				3CC866FD21544C6C003956A9 /* OctoRelease.m in Sources */,
+				3CC867042154658A003956A9 /* OctoCachedRelease.m in Sources */,
 				3C39AFB82153609200604505 /* NSString+OctoVersion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

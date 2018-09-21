@@ -10,6 +10,7 @@
  * in the License.txt file at the root of this project.
  */
 
+#if 0
 #import <OctoFeed/OctoFeed.h>
 #import "NSString+OctoVersion.h"
 #import "OctoUnarchiver.h"
@@ -464,3 +465,4 @@ NSString *OctoFeedNotification = @"OctoFeedNotification";
 NSString *OctoFeedRepositoryKey = @"OctoFeedRepository";
 NSString *OctoFeedCheckPeriodKey = @"OctoFeedCheckPeriod";
 NSString *OctoFeedLastCheckTimeKey = @"OctoFeedLastCheckTime";
+#endif

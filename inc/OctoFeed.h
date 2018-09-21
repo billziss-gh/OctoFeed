@@ -10,8 +10,10 @@
  * in the License.txt file at the root of this project.
  */
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <OctoFeed/OctoRelease.h>
 
+#if 0
 typedef NS_ENUM(NSUInteger, OctoReleaseState)
 {
     OctoReleaseReady                    = 0,
@@ -60,3 +62,5 @@ extern NSString *OctoFeedNotification;
 extern NSString *OctoFeedRepositoryKey;
 extern NSString *OctoFeedCheckPeriodKey;
 extern NSString *OctoFeedLastCheckTimeKey;
+#endif
+
