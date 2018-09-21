@@ -12,7 +12,7 @@
 
 #if 0
 #import <OctoFeed/OctoFeed.h>
-#import "NSString+OctoVersion.h"
+#import "NSString+Version.h"
 #import "OctoUnarchiver.h"
 
 #define LOG(format, ...)                NSLog(@ "OctoFeed: " format, __VA_ARGS__)
@@ -259,7 +259,7 @@ fail:
         error:0];
     urls = [urls sortedArrayUsingComparator:^NSComparisonResult(id url1, id url2)
     {
-        return [[url1 lastPathComponent] octoVersionCompare:[url2 lastPathComponent]];
+        return [[url1 lastPathComponent] versionCompare:[url2 lastPathComponent]];
     }];
     NSURL *url = [urls lastObject];
     if (nil != url)
@@ -398,7 +398,7 @@ fail:
 
     if ([tag hasPrefix:@"v"])
         tag = [tag substringFromIndex:1];
-    if (![tag octoVersionValidate])
+    if (![tag versionValidate])
     {
         LOG(@"JSON error: %@", @"invalid \"tag_name\"; not a proper semver");
         return nil;
