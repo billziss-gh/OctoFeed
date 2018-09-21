@@ -72,4 +72,38 @@
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
 }
+
+- (void)testCachedRelease
+{
+    [self testGitHubRelease];
+
+    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
+    NSURLSession *session = [NSURLSession
+        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+        delegate:nil
+        delegateQueue:[NSOperationQueue mainQueue]];
+    OctoRelease *release = [OctoRelease
+        releaseWithRepository:nil
+        targetBundles:bundles
+        session:session];
+
+    XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
+
+    [release fetch:^(NSError *error)
+    {
+        XCTAssertNil(error);
+
+        XCTAssertNotNil(release.releaseVersion);
+        XCTAssertNotNil(release.releaseAssets);
+
+        NSLog(@"%@%@%@",
+            release.releaseVersion,
+            release.prerelease ? @" pre " : @" ",
+            release.releaseAssets);
+
+        [exp fulfill];
+    }];
+
+    [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+}
 @end

@@ -57,13 +57,14 @@
             error:&error];
         if (nil != str)
         {
-            NSScanner *scanner = [NSScanner scannerWithString:str];
             NSString *releaseVersion = nil;
             unsigned long long prerelease = 0;
             NSString *state = nil;
             NSMutableArray<NSURL *> *urls = [NSMutableArray array];
             BOOL res = YES;
 
+            NSScanner *scanner = [NSScanner scannerWithString:str];
+            scanner.charactersToBeSkipped = nil;
             res = res && [scanner scanUpToString:@"\n" intoString:&releaseVersion];
             res = res && [scanner scanString:@"\n" intoString:0];
             res = res && [scanner scanUnsignedLongLong:&prerelease];
