@@ -166,4 +166,33 @@
 
     XCTAssertEqual(1, release.downloadedAssets.count);
 }
+
+- (void)testDownloadAndExtract
+{
+    OctoRelease *release = [self _githubRelease];
+
+    XCTestExpectation *exp = [self expectationWithDescription:@"downloadAssets:"];
+    [release downloadAssets:^(
+        NSDictionary<NSURL *,NSURL *> *assets, NSDictionary<NSURL *,NSError *> *errors)
+    {
+        XCTAssertEqual(1, assets.count);
+        XCTAssertNil(errors);
+
+        [release extractAssets:^(
+            NSDictionary<NSURL *,NSURL *> *assets, NSDictionary<NSURL *,NSError *> *errors)
+        {
+            XCTAssertEqual(1, assets.count);
+            XCTAssertNil(errors);
+
+            NSLog(@"%@", assets);
+
+            [exp fulfill];
+        }];
+    }];
+
+    [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    XCTAssertEqual(1, release.downloadedAssets.count);
+    XCTAssertEqual(1, release.extractedAssets.count);
+}
 @end

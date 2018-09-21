@@ -176,6 +176,9 @@ static NSMutableDictionary *classDictionary;
             URLByAppendingPathComponent:@"extractedAssets"]
             URLByAppendingPathComponent:[downloadedAsset lastPathComponent]];
         NSError *error = nil;
+        [[NSFileManager defaultManager]
+            removeItemAtURL:extractedAsset
+            error:0];
         BOOL res = [[NSFileManager defaultManager]
             createDirectoryAtURL:extractedAsset
             withIntermediateDirectories:YES
