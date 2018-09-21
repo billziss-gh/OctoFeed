@@ -81,7 +81,7 @@
                     NSURL *url = [NSURL URLWithString:str];
                     res = res && nil != url;
                     if (res)
-                        [urls addObject:url]
+                        [urls addObject:url];
                 }
             }
             if (res)
