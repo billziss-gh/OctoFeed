@@ -11,6 +11,7 @@
  */
 
 #import "OctoCachedRelease.h"
+#import "NSObject+OctoExtensions.h"
 #import "NSString+OctoVersion.h"
 
 @interface OctoCachedRelease ()
@@ -94,18 +95,9 @@
         }
     }
 
-    void (^block)(void) = ^
+    [self octoPerformBlock:^
     {
         completion(error);
-    };
-    [self
-        performSelector:@selector(delayedPerformBlock:)
-        withObject:[[block copy] autorelease]
-        afterDelay:0];
-}
-
-- (void)delayedPerformBlock:(void (^)(void))block
-{
-    block();
+    } afterDelay:0];
 }
 @end

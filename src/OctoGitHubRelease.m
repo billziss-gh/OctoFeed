@@ -11,6 +11,7 @@
  */
 
 #import "OctoGitHubRelease.h"
+#import "NSObject+OctoExtensions.h"
 #import "NSString+OctoVersion.h"
 
 @interface OctoGitHubRelease ()
@@ -41,6 +42,14 @@
     {
         NSLog(@"OctoFeed: invalid repository; repositories must be of the form: %@",
             @"github.com/:owner/:repo");
+        [self octoPerformBlock:^
+        {
+            NSError *error = [NSError
+                errorWithDomain:NSPOSIXErrorDomain
+                code:EINVAL
+                userInfo:nil];
+            completion(error);
+        } afterDelay:0];
         return;
     }
 

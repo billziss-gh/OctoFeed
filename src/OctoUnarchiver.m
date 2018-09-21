@@ -11,6 +11,7 @@
  */
 
 #import "OctoUnarchiver.h"
+#import "NSObject+OctoExtensions.h"
 
 @interface OctoUnarchiver ()
 @property (copy) NSURL *url;
@@ -99,19 +100,13 @@
 
 - (void)unarchiveToURLErrorCompletion:(void (^)(NSError *))completion
 {
-    completion = [[completion copy] autorelease];
-    [self
-        performSelector:@selector(delayedUnarchiveToURLErrorCompletion:)
-        withObject:completion
-        afterDelay:0];
-}
-
-- (void)delayedUnarchiveToURLErrorCompletion:(void (^)(NSError *error))completion
-{
-    NSError *error = [NSError
-        errorWithDomain:NSPOSIXErrorDomain
-        code:EINVAL
-        userInfo:nil];
-    completion(error);
+    [self octoPerformBlock:^
+    {
+        NSError *error = [NSError
+            errorWithDomain:NSPOSIXErrorDomain
+            code:EINVAL
+            userInfo:nil];
+        completion(error);
+    } afterDelay:0];
 }
 @end
