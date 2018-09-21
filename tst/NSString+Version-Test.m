@@ -54,4 +54,20 @@
     XCTAssertEqual(NSOrderedAscending, [@"1.1.1.1" versionCompare:@"1.1.1.2B"]);
     XCTAssertEqual(NSOrderedDescending, [@"1.1B10" versionCompare:@"1.1B2"]);
 }
+
+- (void)testVersionSort
+{
+    NSArray *array = [NSArray arrayWithObjects:
+        @"99.99.99", @"99.99.99B", @"99.99.99A", @"99.99.99A2", @"99.99.99A10", nil];
+    array = [array sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+    {
+        return [obj1 versionCompare:obj2];
+    }];
+
+    XCTAssertEqualObjects(@"99.99.99A", [array objectAtIndex:0]);
+    XCTAssertEqualObjects(@"99.99.99A2", [array objectAtIndex:1]);
+    XCTAssertEqualObjects(@"99.99.99A10", [array objectAtIndex:2]);
+    XCTAssertEqualObjects(@"99.99.99B", [array objectAtIndex:3]);
+    XCTAssertEqualObjects(@"99.99.99", [array objectAtIndex:4]);
+}
 @end
