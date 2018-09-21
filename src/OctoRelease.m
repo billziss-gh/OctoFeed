@@ -26,7 +26,6 @@ static NSMutableDictionary *classDictionary;
 @property (copy) NSArray<NSURL *> *_releaseAssets;
 @property (copy) NSArray<NSURL *> *_downloadedAssets;
 @property (copy) NSArray<NSURL *> *_extractedAssets;
-@property (copy) NSArray<NSURL *> *_verifiedAssets;
 @property (assign) OctoReleaseState _state;
 @end
 
@@ -83,7 +82,6 @@ static NSMutableDictionary *classDictionary;
     self._releaseAssets = nil;
     self._downloadedAssets = nil;
     self._extractedAssets = nil;
-    self._verifiedAssets = nil;
 
     [super dealloc];
 }
@@ -205,10 +203,9 @@ static NSMutableDictionary *classDictionary;
     });
 }
 
-- (void)verifyAssets:(void (^)(NSError *))completion
+- (void)installAssets:(void (^)(NSError *))completion
 {
     dispatch_group_t group = dispatch_group_create();
-    __block NSMutableArray *verifiedAssets = [NSMutableArray array];
     __block NSMutableArray *errors = [NSMutableArray array];
 
     for (NSURL *extractedAsset in self._extractedAssets)
@@ -235,8 +232,9 @@ static NSMutableDictionary *classDictionary;
                     for (NSBundle *b in self._targetBundles)
                         if ([b.bundleIdentifier isEqualToString:bundleIdentifier])
                         {
-                            // !!!: missing signature verification
-                            [verifiedAssets addObject:url];
+                            // !!!: check newer version
+                            // !!!: verify signature
+                            // !!!: install bundle
                         }
                 }
             }
@@ -249,19 +247,12 @@ static NSMutableDictionary *classDictionary;
     {
         NSError *error = [errors firstObject];
         if (nil == error)
-        {
-            self._verifiedAssets = verifiedAssets;
-            [self _setState:OctoReleaseVerified persistent:YES];
-        }
+            [self _setState:OctoReleaseInstalled persistent:YES];
 
         completion(error);
 
         dispatch_release(group);
     });
-}
-
-- (void)installAssets:(void (^)(NSError *))completion
-{
 }
 
 - (NSString *)repository
@@ -315,11 +306,6 @@ static NSMutableDictionary *classDictionary;
 - (NSArray<NSURL *> *)extractedAssets
 {
     return self._extractedAssets;
-}
-
-- (NSArray<NSURL *> *)verifiedAssets
-{
-    return self._verifiedAssets;
 }
 
 - (OctoReleaseState)state

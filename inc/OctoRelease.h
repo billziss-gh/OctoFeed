@@ -18,9 +18,7 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
     OctoReleaseFetched                  = 'F',
     OctoReleaseDownloaded               = 'D',
     OctoReleaseExtracted                = 'X',
-    OctoReleaseVerified                 = 'V',
     OctoReleaseInstalled                = 'I',
-    OctoReleaseLaunched                 = 'L',
 };
 
 @interface OctoRelease : NSObject
@@ -32,7 +30,6 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
 - (void)fetch:(void (^)(NSError *))completion;
 - (void)downloadAssets:(void (^)(NSError *))completion;
 - (void)extractAssets:(void (^)(NSError *))completion;
-- (void)verifyAssets:(void (^)(NSError *))completion;
 - (void)installAssets:(void (^)(NSError *))completion;
 - (NSString *)repository;
 - (NSArray<NSBundle *> *)targetBundles;
@@ -44,6 +41,5 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
 - (NSArray<NSURL *> *)releaseAssets;
 - (NSArray<NSURL *> *)downloadedAssets;
 - (NSArray<NSURL *> *)extractedAssets;
-- (NSArray<NSURL *> *)verifiedAssets;
 - (OctoReleaseState)state;
 @end
