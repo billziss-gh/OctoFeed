@@ -280,6 +280,29 @@ static NSMutableDictionary *classDictionary;
     });
 }
 
+- (NSError *)clear
+{
+    if (0 != [self._releaseVersion length])
+    {
+        NSURL *cacheURL = [self cacheURL];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[cacheURL path]])
+        {
+            NSError *error = nil;
+            if (![[NSFileManager defaultManager] removeItemAtURL:cacheURL error:&error])
+                return error;
+        }
+    }
+
+    self._releaseVersion = nil;
+    self._prerelease = NO;
+    self._releaseAssets = nil;
+    self._downloadedAssets = nil;
+    self._extractedAssets = nil;
+    self._state = OctoReleaseEmpty;
+
+    return nil;
+}
+
 - (NSString *)repository
 {
     return self._repository;

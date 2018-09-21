@@ -99,9 +99,18 @@
     return release;
 }
 
+- (void)_clearRelease:(OctoRelease *)release
+{
+    NSError *error = [release clear];
+    XCTAssertNil(error);
+
+    XCTAssertEqual(OctoReleaseEmpty, release.state);
+}
+
 - (void)testGitHubRelease
 {
-    [self _githubRelease];
+    OctoRelease *release = [self _githubRelease];
+    [self _clearRelease:release];
 }
 
 - (void)testCachedRelease
@@ -140,6 +149,8 @@
     XCTAssertEqualObjects(githubRelease.releaseVersion, release.releaseVersion);
     XCTAssertEqual(githubRelease.prerelease, release.prerelease);
     XCTAssertEqualObjects(githubRelease.releaseAssets, release.releaseAssets);
+
+    [self _clearRelease:release];
 }
 
 - (void)testDownload
@@ -165,6 +176,8 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    [self _clearRelease:release];
 }
 
 - (void)testDownloadAndExtract
@@ -203,5 +216,7 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    [self _clearRelease:release];
 }
 @end

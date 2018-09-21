@@ -34,6 +34,7 @@ typedef void (^OctoReleaseCompletion)(
 - (void)downloadAssets:(OctoReleaseCompletion)completion;
 - (void)extractAssets:(OctoReleaseCompletion)completion;
 - (void)installAssets:(OctoReleaseCompletion)completion;
+- (NSError *)clear;
 - (NSString *)repository;
 - (NSArray<NSBundle *> *)targetBundles;
 - (NSURL *)cacheBaseURL;
