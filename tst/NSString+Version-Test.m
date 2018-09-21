@@ -11,7 +11,7 @@
  */
 
 #import <XCTest/XCTest.h>
-#import "NSString+Version.h"
+#import <OctoFeed/NSString+Version.h>
 
 @interface NSStringVersionTest : XCTestCase
 @end

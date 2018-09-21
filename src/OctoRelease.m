@@ -15,6 +15,7 @@
 static NSMutableDictionary *classDictionary;
 
 @interface OctoRelease ()
+@property (copy) NSString *repository;
 @property (copy) NSArray<NSBundle *> *targetBundles;
 @property (retain) NSURLSession *session;
 @property (copy) NSURL *cacheURL;
@@ -35,20 +36,23 @@ static NSMutableDictionary *classDictionary;
     [classDictionary setObject:[self class] forKey:service];
 }
 
-+ (OctoRelease *)releaseFromRepository:(NSString *)repository
++ (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session
 {
     NSString *service = [[repository pathComponents] firstObject];
     Class cls = [classDictionary objectForKey:service];
-    return [[[cls alloc] initWithTargetBundles:bundles session:session] autorelease];
+    return [[[cls alloc]
+        initWithRepository:repository targetBundles:bundles session:session] autorelease];
 }
 
-- (id)initWithTargetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session
+- (id)initWithRepository:(NSString *)repository
+    targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
 {
     self = [super init];
     if (nil == self)
         return nil;
 
+    self.repository = repository;
     self.targetBundles = bundles;
     self.session = session;
     self.cacheURL = [[[[[NSFileManager defaultManager]
@@ -71,7 +75,7 @@ static NSMutableDictionary *classDictionary;
     [super dealloc];
 }
 
-- (void)fetchFromRepository:(NSString *)repository completion:(void (^)(NSError *))completion
+- (void)fetch:(void (^)(NSError *))completion
 {
 }
 

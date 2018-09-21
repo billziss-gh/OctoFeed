@@ -13,7 +13,7 @@
 #import <OctoFeed/OctoRelease.h>
 
 @interface OctoGitHubRelease : OctoRelease
-- (void)fetchFromRepository:(NSString *)repository completion:(void (^)(NSError *))completion;
+- (void)fetch:(void (^)(NSError *))completion;
 @property (readonly) NSString *releaseVersion;
 @property (readonly) BOOL prerelease;
 @property (readonly) NSArray<NSURL *> *releaseAssets;

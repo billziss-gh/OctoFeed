@@ -35,9 +35,9 @@
     [super dealloc];
 }
 
-- (void)fetchFromRepository:(NSString *)repository completion:(void (^)(NSError *))completion
+- (void)fetch:(void (^)(NSError *))completion
 {
-    NSArray *parts = [repository componentsSeparatedByString:@"/"];
+    NSArray *parts = [self.repository componentsSeparatedByString:@"/"];
     if (3 != parts.count || ![[parts firstObject] isEqualToString:@"github.com"])
     {
         NSLog(@"OctoFeed: invalid repository; repositories must be of the form: %@",

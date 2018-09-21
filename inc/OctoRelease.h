@@ -25,14 +25,16 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
 
 @interface OctoRelease : NSObject
 + (void)registerClass:(NSString *)service;
-+ (OctoRelease *)releaseFromRepository:(NSString *)repository
++ (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
-- (id)initWithTargetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
-- (void)fetchFromRepository:(NSString *)repository completion:(void (^)(NSError *))completion;
+- (id)initWithRepository:(NSString *)repository
+    targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
+- (void)fetch:(void (^)(NSError *))completion;
 - (void)downloadAssets:(void (^)(NSError *))completion;
 - (void)extractAssets:(void (^)(NSError *))completion;
 - (void)verifyAssets:(void (^)(NSError *))completion;
 - (void)installAssets:(void (^)(NSError *))completion;
+- (NSString *)repository;
 - (NSArray<NSBundle *> *)targetBundles;
 - (NSURL *)cacheURL;
 - (NSURLSession *)session;

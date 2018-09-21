@@ -35,7 +35,7 @@
     [super dealloc];
 }
 
-- (void)fetchFromRepository:(NSString *)repository completion:(void (^)(NSError *))completion
+- (void)fetch:(void (^)(NSError *))completion
 {
     NSError *error = nil;
     NSArray<NSURL *> *urls = [[NSFileManager defaultManager]
