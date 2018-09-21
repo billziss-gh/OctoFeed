@@ -11,6 +11,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <OctoFeed/NSString+Version.h>
 #import <OctoFeed/OctoRelease.h>
 
 #if 0

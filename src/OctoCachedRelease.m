@@ -12,7 +12,7 @@
 
 #import "OctoCachedRelease.h"
 #import "NSObject+OctoExtensions.h"
-#import "NSString+OctoVersion.h"
+#import "NSString+Version.h"
 
 @interface OctoCachedRelease ()
 @property (copy) NSString *releaseVersion;
@@ -45,7 +45,7 @@
         error:&error];
     urls = [urls sortedArrayUsingComparator:^NSComparisonResult(id url1, id url2)
     {
-        return [[url1 lastPathComponent] octoVersionCompare:[url2 lastPathComponent]];
+        return [[url1 lastPathComponent] versionCompare:[url2 lastPathComponent]];
     }];
 
     NSURL *url = [urls lastObject];

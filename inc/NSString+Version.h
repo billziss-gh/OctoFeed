@@ -1,5 +1,5 @@
 /**
- * @file NSString+OctoVersion.h
+ * @file NSString+Version.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -12,7 +12,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (OctoVersion)
-- (BOOL)octoVersionValidate;
-- (NSComparisonResult)octoVersionCompare:(NSString *)other;
+@interface NSString (Version)
+- (BOOL)versionValidate;
+- (NSComparisonResult)versionCompare:(NSString *)other;
 @end

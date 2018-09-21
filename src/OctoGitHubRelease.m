@@ -12,7 +12,7 @@
 
 #import "OctoGitHubRelease.h"
 #import "NSObject+OctoExtensions.h"
-#import "NSString+OctoVersion.h"
+#import "NSString+Version.h"
 
 @interface OctoGitHubRelease ()
 @property (copy) NSString *releaseVersion;
@@ -100,7 +100,7 @@
 
             if ([tag hasPrefix:@"v"])
                 tag = [tag substringFromIndex:1];
-            if (![tag octoVersionValidate])
+            if (![tag versionValidate])
             {
                 NSLog(@"OctoFeed: JSON error: %@", @"invalid \"tag_name\"; not a proper semver");
                 goto corrupt_fail;

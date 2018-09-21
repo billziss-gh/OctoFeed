@@ -1,5 +1,5 @@
 /**
- * @file NSString+OctoVersion.m
+ * @file NSString+Version.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -10,10 +10,10 @@
  * in the License.txt file at the root of this project.
  */
 
-#import "NSString+OctoVersion.h"
+#import "NSString+Version.h"
 
-@implementation NSString (OctoVersion)
-- (BOOL)octoVersionValidate
+@implementation NSString (Version)
+- (BOOL)versionValidate
 {
     BOOL valid = YES;
 
@@ -26,7 +26,7 @@
     return valid;
 }
 
-- (NSComparisonResult)octoVersionCompare:(NSString *)other
+- (NSComparisonResult)versionCompare:(NSString *)other
 {
     BOOL valid;
 
