@@ -22,8 +22,8 @@
     toURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion
 {
-    OctoExtractor *unarchiver = [[[[self class] alloc] initWithURL:src] autorelease];
-    [unarchiver extractToURL:dst completion:completion];
+    OctoExtractor *extractor = [[[[self class] alloc] initWithURL:src] autorelease];
+    [extractor extractToURL:dst completion:completion];
 }
 
 - (id)initWithURL:(NSURL *)url

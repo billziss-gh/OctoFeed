@@ -19,7 +19,7 @@ static const NSString *sig = @"83e6184da5ce2eb8c4e710b383f149c6";
 @end
 
 @implementation OctoExtractorTest
-- (void)_testUnarchive:(NSString *)name
+- (void)_testExtract:(NSString *)name
 {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSString *path = [bundle pathForResource:name ofType:nil];
@@ -29,7 +29,7 @@ static const NSString *sig = @"83e6184da5ce2eb8c4e710b383f149c6";
     [[NSFileManager defaultManager]
         createDirectoryAtPath:tmpdir withIntermediateDirectories:YES attributes:nil error:0];
 
-    XCTestExpectation *exp = [self expectationWithDescription:@"unarchiveURL:toURL:completion:"];
+    XCTestExpectation *exp = [self expectationWithDescription:@"extractURL:toURL:completion:"];
 
     [OctoExtractor
         extractURL:[NSURL fileURLWithPath:nil != path ?
@@ -59,26 +59,26 @@ static const NSString *sig = @"83e6184da5ce2eb8c4e710b383f149c6";
     [[NSFileManager defaultManager] removeItemAtPath:tmpdir error:0];
 }
 
-- (void)testUnarchiveUnknown
+- (void)testExtractUnknown
 {
-    [self _testUnarchive:@"test.unknownext"];
+    [self _testExtract:@"test.unknownext"];
 }
 
-- (void)testUnarchiveZip
+- (void)testExtractZip
 {
-    [self _testUnarchive:@"test.zip"];
-    [self _testUnarchive:@"test-nonexistent.zip"];
+    [self _testExtract:@"test.zip"];
+    [self _testExtract:@"test-nonexistent.zip"];
 }
 
-- (void)testUnarchiveTarGz
+- (void)testExtractTarGz
 {
-    [self _testUnarchive:@"test.tar.gz"];
-    [self _testUnarchive:@"test-nonexistent.tar.gz"];
+    [self _testExtract:@"test.tar.gz"];
+    [self _testExtract:@"test-nonexistent.tar.gz"];
 }
 
-- (void)testUnarchiveTarBz2
+- (void)testExtractTarBz2
 {
-    [self _testUnarchive:@"test.tar.bz2"];
-    [self _testUnarchive:@"test-nonexistent.tar.bz2"];
+    [self _testExtract:@"test.tar.bz2"];
+    [self _testExtract:@"test-nonexistent.tar.bz2"];
 }
 @end
