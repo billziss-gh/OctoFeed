@@ -66,7 +66,7 @@
     }
     else
     {
-        [self unarchiveToURLErrorCompletion:completion];
+        [self extractToURLErrorCompletion:completion];
         return;
     }
 
@@ -94,11 +94,11 @@
     }
     @catch (NSException *ex)
     {
-        [self unarchiveToURLErrorCompletion:completion];
+        [self extractToURLErrorCompletion:completion];
     }
 }
 
-- (void)unarchiveToURLErrorCompletion:(void (^)(NSError *))completion
+- (void)extractToURLErrorCompletion:(void (^)(NSError *))completion
 {
     [self octoPerformBlock:^
     {
