@@ -20,7 +20,6 @@
 @interface OctoFeed : NSObject
 + (OctoFeed *)mainBundleFeed;
 - (id)initWithBundle:(NSBundle *)bundle;
-- (BOOL)relaunch:(NSArray<NSURL *> *)urls;
 - (BOOL)activate;
 - (void)deactivate;
 @property (copy) NSString *repository;

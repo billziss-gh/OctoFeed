@@ -62,11 +62,6 @@
     [super dealloc];
 }
 
-- (BOOL)relaunch:(NSArray<NSURL *> *)urls
-{
-    return NO;
-}
-
 - (BOOL)activate
 {
     if (nil != self.timer)
