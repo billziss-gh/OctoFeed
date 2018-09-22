@@ -13,7 +13,9 @@
 #import <Foundation/Foundation.h>
 #import <OctoFeed/NSString+Version.h>
 #import <OctoFeed/NSTask+Relaunch.h>
+#import <OctoFeed/OctoExtractor.h>
 #import <OctoFeed/OctoRelease.h>
+#import <OctoFeed/OctoVerifier.h>
 
 @interface OctoFeed : NSObject
 + (OctoFeed *)mainBundleFeed;

@@ -12,7 +12,6 @@
 
 #import "OctoRelease.h"
 #import "NSString+Version.h"
-#import "OctoRelease+Extensions.h"
 #import "OctoExtractor.h"
 #import "OctoVerifier.h"
 

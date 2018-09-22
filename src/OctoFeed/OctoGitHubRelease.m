@@ -13,7 +13,6 @@
 #import "OctoGitHubRelease.h"
 #import "NSObject+OctoExtensions.h"
 #import "NSString+Version.h"
-#import "OctoRelease+Extensions.h"
 
 @implementation OctoGitHubRelease
 + (void)load

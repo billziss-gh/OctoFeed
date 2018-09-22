@@ -48,3 +48,13 @@ typedef void (^OctoReleaseCompletion)(
 - (NSArray<NSURL *> *)extractedAssets;
 - (OctoReleaseState)state;
 @end
+
+@interface OctoRelease (Extensions)
+@property (copy) NSString *_releaseVersion;
+@property (assign) BOOL _prerelease;
+@property (copy) NSArray<NSURL *> *_releaseAssets;
+@property (copy) NSArray<NSURL *> *_downloadedAssets;
+@property (copy) NSArray<NSURL *> *_extractedAssets;
+@property (assign) OctoReleaseState _state;
+- (void)_setState:(OctoReleaseState)state persistent:(BOOL)persistent;
+@end
