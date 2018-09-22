@@ -13,7 +13,6 @@
 #import "OctoFeed.h"
 
 @interface OctoFeed ()
-@property (retain) NSURLSession *session;
 @property (retain) NSTimer *timer;
 @end
 
@@ -36,10 +35,15 @@
 
     if (nil != bundle)
     {
-        self.repository = [bundle objectForInfoDictionaryKey:OctoFeedRepositoryKey];
-        self.checkPeriod = [[bundle objectForInfoDictionaryKey:OctoFeedCheckPeriodKey] doubleValue];
+        self.repository = [bundle objectForInfoDictionaryKey:OctoRepositoryKey];
+        self.checkPeriod = [[bundle objectForInfoDictionaryKey:OctoCheckPeriodKey] doubleValue];
         self.targetBundles = [NSArray arrayWithObject:bundle];
     }
+
+    self.session = [NSURLSession
+        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+        delegate:nil
+        delegateQueue:[NSOperationQueue mainQueue]];
 
     return self;
 }
@@ -47,6 +51,9 @@
 - (void)dealloc
 {
     [self deactivate];
+    [self.session invalidateAndCancel];
+
+    self.session = nil;
 
     self.repository = nil;
     self.checkPeriod = 0;
@@ -55,16 +62,18 @@
     [super dealloc];
 }
 
+- (BOOL)relaunch:(NSArray<NSURL *> *)urls
+{
+    return NO;
+}
+
 - (BOOL)activate
 {
-    if (nil != self.session)
+    if (nil != self.timer)
         return YES;
 
-    /* create our URL session */
-    self.session = [NSURLSession
-        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-        delegate:nil
-        delegateQueue:[NSOperationQueue mainQueue]];
+    if (0 == [self.repository length])
+        return NO;
 
     /* schedule a timer that fires every hour */
     self.timer = [NSTimer
@@ -82,10 +91,7 @@
 
 - (void)deactivate
 {
-    [self.session invalidateAndCancel];
     [self.timer invalidate];
-
-    self.session = nil;
     self.timer = nil;
 }
 
@@ -98,7 +104,7 @@
     /* compute check time */
     NSDate *now = [NSDate date];
     NSDate *checkTime = [[NSUserDefaults standardUserDefaults]
-        objectForKey:OctoFeedLastCheckTimeKey];
+        objectForKey:OctoLastCheckTimeKey];
     if (nil != checkTime)
         checkTime = [checkTime dateByAddingTimeInterval:checkPeriod];
     else
@@ -120,18 +126,18 @@
         /* remember last check time */
         [[NSUserDefaults standardUserDefaults]
             setObject:[NSDate date]
-            forKey:OctoFeedLastCheckTimeKey];
+            forKey:OctoLastCheckTimeKey];
 
         /* tell everyone who cares */
         [[NSNotificationCenter defaultCenter]
-            postNotificationName:OctoFeedNotification
+            postNotificationName:OctoNotification
             object:self];
     }];
 }
 @end
 
-NSString *OctoFeedNotification = @"OctoFeedNotification";
+NSString *OctoNotification = @"OctoNotification";
 
-NSString *OctoFeedRepositoryKey = @"OctoFeedRepository";
-NSString *OctoFeedCheckPeriodKey = @"OctoFeedCheckPeriod";
-NSString *OctoFeedLastCheckTimeKey = @"OctoFeedLastCheckTime";
+NSString *OctoRepositoryKey = @"OctoRepository";
+NSString *OctoCheckPeriodKey = @"OctoCheckPeriod";
+NSString *OctoLastCheckTimeKey = @"OctoLastCheckTime";

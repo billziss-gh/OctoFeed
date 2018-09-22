@@ -29,6 +29,11 @@
 		3C4BCD5F215590F700585C3C /* test.tar.gz in Resources */ = {isa = PBXBuildFile; fileRef = 3C4BCD58215590F700585C3C /* test.tar.gz */; };
 		3C4BCD60215590F700585C3C /* NSString+Version-Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4BCD59215590F700585C3C /* NSString+Version-Test.m */; };
 		3C4BCD61215590F700585C3C /* OctoUnarchiver-Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4BCD5A215590F700585C3C /* OctoUnarchiver-Test.m */; };
+		3CAFD9C52155B24200BD9DAC /* OctoFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C73E23D2152E1740053CC38 /* OctoFeed.framework */; };
+		3CAFD9C62155B24200BD9DAC /* OctoFeed.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3C73E23D2152E1740053CC38 /* OctoFeed.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3CFB51D02155B0E1009F8EB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFB51C92155B0E1009F8EB9 /* main.m */; };
+		3CFB51D12155B0E1009F8EB9 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFB51CC2155B0E1009F8EB9 /* AppController.m */; };
+		3CFB51D62155B133009F8EB9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CFB51D52155B133009F8EB9 /* MainMenu.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +44,28 @@
 			remoteGlobalIDString = 3C73E23C2152E1740053CC38;
 			remoteInfo = OctoFeed;
 		};
+		3CAFD9C72155B24200BD9DAC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3C73E2342152E1740053CC38 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3C73E23C2152E1740053CC38;
+			remoteInfo = OctoFeed;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3CAFD9C92155B24200BD9DAC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3CAFD9C62155B24200BD9DAC /* OctoFeed.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3C39AFC221540CD400604505 /* OctoFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OctoFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +93,12 @@
 		3C4BCD59215590F700585C3C /* NSString+Version-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Version-Test.m"; sourceTree = "<group>"; };
 		3C4BCD5A215590F700585C3C /* OctoUnarchiver-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OctoUnarchiver-Test.m"; sourceTree = "<group>"; };
 		3C73E23D2152E1740053CC38 /* OctoFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OctoFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CFB51B72155B0A9009F8EB9 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CFB51C92155B0E1009F8EB9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3CFB51CA2155B0E1009F8EB9 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
+		3CFB51CC2155B0E1009F8EB9 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
+		3CFB51CD2155B0E1009F8EB9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3CFB51D52155B133009F8EB9 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +117,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3CFB51B42155B0A9009F8EB9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CAFD9C52155B24200BD9DAC /* OctoFeed.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -92,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				3C4BCD332155909000585C3C /* OctoFeedTests */,
+				3CFB51C82155B0C6009F8EB9 /* TestApp */,
 			);
 			name = Test;
 			path = ../../tst;
@@ -148,6 +189,7 @@
 				3C73E24C2152E31F0053CC38 /* Source */,
 				3C39AFCD21540D3900604505 /* Test */,
 				3C73E23E2152E1740053CC38 /* Products */,
+				3CAFD9BE2155B22E00BD9DAC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -156,6 +198,7 @@
 			children = (
 				3C73E23D2152E1740053CC38 /* OctoFeed.framework */,
 				3C39AFC221540CD400604505 /* OctoFeedTests.xctest */,
+				3CFB51B72155B0A9009F8EB9 /* TestApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -177,6 +220,25 @@
 			name = Source;
 			path = ../../src;
 			sourceTree = SOURCE_ROOT;
+		};
+		3CAFD9BE2155B22E00BD9DAC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3CFB51C82155B0C6009F8EB9 /* TestApp */ = {
+			isa = PBXGroup;
+			children = (
+				3CFB51CA2155B0E1009F8EB9 /* AppController.h */,
+				3CFB51CC2155B0E1009F8EB9 /* AppController.m */,
+				3CFB51C92155B0E1009F8EB9 /* main.m */,
+				3CFB51CD2155B0E1009F8EB9 /* Info.plist */,
+				3CFB51D52155B133009F8EB9 /* MainMenu.xib */,
+			);
+			path = TestApp;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -236,6 +298,25 @@
 			productReference = 3C73E23D2152E1740053CC38 /* OctoFeed.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		3CFB51B62155B0A9009F8EB9 /* TestApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CFB51C72155B0A9009F8EB9 /* Build configuration list for PBXNativeTarget "TestApp" */;
+			buildPhases = (
+				3CFB51B32155B0A9009F8EB9 /* Sources */,
+				3CFB51B42155B0A9009F8EB9 /* Frameworks */,
+				3CFB51B52155B0A9009F8EB9 /* Resources */,
+				3CAFD9C92155B24200BD9DAC /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CAFD9C82155B24200BD9DAC /* PBXTargetDependency */,
+			);
+			name = TestApp;
+			productName = TestApp;
+			productReference = 3CFB51B72155B0A9009F8EB9 /* TestApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -251,6 +332,9 @@
 					3C73E23C2152E1740053CC38 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
+					3CFB51B62155B0A9009F8EB9 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
 				};
 			};
 			buildConfigurationList = 3C73E2372152E1740053CC38 /* Build configuration list for PBXProject "OctoFeed" */;
@@ -259,6 +343,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 3C73E2332152E1740053CC38;
 			productRefGroup = 3C73E23E2152E1740053CC38 /* Products */;
@@ -267,6 +352,7 @@
 			targets = (
 				3C73E23C2152E1740053CC38 /* OctoFeed */,
 				3C39AFC121540CD400604505 /* OctoFeedTests */,
+				3CFB51B62155B0A9009F8EB9 /* TestApp */,
 			);
 		};
 /* End PBXProject section */
@@ -286,6 +372,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CFB51B52155B0A9009F8EB9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CFB51D62155B133009F8EB9 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +428,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3CFB51B32155B0A9009F8EB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CFB51D12155B0E1009F8EB9 /* AppController.m in Sources */,
+				3CFB51D02155B0E1009F8EB9 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -341,6 +444,11 @@
 			isa = PBXTargetDependency;
 			target = 3C73E23C2152E1740053CC38 /* OctoFeed */;
 			targetProxy = 3C39AFC821540CD400604505 /* PBXContainerItemProxy */;
+		};
+		3CAFD9C82155B24200BD9DAC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3C73E23C2152E1740053CC38 /* OctoFeed */;
+			targetProxy = 3CAFD9C72155B24200BD9DAC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -546,6 +654,40 @@
 			};
 			name = Release;
 		};
+		3CFB51C52155B0A9009F8EB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ../../tst/TestApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = billziss.TestApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3CFB51C62155B0A9009F8EB9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ../../tst/TestApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = billziss.TestApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -572,6 +714,15 @@
 			buildConfigurations = (
 				3C73E2462152E1740053CC38 /* Debug */,
 				3C73E2472152E1740053CC38 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CFB51C72155B0A9009F8EB9 /* Build configuration list for PBXNativeTarget "TestApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CFB51C52155B0A9009F8EB9 /* Debug */,
+				3CFB51C62155B0A9009F8EB9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

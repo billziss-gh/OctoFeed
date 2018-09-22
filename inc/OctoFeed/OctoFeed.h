@@ -17,15 +17,17 @@
 @interface OctoFeed : NSObject
 + (OctoFeed *)mainBundleFeed;
 - (id)initWithBundle:(NSBundle *)bundle;
+- (BOOL)relaunch:(NSArray<NSURL *> *)urls;
 - (BOOL)activate;
 - (void)deactivate;
 @property (copy) NSString *repository;
 @property (assign) NSTimeInterval checkPeriod;
 @property (copy) NSArray<NSBundle *> *targetBundles;
+@property (retain) NSURLSession *session;
 @end
 
-extern NSString *OctoFeedNotification;
+extern NSString *OctoNotification;
 
-extern NSString *OctoFeedRepositoryKey;
-extern NSString *OctoFeedCheckPeriodKey;
-extern NSString *OctoFeedLastCheckTimeKey;
+extern NSString *OctoRepositoryKey;
+extern NSString *OctoCheckPeriodKey;
+extern NSString *OctoLastCheckTimeKey;
