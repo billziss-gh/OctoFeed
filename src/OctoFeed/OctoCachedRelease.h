@@ -14,4 +14,5 @@
 
 @interface OctoCachedRelease : OctoRelease
 - (void)fetch:(void (^)(NSError *))completion;
+- (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp;
 @end

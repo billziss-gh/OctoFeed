@@ -21,6 +21,7 @@
 + (OctoFeed *)mainBundleFeed;
 - (id)initWithBundle:(NSBundle *)bundle;
 - (OctoRelease *)cachedRelease;
+- (OctoRelease *)cachedReleaseFetchSynchronously;
 - (OctoRelease *)latestRelease;
 - (BOOL)activate;
 - (void)deactivate;

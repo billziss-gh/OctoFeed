@@ -70,6 +70,13 @@
         session:self.session];
 }
 
+- (OctoRelease *)cachedReleaseFetchSynchronously
+{
+    OctoRelease *release = [self cachedRelease];
+    NSError *error = nil;
+    return [release fetchSynchronouslyIfAble:&error] && nil == error ? release : nil;
+}
+
 - (OctoRelease *)latestRelease
 {
     return [OctoRelease

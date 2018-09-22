@@ -33,6 +33,7 @@ typedef void (^OctoReleaseCompletion)(
 - (id)initWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
 - (void)fetch:(void (^)(NSError *))completion;
+- (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp;
 - (void)downloadAssets:(OctoReleaseCompletion)completion;
 - (void)extractAssets:(OctoReleaseCompletion)completion;
 - (void)installAssets:(OctoReleaseCompletion)completion;

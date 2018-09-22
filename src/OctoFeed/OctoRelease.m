@@ -99,6 +99,11 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 {
 }
 
+- (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp
+{
+    return NO;
+}
+
 - (void)downloadAssets:(OctoReleaseCompletion)completion
 {
     dispatch_group_t group = dispatch_group_create();

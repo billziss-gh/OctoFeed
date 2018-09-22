@@ -23,6 +23,18 @@
 - (void)fetch:(void (^)(NSError *))completion
 {
     NSError *error = nil;
+
+    [self fetchSynchronouslyIfAble:&error];
+
+    [self octoPerformBlock:^
+    {
+        completion(error);
+    } afterDelay:0];
+}
+
+- (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp
+{
+    NSError *error = nil;
     NSArray<NSURL *> *urls = [[NSFileManager defaultManager]
         contentsOfDirectoryAtURL:self.cacheBaseURL
         includingPropertiesForKeys:nil
@@ -114,9 +126,9 @@
         }
     }
 
-    [self octoPerformBlock:^
-    {
-        completion(error);
-    } afterDelay:0];
+    if (0 != errorp)
+        *errorp = error;
+
+    return YES;
 }
 @end

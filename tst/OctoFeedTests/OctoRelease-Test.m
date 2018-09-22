@@ -77,6 +77,9 @@
         targetBundles:bundles
         session:session];
 
+    BOOL res = [release fetchSynchronouslyIfAble:0];
+    XCTAssertFalse(res);
+
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
     [release fetch:^(NSError *error)
@@ -214,6 +217,41 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
+    XCTAssertEqual(release.prerelease, cachedRelease.prerelease);
+    XCTAssertEqualObjects(release.releaseAssets, cachedRelease.releaseAssets);
+    XCTAssertEqual(release.state, cachedRelease.state);
+
+    [self _clearRelease:cachedRelease];
+}
+
+- (void)testCachedFetchSynchronously
+{
+    OctoRelease *release = [self _githubRelease];
+
+    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
+    NSURLSession *session = [NSURLSession
+        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+        delegate:nil
+        delegateQueue:[NSOperationQueue mainQueue]];
+    OctoRelease *cachedRelease = [OctoRelease
+        releaseWithRepository:nil
+        targetBundles:bundles
+        session:session];
+
+    NSError *error = nil;
+    BOOL res = [cachedRelease fetchSynchronouslyIfAble:&error];
+    XCTAssertTrue(res);
+    XCTAssertNil(error);
+
+    XCTAssertNotNil(cachedRelease.releaseVersion);
+    XCTAssertNotNil(cachedRelease.releaseAssets);
+
+    NSLog(@"%@%@%@",
+        cachedRelease.releaseVersion,
+        cachedRelease.prerelease ? @" pre " : @" ",
+        cachedRelease.releaseAssets);
 
     XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
     XCTAssertEqual(release.prerelease, cachedRelease.prerelease);

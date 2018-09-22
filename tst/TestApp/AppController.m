@@ -23,26 +23,19 @@
 {
     self.label.stringValue = [NSString stringWithFormat:@"PID %d", (int)getpid()];
 
-#if 0
-    OctoFeed *feed = [OctoFeed mainBundleFeed];
-    OctoRelease *release = [OctoRelease
-        releaseWithRepository:nil
-        targetBundles:feed.targetBundles
-        session:feed.session];
-    if (OctoReleaseExtracted == release.state)
-    {
+    OctoRelease *release = [[OctoFeed mainBundleFeed] cachedReleaseFetchSynchronously];
+    if (OctoReleaseReadyToInstall == release.state)
         [release installAssets:^(
             NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
         {
             if (0 < assets.count)
+                /* +[NSTask relaunch] does not return! */
                 [NSTask relaunchWithURL:[[assets allValues] firstObject]];
-            else
-                [feed activate];
+
+            [[OctoFeed mainBundleFeed] activate];
         }];
-    }
     else
-        [feed activate];
-#endif
+        [[OctoFeed mainBundleFeed] activate];
 }
 
 - (IBAction)relaunchAction:(id)sender
