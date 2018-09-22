@@ -21,6 +21,8 @@
 @implementation AppController
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    self.label.stringValue = [NSString stringWithFormat:@"PID %d", (int)getpid()];
+#if 0
     OctoFeed *feed = [OctoFeed mainBundleFeed];
     OctoRelease *release = [OctoRelease
         releaseWithRepository:nil
@@ -49,5 +51,11 @@
         self.label.stringValue = @"Running";
         [feed activate];
     }
+#endif
+}
+
+- (IBAction)relaunchAction:(id)sender
+{
+    [NSTask relaunch];
 }
 @end

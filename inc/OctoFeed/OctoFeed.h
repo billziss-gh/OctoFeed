@@ -12,6 +12,7 @@
 
 #import <Foundation/Foundation.h>
 #import <OctoFeed/NSString+Version.h>
+#import <OctoFeed/NSTask+Relaunch.h>
 #import <OctoFeed/OctoRelease.h>
 
 @interface OctoFeed : NSObject
