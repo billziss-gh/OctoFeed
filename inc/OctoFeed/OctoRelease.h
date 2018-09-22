@@ -18,6 +18,7 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
     OctoReleaseFetched                  = 'F',
     OctoReleaseDownloaded               = 'D',
     OctoReleaseExtracted                = 'X',
+    OctoReleaseReadyToInstall           = OctoReleaseExtracted,
     OctoReleaseInstalled                = 'I',
 };
 

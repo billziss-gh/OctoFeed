@@ -20,6 +20,8 @@
 @interface OctoFeed : NSObject
 + (OctoFeed *)mainBundleFeed;
 - (id)initWithBundle:(NSBundle *)bundle;
+- (OctoRelease *)cachedRelease;
+- (OctoRelease *)latestRelease;
 - (BOOL)activate;
 - (void)deactivate;
 @property (copy) NSString *repository;
@@ -29,6 +31,7 @@
 @end
 
 extern NSString *OctoNotification;
+extern NSString *OctoNotificationReleaseKey;
 
 extern NSString *OctoRepositoryKey;
 extern NSString *OctoCheckPeriodKey;

@@ -62,6 +62,22 @@
     [super dealloc];
 }
 
+- (OctoRelease *)cachedRelease
+{
+    return [OctoRelease
+        releaseWithRepository:nil
+        targetBundles:self.targetBundles
+        session:self.session];
+}
+
+- (OctoRelease *)latestRelease
+{
+    return [OctoRelease
+        releaseWithRepository:self.repository
+        targetBundles:self.targetBundles
+        session:self.session];
+}
+
 - (BOOL)activate
 {
     if (nil != self.timer)
@@ -109,10 +125,7 @@
     if (NSOrderedAscending == [now compare:checkTime])
         return;
 
-    OctoRelease *release = [OctoRelease
-        releaseWithRepository:self.repository
-        targetBundles:self.targetBundles
-        session:self.session];
+    OctoRelease *release = [self latestRelease];
     [release fetch:^(NSError *error)
     {
         if (nil != error)
@@ -126,12 +139,16 @@
         /* tell everyone who cares */
         [[NSNotificationCenter defaultCenter]
             postNotificationName:OctoNotification
-            object:self];
+            object:self
+            userInfo:[NSDictionary
+                dictionaryWithObject:release
+                forKey:OctoNotificationReleaseKey]];
     }];
 }
 @end
 
 NSString *OctoNotification = @"OctoNotification";
+NSString *OctoNotificationReleaseKey = @"OctoNotificationRelease";
 
 NSString *OctoRepositoryKey = @"OctoRepository";
 NSString *OctoCheckPeriodKey = @"OctoCheckPeriod";
