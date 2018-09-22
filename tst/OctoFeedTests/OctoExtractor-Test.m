@@ -1,5 +1,5 @@
 /**
- * @file OctoUnarchiver-Test.m
+ * @file OctoExtractor-Test.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -11,14 +11,14 @@
  */
 
 #import <XCTest/XCTest.h>
-#import "OctoUnarchiver.h"
+#import "OctoExtractor.h"
 
 static const NSString *sig = @"83e6184da5ce2eb8c4e710b383f149c6";
 
-@interface OctoUnarchiverTest : XCTestCase
+@interface OctoExtractorTest : XCTestCase
 @end
 
-@implementation OctoUnarchiverTest
+@implementation OctoExtractorTest
 - (void)_testUnarchive:(NSString *)name
 {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
@@ -31,8 +31,8 @@ static const NSString *sig = @"83e6184da5ce2eb8c4e710b383f149c6";
 
     XCTestExpectation *exp = [self expectationWithDescription:@"unarchiveURL:toURL:completion:"];
 
-    [OctoUnarchiver
-        unarchiveURL:[NSURL fileURLWithPath:nil != path ?
+    [OctoExtractor
+        extractURL:[NSURL fileURLWithPath:nil != path ?
             path : [bundle.bundlePath stringByAppendingPathComponent:name]]
         toURL:[NSURL fileURLWithPath:tmpdir]
         completion:^(NSError *error)

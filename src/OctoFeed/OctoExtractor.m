@@ -1,5 +1,5 @@
 /**
- * @file OctoUnarchiver.m
+ * @file OctoExtractor.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -10,20 +10,20 @@
  * in the License.txt file at the root of this project.
  */
 
-#import "OctoUnarchiver.h"
+#import "OctoExtractor.h"
 #import "NSObject+OctoExtensions.h"
 
-@interface OctoUnarchiver ()
+@interface OctoExtractor ()
 @property (copy) NSURL *url;
 @end
 
-@implementation OctoUnarchiver
-+ (void)unarchiveURL:(NSURL *)src
+@implementation OctoExtractor
++ (void)extractURL:(NSURL *)src
     toURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion
 {
-    OctoUnarchiver *unarchiver = [[[[self class] alloc] initWithURL:src] autorelease];
-    [unarchiver unarchiveToURL:dst completion:completion];
+    OctoExtractor *unarchiver = [[[[self class] alloc] initWithURL:src] autorelease];
+    [unarchiver extractToURL:dst completion:completion];
 }
 
 - (id)initWithURL:(NSURL *)url
@@ -44,7 +44,7 @@
     [super dealloc];
 }
 
-- (void)unarchiveToURL:(NSURL *)dst
+- (void)extractToURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion
 {
     NSString *lastPathComponent = [self.url lastPathComponent];

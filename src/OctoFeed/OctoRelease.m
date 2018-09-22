@@ -13,7 +13,7 @@
 #import "OctoRelease.h"
 #import "NSString+Version.h"
 #import "OctoRelease+Extensions.h"
-#import "OctoUnarchiver.h"
+#import "OctoExtractor.h"
 
 static NSMutableDictionary *classDictionary;
 
@@ -215,7 +215,7 @@ static NSMutableDictionary *classDictionary;
         {
             dispatch_group_enter(group);
 
-            [OctoUnarchiver unarchiveURL:downloadedAsset toURL:extractedAsset completion:^(NSError *error)
+            [OctoExtractor extractURL:downloadedAsset toURL:extractedAsset completion:^(NSError *error)
             {
                 if (nil == error)
                     [extractedAssets setObject:extractedAsset forKey:downloadedAsset];

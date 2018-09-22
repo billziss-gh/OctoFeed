@@ -1,5 +1,5 @@
 /**
- * @file OctoUnarchiver.h
+ * @file OctoExtractor.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -12,11 +12,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface OctoUnarchiver : NSObject
-+ (void)unarchiveURL:(NSURL *)src
+@interface OctoExtractor : NSObject
++ (void)extractURL:(NSURL *)src
     toURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion;
 - (id)initWithURL:(NSURL *)url;
-- (void)unarchiveToURL:(NSURL *)dst
+- (void)extractToURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion;
 @end
