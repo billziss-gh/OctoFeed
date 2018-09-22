@@ -15,9 +15,23 @@
 @implementation NSTask (Relaunch)
 + (void)relaunch
 {
-    const char *path = [[[NSBundle mainBundle] bundlePath]
-        cStringUsingEncoding:NSUTF8StringEncoding];
+    [self relaunchWithPath:[[NSBundle mainBundle] bundlePath]];
+}
 
++ (void)relaunchWithPath:(NSString *)path
+{
+    const char *cpath = [path cStringUsingEncoding:NSUTF8StringEncoding];
+    [self relaunchWithCPath:cpath];
+}
+
++ (void)relaunchWithURL:(NSURL *)url
+{
+    const char *cpath = [url.path cStringUsingEncoding:NSUTF8StringEncoding];
+    [self relaunchWithCPath:cpath];
+}
+
++ (void)relaunchWithCPath:(const char *)path
+{
     pid_t ppid = getpid();
     pid_t pid = fork();
     if (0 != pid)

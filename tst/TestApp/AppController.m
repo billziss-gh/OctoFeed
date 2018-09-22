@@ -22,6 +22,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     self.label.stringValue = [NSString stringWithFormat:@"PID %d", (int)getpid()];
+
 #if 0
     OctoFeed *feed = [OctoFeed mainBundleFeed];
     OctoRelease *release = [OctoRelease
@@ -30,27 +31,17 @@
         session:feed.session];
     if (OctoReleaseExtracted == release.state)
     {
-        self.label.stringValue = @"Installing";
         [release installAssets:^(
             NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
         {
-            if (0 == errors.count)
-            {
-                self.label.stringValue = @"Relaunching";
-                [feed relaunch:[assets allValues]];
-            }
+            if (0 < assets.count)
+                [NSTask relaunchWithURL:[[assets allValues] firstObject]];
             else
-            {
-                self.label.stringValue = @"Running";
                 [feed activate];
-            }
         }];
     }
     else
-    {
-        self.label.stringValue = @"Running";
         [feed activate];
-    }
 #endif
 }
 

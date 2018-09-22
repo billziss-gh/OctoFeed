@@ -126,11 +126,35 @@ static NSMutableDictionary *classDictionary;
                         URLByAppendingPathComponent:@"downloadedAssets"];
                     NSURL *downloadedAsset = [downloadedAssetDir
                         URLByAppendingPathComponent:[releaseAsset lastPathComponent]];
+                    NSURL *replaceDirURL = nil;
                     BOOL res = [[NSFileManager defaultManager]
                         createDirectoryAtURL:downloadedAssetDir
                         withIntermediateDirectories:YES
                         attributes:0
                         error:&error];
+                    id ident[2];
+                    if (res &&
+                        [url getResourceValue:&ident[0] forKey:NSURLVolumeIdentifierKey error:0] &&
+                        [downloadedAssetDir
+                            getResourceValue:&ident[1] forKey:NSURLVolumeIdentifierKey error:0] &&
+                        ![ident[0] isEqual:ident[1]])
+                    {
+                            replaceDirURL = [[NSFileManager defaultManager]
+                                URLForDirectory:NSItemReplacementDirectory
+                                inDomain:NSUserDomainMask
+                                appropriateForURL:url
+                                create:YES
+                                error:&error];
+                            NSURL *replaceFileURL = [replaceDirURL
+                                URLByAppendingPathComponent:[url lastPathComponent]];
+                            res = res && nil != replaceFileURL;
+                            res = res && [[NSFileManager defaultManager]
+                                moveItemAtURL:url
+                                toURL:replaceFileURL
+                                error:&error];
+                            if (res)
+                                url = replaceFileURL;
+                    }
                     res = res && [[NSFileManager defaultManager]
                         replaceItemAtURL:downloadedAsset
                         withItemAtURL:url
@@ -138,6 +162,9 @@ static NSMutableDictionary *classDictionary;
                         options:0
                         resultingItemURL:0
                         error:&error];
+                    if (nil != replaceDirURL)
+                        [[NSFileManager defaultManager]
+                            removeItemAtURL:replaceDirURL error:0];
                     if (res)
                         [downloadedAssets setObject:downloadedAsset forKey:releaseAsset];
                 }
@@ -243,7 +270,8 @@ static NSMutableDictionary *classDictionary;
                 {
                     NSBundle *bundle = [NSBundle bundleWithURL:url];
                     NSString *bundleIdentifier = [bundle bundleIdentifier];
-                    if (nil == bundleIdentifier)
+                    NSURL *bundleURL = bundle.bundleURL;
+                    if (nil == bundleIdentifier || nil == bundleURL)
                         continue;
 
                     for (NSBundle *targetBundle in self._targetBundles)
@@ -256,9 +284,52 @@ static NSMutableDictionary *classDictionary;
                             if (nil == version ||
                                 NSOrderedAscending != [targetVersion versionCompare:version])
                                 continue;
+                            NSURL *targetBundleURL = targetBundle.bundleURL;
+                            if (nil == targetBundleURL)
+                                continue;
 
                             // !!!: verify signature
-                            // !!!: install bundle
+
+                            NSURL *replaceDirURL = [[NSFileManager defaultManager]
+                                URLForDirectory:NSItemReplacementDirectory
+                                inDomain:NSUserDomainMask
+                                appropriateForURL:targetBundleURL
+                                create:YES
+                                error:&error];
+                            NSURL *replaceFileURL = [replaceDirURL
+                                URLByAppendingPathComponent:[bundleURL lastPathComponent]];
+                            BOOL res = nil != replaceFileURL;
+                            res = res && [[NSFileManager defaultManager]
+                                copyItemAtURL:bundleURL
+                                toURL:replaceFileURL
+                                error:&error];
+                            res = res && [[NSFileManager defaultManager]
+                                replaceItemAtURL:targetBundleURL
+                                withItemAtURL:replaceFileURL
+                                backupItemName:nil
+                                options:0
+                                resultingItemURL:0
+                                error:&error];
+                            if (![[bundleURL lastPathComponent]
+                                isEqualToString:[targetBundleURL lastPathComponent]])
+                            {
+                                NSURL *newTargetBundleURL =
+                                    [[targetBundleURL URLByDeletingLastPathComponent]
+                                        URLByAppendingPathComponent:[bundleURL lastPathComponent]];
+                                res = res && [[NSFileManager defaultManager]
+                                    moveItemAtURL:targetBundleURL
+                                    toURL:newTargetBundleURL
+                                    error:&error];
+                                if (res)
+                                    targetBundleURL = newTargetBundleURL;
+                            }
+                            [[NSFileManager defaultManager]
+                                removeItemAtURL:replaceDirURL
+                                error:0];
+                            if (res)
+                                [installedAssets setObject:targetBundleURL forKey:bundleURL];
+                            else
+                                [errors setObject:error forKey:bundleURL];
                         }
                 }
             }

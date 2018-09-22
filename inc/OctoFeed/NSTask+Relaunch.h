@@ -14,4 +14,6 @@
 
 @interface NSTask (Relaunch)
 + (void)relaunch;
++ (void)relaunchWithPath:(NSString *)path;
++ (void)relaunchWithURL:(NSURL *)url;
 @end
