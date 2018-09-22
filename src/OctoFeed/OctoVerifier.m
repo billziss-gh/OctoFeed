@@ -65,10 +65,6 @@
     if (errSecSuccess != status)
         goto exit;
 
-    status = SecStaticCodeCreateWithPath((CFURLRef)self.url, kSecCSDefaultFlags, &code);
-    if (errSecSuccess != status)
-        goto exit;
-
     status = SecStaticCodeCheckValidityWithErrors(code, kSecCSDefaultFlags, matchReq, &error);
     if (errSecSuccess != status)
         goto exit;
