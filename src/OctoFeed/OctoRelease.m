@@ -14,8 +14,11 @@
 #import "NSString+Version.h"
 #import "OctoRelease+Extensions.h"
 #import "OctoExtractor.h"
+#import "OctoVerifier.h"
 
 static NSMutableDictionary *classDictionary;
+static BOOL requireCodeSignature = YES;
+static BOOL requireCodeSignatureMatchesTarget = YES;
 
 @interface OctoRelease ()
 @property (copy) NSString *_repository;
@@ -39,6 +42,12 @@ static NSMutableDictionary *classDictionary;
 + (void)registerClass:(NSString *)service
 {
     [classDictionary setObject:[self class] forKey:service];
+}
+
++ (void)requireCodeSignature:(BOOL)require matchesTarget:(BOOL)matches
+{
+    requireCodeSignature = require;
+    requireCodeSignatureMatchesTarget = require && matches;
 }
 
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
@@ -288,7 +297,17 @@ static NSMutableDictionary *classDictionary;
                             if (nil == targetBundleURL)
                                 continue;
 
-                            // !!!: verify signature
+                            error = nil;
+                            if (requireCodeSignature)
+                                error = [OctoVerifier
+                                    verifyCodeSignatureAtURL:bundleURL
+                                    matchesCodesSignatureAtURL:requireCodeSignatureMatchesTarget ?
+                                        targetBundleURL : nil];
+                            if (nil != error)
+                            {
+                                [errors setObject:error forKey:bundleURL];
+                                continue;
+                            }
 
                             NSURL *replaceDirURL = [[NSFileManager defaultManager]
                                 URLForDirectory:NSItemReplacementDirectory

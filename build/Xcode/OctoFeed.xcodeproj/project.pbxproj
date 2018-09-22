@@ -33,6 +33,8 @@
 		3C4BCD61215590F700585C3C /* OctoExtractor-Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4BCD5A215590F700585C3C /* OctoExtractor-Test.m */; };
 		3CAFD9C52155B24200BD9DAC /* OctoFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C73E23D2152E1740053CC38 /* OctoFeed.framework */; };
 		3CAFD9C62155B24200BD9DAC /* OctoFeed.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3C73E23D2152E1740053CC38 /* OctoFeed.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3CDF7C8C2156C612001176D1 /* OctoVerifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CDF7C8A2156C612001176D1 /* OctoVerifier.h */; };
+		3CDF7C8D2156C612001176D1 /* OctoVerifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CDF7C8B2156C612001176D1 /* OctoVerifier.m */; };
 		3CFB51D02155B0E1009F8EB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFB51C92155B0E1009F8EB9 /* main.m */; };
 		3CFB51D12155B0E1009F8EB9 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFB51CC2155B0E1009F8EB9 /* AppController.m */; };
 		3CFB51D62155B133009F8EB9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CFB51D52155B133009F8EB9 /* MainMenu.xib */; };
@@ -97,6 +99,8 @@
 		3C4BCD59215590F700585C3C /* NSString+Version-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Version-Test.m"; sourceTree = "<group>"; };
 		3C4BCD5A215590F700585C3C /* OctoExtractor-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OctoExtractor-Test.m"; sourceTree = "<group>"; };
 		3C73E23D2152E1740053CC38 /* OctoFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OctoFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CDF7C8A2156C612001176D1 /* OctoVerifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoVerifier.h; sourceTree = "<group>"; };
+		3CDF7C8B2156C612001176D1 /* OctoVerifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoVerifier.m; sourceTree = "<group>"; };
 		3CFB51B72155B0A9009F8EB9 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CFB51C92155B0E1009F8EB9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3CFB51CA2155B0E1009F8EB9 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
@@ -169,6 +173,8 @@
 				3C4BCD43215590D000585C3C /* OctoGitHubRelease.m */,
 				3C4BCD3A215590D000585C3C /* OctoRelease.m */,
 				3C4BCD3F215590D000585C3C /* OctoRelease+Extensions.h */,
+				3CDF7C8A2156C612001176D1 /* OctoVerifier.h */,
+				3CDF7C8B2156C612001176D1 /* OctoVerifier.m */,
 				3C4BCD3C215590D000585C3C /* Info.plist */,
 			);
 			path = OctoFeed;
@@ -256,6 +262,7 @@
 				3C4BCD4C215590D100585C3C /* OctoRelease+Extensions.h in Headers */,
 				3C4BCD4A215590D100585C3C /* OctoGitHubRelease.h in Headers */,
 				3C4BCD52215590D100585C3C /* NSObject+OctoExtensions.h in Headers */,
+				3CDF7C8C2156C612001176D1 /* OctoVerifier.h in Headers */,
 				3C4BCD38215590A900585C3C /* OctoFeed.h in Headers */,
 				3C4BCD37215590A900585C3C /* NSString+Version.h in Headers */,
 				3C4BCD4F215590D100585C3C /* OctoCachedRelease.h in Headers */,
@@ -431,6 +438,7 @@
 				3C4BCD50215590D100585C3C /* OctoGitHubRelease.m in Sources */,
 				3C4BCD47215590D100585C3C /* OctoRelease.m in Sources */,
 				3C32FBC62155F52E00DBE49C /* NSTask+Relaunch.m in Sources */,
+				3CDF7C8D2156C612001176D1 /* OctoVerifier.m in Sources */,
 				3C4BCD51215590D100585C3C /* OctoFeed.m in Sources */,
 				3C4BCD4B215590D100585C3C /* OctoExtractor.m in Sources */,
 			);

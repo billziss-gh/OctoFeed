@@ -26,6 +26,7 @@ typedef void (^OctoReleaseCompletion)(
 
 @interface OctoRelease : NSObject
 + (void)registerClass:(NSString *)service;
++ (void)requireCodeSignature:(BOOL)require matchesTarget:(BOOL)matches;
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
 - (id)initWithRepository:(NSString *)repository
