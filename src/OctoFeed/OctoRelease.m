@@ -106,20 +106,26 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     NSMutableDictionary *downloadedAssets = [NSMutableDictionary dictionary];
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
-    NSArray *releaseAssets = nil;
-    if (1 < self._releaseAssets.count)
+    NSMutableArray *releaseAssets = [NSMutableArray array];
+    for (NSURL *releaseAsset in self._releaseAssets)
     {
-        releaseAssets = [NSMutableArray array];
-        for (NSURL *releaseAsset in self._releaseAssets)
-        {
-            NSString *name = [[releaseAsset lastPathComponent] stringByDeletingPathExtension];
-            if ([name hasSuffix:@"-mac"] || [name containsString:@"-mac-"] ||
-                [name hasSuffix:@"-osx"] || [name containsString:@"-osx-"])
-                [(id)releaseAssets addObject:releaseAsset];
-        }
+        if ([OctoExtractor canExtractURL:releaseAsset])
+            [releaseAssets addObject:releaseAsset];
     }
-    if (0 == releaseAssets.count)
-        releaseAssets = self._releaseAssets;
+
+    NSMutableArray *newReleaseAssets = [NSMutableArray array];
+    for (NSURL *releaseAsset in releaseAssets)
+    {
+        NSString *lastPathComponent = [releaseAsset lastPathComponent];
+        NSString *name = [lastPathComponent stringByDeletingPathExtension];
+        if ([lastPathComponent hasSuffix:@".dmg"] ||
+            [name hasSuffix:@"-mac"] || [name containsString:@"-mac-"] ||
+            [name hasSuffix:@"-osx"] || [name containsString:@"-osx-"] ||
+            [name hasSuffix:@"-macosx"] || [name containsString:@"-macosx-"])
+            [newReleaseAssets addObject:releaseAsset];
+    }
+    if (0 < newReleaseAssets.count)
+        releaseAssets = newReleaseAssets;
 
     for (NSURL *releaseAsset in releaseAssets)
     {

@@ -18,6 +18,21 @@
 @end
 
 @implementation OctoExtractor
++ (BOOL)canExtractURL:(NSURL *)url
+{
+    NSString *lastPathComponent = [url lastPathComponent];
+
+    if ([lastPathComponent hasSuffix:@".zip"])
+        return YES;
+    else
+    if ([lastPathComponent hasSuffix:@".tar.gz"] || [lastPathComponent hasSuffix:@".tgz"] ||
+        [lastPathComponent hasSuffix:@".tar.bz2"] || [lastPathComponent hasSuffix:@".tbz"] ||
+        [lastPathComponent hasSuffix:@".tar.xz"] || [lastPathComponent hasSuffix:@".txz"])
+        return YES;
+    else
+        return NO;
+}
+
 + (void)extractURL:(NSURL *)src
     toURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion

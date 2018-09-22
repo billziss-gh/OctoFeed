@@ -13,6 +13,7 @@
 #import <Foundation/Foundation.h>
 
 @interface OctoExtractor : NSObject
++ (BOOL)canExtractURL:(NSURL *)url;
 + (void)extractURL:(NSURL *)src
     toURL:(NSURL *)dst
     completion:(void (^)(NSError *error))completion;
