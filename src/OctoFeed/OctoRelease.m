@@ -196,7 +196,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
-        if (0 < downloadedAssets.count)
+        if (0 < downloadedAssets.count && 0 == errors.count)
         {
             self._downloadedAssets = [downloadedAssets allValues];
             [self _setState:OctoReleaseDownloaded persistent:YES];
@@ -250,7 +250,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
-        if (0 < extractedAssets.count)
+        if (0 < extractedAssets.count && 0 == errors.count)
         {
             self._extractedAssets = [extractedAssets allValues];
             [self _setState:OctoReleaseExtracted persistent:YES];
@@ -369,7 +369,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
-        if (0 < installedAssets.count)
+        if (0 < installedAssets.count && 0 == errors.count)
             [self _setState:OctoReleaseInstalled persistent:YES];
 
         completion(

@@ -28,6 +28,8 @@
         [release installAssets:^(
             NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
         {
+            [release clear];
+
             if (0 < assets.count)
                 /* +[NSTask relaunch] does not return! */
                 [NSTask relaunchWithURL:[[assets allValues] firstObject]];

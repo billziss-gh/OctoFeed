@@ -45,6 +45,9 @@
         delegate:nil
         delegateQueue:[NSOperationQueue mainQueue]];
 
+    /* default is batteries included */
+    self.automaticallyMakeReleaseReadyToInstall = YES;
+
     return self;
 }
 
@@ -72,9 +75,9 @@
 
 - (OctoRelease *)cachedReleaseFetchSynchronously
 {
-    OctoRelease *release = [self cachedRelease];
+    OctoRelease *cachedRelease = [self cachedRelease];
     NSError *error = nil;
-    return [release fetchSynchronouslyIfAble:&error] && nil == error ? release : nil;
+    return [cachedRelease fetchSynchronouslyIfAble:&error] && nil == error ? cachedRelease : nil;
 }
 
 - (OctoRelease *)latestRelease
@@ -132,8 +135,8 @@
     if (NSOrderedAscending == [now compare:checkTime])
         return;
 
-    OctoRelease *release = [self latestRelease];
-    [release fetch:^(NSError *error)
+    OctoRelease *latestRelease = [self latestRelease];
+    [latestRelease fetch:^(NSError *error)
     {
         if (nil != error)
             return;
@@ -143,19 +146,87 @@
             setObject:[NSDate date]
             forKey:OctoLastCheckTimeKey];
 
-        /* tell everyone who cares */
-        [[NSNotificationCenter defaultCenter]
-            postNotificationName:OctoNotification
-            object:self
-            userInfo:[NSDictionary
-                dictionaryWithObject:release
-                forKey:OctoNotificationReleaseKey]];
+        /* is the latest-release-version > bundle-version? */
+        NSString *latestReleaseVersion = latestRelease.releaseVersion;
+        NSString *version = [[self.targetBundles firstObject]
+            objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+        if (NSOrderedAscending != [version versionCompare:latestReleaseVersion])
+            return;
+
+        /* if latest-release-version matches cached-release-version, use cached release */
+        OctoRelease *release = latestRelease;
+        OctoRelease *cachedRelease = [self cachedReleaseFetchSynchronously];
+        switch ([cachedRelease.releaseVersion versionCompare:latestReleaseVersion])
+        {
+        case NSOrderedSame:
+            release = cachedRelease;
+            break;
+        default:
+            [cachedRelease clear];
+            break;
+        }
+
+        [self postNotificationWithRelease:release];
+
+        /* should we download and prepare this release? */
+        if (self.automaticallyMakeReleaseReadyToInstall)
+        {
+            switch (release.state)
+            {
+            case OctoReleaseFetched:
+                [release downloadAssets:^(
+                    NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+                {
+                    if (0 < errors.count)
+                        return;
+
+                    [self postNotificationWithRelease:release];
+
+                    [release extractAssets:^(
+                        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+                    {
+                        if (0 < errors.count)
+                            return;
+
+                        [self postNotificationWithRelease:release];
+                    }];
+                }];
+                break;
+
+            case OctoReleaseDownloaded:
+                [release extractAssets:^(
+                    NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+                {
+                    if (0 < errors.count)
+                        return;
+
+                    [self postNotificationWithRelease:release];
+                }];
+                break;
+
+            default:
+                break;
+            }
+        }
     }];
+}
+
+- (void)postNotificationWithRelease:(OctoRelease *)release
+{
+    [[NSNotificationCenter defaultCenter]
+        postNotificationName:OctoNotification
+        object:self
+        userInfo:[NSDictionary
+            dictionaryWithObjectsAndKeys:
+                release, OctoNotificationReleaseKey,
+                [NSNumber numberWithUnsignedInteger:release.state], OctoNotificationReleaseStateKey,
+                nil]];
 }
 @end
 
 NSString *OctoNotification = @"OctoNotification";
 NSString *OctoNotificationReleaseKey = @"OctoNotificationRelease";
+NSString *OctoNotificationReleaseStateKey = @"OctoNotificationReleaseState";
 
 NSString *OctoRepositoryKey = @"OctoRepository";
 NSString *OctoCheckPeriodKey = @"OctoCheckPeriod";

@@ -29,10 +29,12 @@
 @property (assign) NSTimeInterval checkPeriod;
 @property (copy) NSArray<NSBundle *> *targetBundles;
 @property (retain) NSURLSession *session;
+@property (assign) BOOL automaticallyMakeReleaseReadyToInstall;
 @end
 
 extern NSString *OctoNotification;
 extern NSString *OctoNotificationReleaseKey;
+extern NSString *OctoNotificationReleaseStateKey;
 
 extern NSString *OctoRepositoryKey;
 extern NSString *OctoCheckPeriodKey;
