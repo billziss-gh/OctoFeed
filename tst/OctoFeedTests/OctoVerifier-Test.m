@@ -19,9 +19,27 @@
 @implementation OctoVerifierTest
 - (void)testVerifyCodeSignature
 {
-    NSError *error = [OctoVerifier
+    NSError *error;
+
+    error = [OctoVerifier
+        verifyCodeSignatureAtURL:[NSURL
+            fileURLWithPath:@"/Applications/NONEXISTENT-e1b2ca021628b600c21470a71cdd8ade.app"]
+        matchesCodesSignatureAtURL:nil];
+    XCTAssertNotNil(error);
+
+    error = [OctoVerifier
         verifyCodeSignatureAtURL:[NSURL fileURLWithPath:@"/Applications/Safari.app"]
         matchesCodesSignatureAtURL:nil];
     XCTAssertNil(error);
+
+    error = [OctoVerifier
+        verifyCodeSignatureAtURL:[NSURL fileURLWithPath:@"/Applications/Safari.app"]
+        matchesCodesSignatureAtURL:[NSURL fileURLWithPath:@"/Applications/Safari.app"]];
+    XCTAssertNil(error);
+
+    error = [OctoVerifier
+        verifyCodeSignatureAtURL:[NSURL fileURLWithPath:@"/Applications/Safari.app"]
+        matchesCodesSignatureAtURL:[NSURL fileURLWithPath:@"/Applications/Mail.app"]];
+    XCTAssertNotNil(error);
 }
 @end
