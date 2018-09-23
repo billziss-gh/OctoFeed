@@ -23,21 +23,9 @@
 {
     self.label.stringValue = [NSString stringWithFormat:@"PID %d", (int)getpid()];
 
-    OctoRelease *release = [[OctoFeed mainBundleFeed] cachedReleaseFetchSynchronously];
-    if (OctoReleaseReadyToInstall == release.state)
-        [release installAssets:^(
-            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-        {
-            [release clear];
-
-            if (0 < assets.count)
-                /* +[NSTask relaunch] does not return! */
-                [NSTask relaunchWithURL:[[assets allValues] firstObject]];
-
-            [[OctoFeed mainBundleFeed] activate];
-        }];
-    else
-        [[OctoFeed mainBundleFeed] activate];
+    OctoFeedInstallPolicy policy = [[NSUserDefaults standardUserDefaults]
+        integerForKey:@"TestAppInstallPolicy"];
+    [[OctoFeed mainBundleFeed] activateWithInstallPolicy:policy];
 }
 
 - (IBAction)relaunchAction:(id)sender

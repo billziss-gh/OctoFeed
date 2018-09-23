@@ -17,19 +17,26 @@
 #import <OctoFeed/OctoRelease.h>
 #import <OctoFeed/OctoVerifier.h>
 
+typedef NS_ENUM(NSUInteger, OctoFeedInstallPolicy)
+{
+    OctoFeedInstallNone                 = 0,
+    OctoFeedInstallAtLaunch             = 'L',
+    OctoFeedInstallAtQuit               = 'Q',
+    OctoFeedInstallWhenReady            = 'R',
+};
+
 @interface OctoFeed : NSObject
 + (OctoFeed *)mainBundleFeed;
 - (id)initWithBundle:(NSBundle *)bundle;
 - (OctoRelease *)cachedRelease;
 - (OctoRelease *)cachedReleaseFetchSynchronously;
 - (OctoRelease *)latestRelease;
-- (BOOL)activate;
+- (BOOL)activateWithInstallPolicy:(OctoFeedInstallPolicy)policy;
 - (void)deactivate;
 @property (copy) NSString *repository;
 @property (assign) NSTimeInterval checkPeriod;
 @property (copy) NSArray<NSBundle *> *targetBundles;
 @property (retain) NSURLSession *session;
-@property (assign) BOOL automaticallyMakeReleaseReadyToInstall;
 @end
 
 extern NSString *OctoNotification;

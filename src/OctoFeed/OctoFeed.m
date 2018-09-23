@@ -13,7 +13,9 @@
 #import "OctoFeed.h"
 
 @interface OctoFeed ()
+@property (assign) OctoFeedInstallPolicy installPolicy;
 @property (retain) NSTimer *timer;
+@property (assign) BOOL activated;
 @end
 
 @implementation OctoFeed
@@ -44,9 +46,6 @@
         sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
         delegate:nil
         delegateQueue:[NSOperationQueue mainQueue]];
-
-    /* default is batteries included */
-    self.automaticallyMakeReleaseReadyToInstall = YES;
 
     return self;
 }
@@ -88,35 +87,107 @@
         session:self.session];
 }
 
-- (BOOL)activate
+- (BOOL)activateWithInstallPolicy:(OctoFeedInstallPolicy)policy
 {
-    if (nil != self.timer)
+    if (self.activated || 0 == [self.repository length])
+        return NO;
+
+    switch (policy)
+    {
+    case OctoFeedInstallNone:
+        [self _activateWithInstallPolicy:policy];
+        self.activated = YES;
         return YES;
 
-    if (0 == [self.repository length])
+    case OctoFeedInstallAtLaunch:
+        if (![self _installCachedRelease:OctoFeedInstallAtLaunch])
+            [self _activateWithInstallPolicy:policy];
+        self.activated = YES;
+        return YES;
+
+    case OctoFeedInstallAtQuit:
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self
+            selector:@selector(_willTerminate:)
+            name:@"NSApplicationWillTerminateNotification"
+            object:nil];
+        [self _activateWithInstallPolicy:policy];
+        self.activated = YES;
+        return YES;
+
+    case OctoFeedInstallWhenReady:
+        [self _activateWithInstallPolicy:policy];
+        self.activated = YES;
+        return YES;
+
+    default:
         return NO;
+    }
+}
+
+- (void)_activateWithInstallPolicy:(OctoFeedInstallPolicy)policy
+{
+    self.installPolicy = policy;
 
     /* schedule a timer that fires every hour */
     self.timer = [NSTimer
         scheduledTimerWithTimeInterval:60.0 * 60.0
         target:self
-        selector:@selector(tick:)
+        selector:@selector(_tick:)
         userInfo:nil
         repeats:YES];
 
     /* perform a check now */
-    [self performSelector:@selector(tick:) withObject:nil afterDelay:0];
-
-    return YES;
+    [self performSelector:@selector(_tick:) withObject:nil afterDelay:0];
 }
 
 - (void)deactivate
 {
     [self.timer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
     self.timer = nil;
+    self.installPolicy = OctoFeedInstallNone;
+    self.activated = NO;
 }
 
-- (void)tick:(NSTimer *)sender
+- (BOOL)_installCachedRelease:(OctoFeedInstallPolicy)policy
+{
+    OctoRelease *cachedRelease = [self cachedReleaseFetchSynchronously];
+    if (OctoReleaseReadyToInstall != cachedRelease.state)
+        return NO;
+
+    [cachedRelease installAssets:^(
+        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+    {
+        [cachedRelease clear];
+
+        if (OctoFeedInstallAtLaunch == policy)
+        {
+            /*
+             * If policy is InstallAtLaunch then during launch we delay full activation and
+             * we first try to install any cached release instead. If this succeeds we relaunch
+             * our app. If it fails we go ahead and fully activate ourselves.
+             */
+
+            if (0 < assets.count)
+                /* +[NSTask relaunch] does not return! */
+                [NSTask relaunchWithURL:[[assets allValues] firstObject]];
+
+            [self _activateWithInstallPolicy:policy];
+        }
+        /* if unable to install anything fully activate ourselves */
+    }];
+
+    return YES;
+}
+
+- (void)_willTerminate:(NSNotification *)notification
+{
+    [self _installCachedRelease:OctoFeedInstallAtQuit];
+}
+
+- (void)_tick:(NSTimer *)sender
 {
     /* checkPeriod must be at least 1 hour */
     NSTimeInterval checkPeriod = self.checkPeriod;
@@ -166,10 +237,10 @@
             break;
         }
 
-        [self postNotificationWithRelease:release];
+        [self _postNotificationWithRelease:release];
 
         /* should we download and prepare this release? */
-        if (self.automaticallyMakeReleaseReadyToInstall)
+        if (OctoFeedInstallNone != self.installPolicy)
         {
             switch (release.state)
             {
@@ -180,7 +251,7 @@
                     if (0 < errors.count)
                         return;
 
-                    [self postNotificationWithRelease:release];
+                    [self _postNotificationWithRelease:release];
 
                     [release extractAssets:^(
                         NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
@@ -188,7 +259,7 @@
                         if (0 < errors.count)
                             return;
 
-                        [self postNotificationWithRelease:release];
+                        [self _postNotificationWithRelease:release];
                     }];
                 }];
                 break;
@@ -200,7 +271,7 @@
                     if (0 < errors.count)
                         return;
 
-                    [self postNotificationWithRelease:release];
+                    [self _postNotificationWithRelease:release];
                 }];
                 break;
 
@@ -211,7 +282,7 @@
     }];
 }
 
-- (void)postNotificationWithRelease:(OctoRelease *)release
+- (void)_postNotificationWithRelease:(OctoRelease *)release
 {
     [[NSNotificationCenter defaultCenter]
         postNotificationName:OctoNotification
