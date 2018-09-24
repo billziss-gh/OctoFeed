@@ -101,7 +101,7 @@
                      * and we first try to install any cached release instead. If this succeeds
                      * we relaunch our app. If it fails we go ahead and fully activate ourselves.
                      */
-                    [cachedRelease clear];
+                    [self clearThisAndPriorReleases:cachedRelease];
                     if (0 < assets.count)
                         /* +[NSTask relaunch] does not return! */
                         [NSTask relaunchWithURL:[[assets allValues] firstObject]];
@@ -158,6 +158,40 @@
     return self._currentRelease;
 }
 
+- (NSError *)clearThisAndPriorReleases:(OctoRelease *)release
+{
+    NSError *error = nil;
+
+    NSString *releaseVersion = release.releaseVersion;
+    if (0 != [releaseVersion length])
+    {
+        NSArray *urls = [[NSFileManager defaultManager]
+            contentsOfDirectoryAtURL:release.cacheBaseURL
+            includingPropertiesForKeys:[NSArray arrayWithObject:NSURLIsDirectoryKey]
+            options:0
+            error:&error];
+        urls = [urls sortedArrayUsingComparator:^NSComparisonResult(id url1, id url2)
+        {
+            return [[url1 lastPathComponent] versionCompare:[url2 lastPathComponent]];
+        }];
+
+        for (NSURL *url in [urls reverseObjectEnumerator])
+        {
+            NSNumber *value;
+            BOOL isDir = [url
+                getResourceValue:&value
+                forKey:NSURLIsDirectoryKey
+                error:nil == error ? &error : 0] &&
+                [value boolValue];
+            if (isDir &&
+                NSOrderedDescending != [[url lastPathComponent] versionCompare:releaseVersion])
+                [[NSFileManager defaultManager] removeItemAtURL:url error:nil == error ? &error : 0];
+        }
+    }
+
+    return error;
+}
+
 - (BOOL)_lockCache
 {
     const char *dir = [self.cacheBaseURL.path cStringUsingEncoding:NSUTF8StringEncoding];
@@ -201,11 +235,16 @@
 
 - (void)_willTerminate:(NSNotification *)notification
 {
-    [self.currentRelease installAssets:^(
-        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+    OctoRelease *currentRelease = self._currentRelease;
+    if (OctoReleaseReadyToInstall == currentRelease.state)
     {
-        [self.currentRelease clear];
-    }];
+        [currentRelease installAssets:^(
+            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+        {
+            [self clearThisAndPriorReleases:currentRelease];
+            self._currentRelease = nil;
+        }];
+    }
 }
 
 - (void)_tick:(NSTimer *)sender
@@ -260,7 +299,7 @@
             release = cachedRelease;
             break;
         default:
-            [cachedRelease clear];
+            [self clearThisAndPriorReleases:cachedRelease];
             [latestRelease commit];
             release = latestRelease;
             break;
@@ -285,7 +324,7 @@
 
     if (0 < errors.count)
     {
-        [release clear];
+        [self clearThisAndPriorReleases:release];
         self._currentRelease = nil;
         return;
     }

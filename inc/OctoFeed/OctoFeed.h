@@ -31,6 +31,7 @@ typedef NS_ENUM(NSUInteger, OctoFeedInstallPolicy)
 - (BOOL)activateWithInstallPolicy:(OctoFeedInstallPolicy)policy;
 - (void)deactivate;
 - (OctoRelease *)currentRelease;
+- (NSError *)clearThisAndPriorReleases:(OctoRelease *)release;
 @property (copy) NSString *repository;
 @property (assign) NSTimeInterval checkPeriod;
 @property (copy) NSArray<NSBundle *> *targetBundles;
