@@ -94,6 +94,8 @@
             release.prerelease ? @" pre " : @" ",
             release.releaseAssets);
 
+        [release commit];
+
         [exp fulfill];
     }];
 

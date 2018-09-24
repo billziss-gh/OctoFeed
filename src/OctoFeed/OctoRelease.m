@@ -199,7 +199,8 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
         if (0 < downloadedAssets.count && 0 == errors.count)
         {
             self._downloadedAssets = [downloadedAssets allValues];
-            [self _setState:OctoReleaseDownloaded persistent:YES];
+            self._state = OctoReleaseDownloaded;
+            [self commit];
         }
 
         completion(
@@ -253,7 +254,8 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
         if (0 < extractedAssets.count && 0 == errors.count)
         {
             self._extractedAssets = [extractedAssets allValues];
-            [self _setState:OctoReleaseExtracted persistent:YES];
+            self._state = OctoReleaseExtracted;
+            [self commit];
         }
 
         completion(
@@ -370,7 +372,10 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
         if (0 < installedAssets.count && 0 == errors.count)
-            [self _setState:OctoReleaseInstalled persistent:YES];
+        {
+            self._state = OctoReleaseInstalled;
+            [self commit];
+        }
 
         completion(
             0 < installedAssets.count ? installedAssets : nil,
@@ -461,19 +466,14 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     return self._state;
 }
 
-- (void)_setState:(OctoReleaseState)state persistent:(BOOL)persistent
-{
-    if (!persistent)
-    {
-        self._state = state;
-        return;
-    }
 
+- (void)commit
+{
     if (0 == [self._releaseVersion length])
         [NSException raise:NSInvalidArgumentException format:@"%s empty releaseVersion", __FUNCTION__];
 
     NSMutableString *str = [NSMutableString stringWithFormat:@"%@\n%d\n%c\n",
-        self._releaseVersion, self._prerelease, (char)state];
+        self._releaseVersion, self._prerelease, (char)self._state];
     for (id asset in self._releaseAssets)
         [str appendFormat:@"%@\n", [asset absoluteString]];
 
@@ -488,9 +488,5 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
         atomically:YES
         encoding:NSUTF8StringEncoding
         error:0];
-    if (!res)
-        return;
-
-    self._state = state;
 }
 @end

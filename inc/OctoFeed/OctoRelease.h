@@ -49,6 +49,7 @@ typedef void (^OctoReleaseCompletion)(
 - (NSArray<NSURL *> *)downloadedAssets;
 - (NSArray<NSURL *> *)extractedAssets;
 - (OctoReleaseState)state;
+- (void)commit;
 @end
 
 @interface OctoRelease (Extensions)
@@ -58,5 +59,4 @@ typedef void (^OctoReleaseCompletion)(
 @property (copy) NSArray<NSURL *> *_downloadedAssets;
 @property (copy) NSArray<NSURL *> *_extractedAssets;
 @property (assign) OctoReleaseState _state;
-- (void)_setState:(OctoReleaseState)state persistent:(BOOL)persistent;
 @end

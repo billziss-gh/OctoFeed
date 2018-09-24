@@ -124,7 +124,7 @@
             self._releaseVersion = tag;
             self._prerelease = [prerelease boolValue];
             self._releaseAssets = urls;
-            [self _setState:OctoReleaseFetched persistent:YES];
+            self._state = OctoReleaseFetched;
 
             completion(nil);
             return;

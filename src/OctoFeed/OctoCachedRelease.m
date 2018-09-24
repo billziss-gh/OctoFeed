@@ -114,7 +114,7 @@
                     self._releaseAssets = releaseAssets;
                     self._downloadedAssets = downloadedAssets;
                     self._extractedAssets = extractedAssets;
-                    [self _setState:c persistent:NO];
+                    self._state = c;
                     break;
                 default:
                     res = NO;
