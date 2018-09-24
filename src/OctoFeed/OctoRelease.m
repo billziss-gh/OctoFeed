@@ -49,34 +49,45 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     requireCodeSignatureMatchesTarget = require && matches;
 }
 
++ (NSURL *)defaultCacheBaseURL
+{
+    NSString *mainIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *octoIdentifier = [[NSBundle bundleForClass:[self class]] bundleIdentifier];
+    if (nil == mainIdentifier) /* happens during XCTest! */
+        mainIdentifier = octoIdentifier;
+    return [[[[[NSFileManager defaultManager]
+        URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject]
+        URLByAppendingPathComponent:mainIdentifier]
+        URLByAppendingPathComponent:octoIdentifier];
+}
+
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
-    targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session
+    targetBundles:(NSArray<NSBundle *> *)bundles
+    session:(NSURLSession *)session
+    cacheBaseURL:(NSURL *)cacheBaseURL
 {
     NSString *service = 0 != [repository length] ? [[repository pathComponents] firstObject] : @"";
     Class cls = [classDictionary objectForKey:service];
     return [[[cls alloc]
-        initWithRepository:repository targetBundles:bundles session:session] autorelease];
+        initWithRepository:repository
+        targetBundles:bundles
+        session:session
+        cacheBaseURL:cacheBaseURL] autorelease];
 }
 
 - (id)initWithRepository:(NSString *)repository
-    targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
+    targetBundles:(NSArray<NSBundle *> *)bundles
+    session:(NSURLSession *)session
+    cacheBaseURL:(NSURL *)cacheBaseURL;
 {
     self = [super init];
     if (nil == self)
         return nil;
 
-    NSString *mainIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    NSString *octoIdentifier = [[NSBundle bundleForClass:[self class]] bundleIdentifier];
-    if (nil == mainIdentifier) /* happens during XCTest! */
-        mainIdentifier = octoIdentifier;
-
     self._repository = repository;
     self._targetBundles = bundles;
     self._session = session;
-    self._cacheBaseURL = [[[[[NSFileManager defaultManager]
-        URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject]
-        URLByAppendingPathComponent:mainIdentifier]
-        URLByAppendingPathComponent:octoIdentifier];
+    self._cacheBaseURL = nil != cacheBaseURL ? cacheBaseURL : [[self class] defaultCacheBaseURL];
 
     return self;
 }
@@ -465,7 +476,6 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 {
     return self._state;
 }
-
 
 - (void)commit
 {

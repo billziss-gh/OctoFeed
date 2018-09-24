@@ -37,6 +37,7 @@ typedef NS_ENUM(NSUInteger, OctoFeedInstallPolicy)
 @property (assign) NSTimeInterval checkPeriod;
 @property (copy) NSArray<NSBundle *> *targetBundles;
 @property (retain) NSURLSession *session;
+@property (copy) NSURL *cacheBaseURL;
 @end
 
 extern NSString *OctoNotification;

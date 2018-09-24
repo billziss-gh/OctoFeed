@@ -46,6 +46,7 @@
         sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
         delegate:nil
         delegateQueue:[NSOperationQueue mainQueue]];
+    self.cacheBaseURL = [OctoRelease defaultCacheBaseURL];
 
     return self;
 }
@@ -55,6 +56,7 @@
     [self deactivate];
     [self.session invalidateAndCancel];
 
+    self.cacheBaseURL = nil;
     self.session = nil;
 
     self.repository = nil;
@@ -69,7 +71,8 @@
     return [OctoRelease
         releaseWithRepository:nil
         targetBundles:self.targetBundles
-        session:self.session];
+        session:self.session
+        cacheBaseURL:self.cacheBaseURL];
 }
 
 - (OctoRelease *)cachedReleaseFetchSynchronously
@@ -84,7 +87,8 @@
     return [OctoRelease
         releaseWithRepository:self.repository
         targetBundles:self.targetBundles
-        session:self.session];
+        session:self.session
+        cacheBaseURL:self.cacheBaseURL];
 }
 
 - (BOOL)activateWithInstallPolicy:(OctoFeedInstallPolicy)policy

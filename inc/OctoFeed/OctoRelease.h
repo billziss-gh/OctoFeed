@@ -28,10 +28,15 @@ typedef void (^OctoReleaseCompletion)(
 @interface OctoRelease : NSObject
 + (void)registerClass:(NSString *)service;
 + (void)requireCodeSignature:(BOOL)require matchesTarget:(BOOL)matches;
++ (NSURL *)defaultCacheBaseURL;
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
-    targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
+    targetBundles:(NSArray<NSBundle *> *)bundles
+    session:(NSURLSession *)session
+    cacheBaseURL:(NSURL *)cacheBaseURL;
 - (id)initWithRepository:(NSString *)repository
-    targetBundles:(NSArray<NSBundle *> *)bundles session:(NSURLSession *)session;
+    targetBundles:(NSArray<NSBundle *> *)bundles
+    session:(NSURLSession *)session
+    cacheBaseURL:(NSURL *)cacheBaseURL;
 - (void)fetch:(void (^)(NSError *))completion;
 - (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp;
 - (void)downloadAssets:(OctoReleaseCompletion)completion;

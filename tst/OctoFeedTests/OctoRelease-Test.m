@@ -27,7 +27,8 @@
     OctoRelease *release = [OctoRelease
         releaseWithRepository:@"github.com/billziss-gh"
         targetBundles:bundles
-        session:session];
+        session:session
+        cacheBaseURL:nil];
 
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
@@ -51,7 +52,8 @@
     OctoRelease *release = [OctoRelease
         releaseWithRepository:@"github.com/billziss-gh/NONEXISTENT-4dca3ed744f421f3187e54dc10e7e6b8"
         targetBundles:bundles
-        session:session];
+        session:session
+        cacheBaseURL:nil];
 
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
@@ -75,7 +77,8 @@
     OctoRelease *release = [OctoRelease
         releaseWithRepository:@"github.com/billziss-gh/EnergyBar"
         targetBundles:bundles
-        session:session];
+        session:session
+        cacheBaseURL:nil];
 
     BOOL res = [release fetchSynchronouslyIfAble:0];
     XCTAssertFalse(res);
@@ -199,7 +202,8 @@
     OctoRelease *cachedRelease = [OctoRelease
         releaseWithRepository:nil
         targetBundles:bundles
-        session:session];
+        session:session
+        cacheBaseURL:nil];
 
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
@@ -240,7 +244,8 @@
     OctoRelease *cachedRelease = [OctoRelease
         releaseWithRepository:nil
         targetBundles:bundles
-        session:session];
+        session:session
+        cacheBaseURL:nil];
 
     NSError *error = nil;
     BOOL res = [cachedRelease fetchSynchronouslyIfAble:&error];
@@ -309,7 +314,8 @@
     OctoRelease *cachedRelease = [OctoRelease
         releaseWithRepository:nil
         targetBundles:bundles
-        session:session];
+        session:session
+        cacheBaseURL:nil];
 
     XCTestExpectation *exp1 = [self expectationWithDescription:@"fetch:"];
 
