@@ -502,7 +502,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     return self._state;
 }
 
-- (void)commit
+- (NSError *)commit
 {
     if (0 == [self._releaseVersion length])
         [NSException raise:NSInvalidArgumentException format:@"%s empty releaseVersion", __FUNCTION__];
@@ -513,15 +513,17 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
         [str appendFormat:@"%@\n", [asset absoluteString]];
 
     NSURL *cacheURL = [self cacheURL];
+    NSError *error = nil;
     BOOL res = [[NSFileManager defaultManager]
         createDirectoryAtURL:cacheURL
         withIntermediateDirectories:YES
         attributes:nil
-        error:0];
+        error:&error];
     res = res && [str
         writeToURL:[cacheURL URLByAppendingPathComponent:@"state"]
         atomically:YES
         encoding:NSUTF8StringEncoding
-        error:0];
+        error:&error];
+    return res ? nil : error;
 }
 @end

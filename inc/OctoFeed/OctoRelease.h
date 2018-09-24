@@ -56,7 +56,7 @@ typedef void (^OctoReleaseCompletion)(
 - (NSArray<NSURL *> *)downloadedAssets;
 - (NSArray<NSURL *> *)extractedAssets;
 - (OctoReleaseState)state;
-- (void)commit;
+- (NSError *)commit;
 @end
 
 @interface OctoRelease (Extensions)
