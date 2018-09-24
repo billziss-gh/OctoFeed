@@ -13,9 +13,11 @@
 #import "OctoFeed.h"
 
 @interface OctoFeed ()
-@property (assign) OctoFeedInstallPolicy installPolicy;
-@property (retain) NSTimer *timer;
-@property (assign) BOOL activated;
+@property (assign) int _dirfd;
+@property (assign) OctoFeedInstallPolicy _installPolicy;
+@property (retain) NSTimer *_timer;
+@property (assign) BOOL _activated;
+@property (retain) OctoRelease *_currentRelease;
 @end
 
 @implementation OctoFeed
@@ -48,6 +50,8 @@
         delegateQueue:[NSOperationQueue mainQueue]];
     self.cacheBaseURL = [OctoRelease defaultCacheBaseURL];
 
+    self._dirfd = -1;
+
     return self;
 }
 
@@ -56,72 +60,80 @@
     [self deactivate];
     [self.session invalidateAndCancel];
 
-    self.cacheBaseURL = nil;
-    self.session = nil;
-
     self.repository = nil;
     self.checkPeriod = 0;
     self.targetBundles = nil;
+    self.session = nil;
+    self.cacheBaseURL = nil;
 
     [super dealloc];
 }
 
-- (OctoRelease *)cachedRelease
-{
-    return [OctoRelease
-        releaseWithRepository:nil
-        targetBundles:self.targetBundles
-        session:self.session
-        cacheBaseURL:self.cacheBaseURL];
-}
-
-- (OctoRelease *)cachedReleaseFetchSynchronously
-{
-    OctoRelease *cachedRelease = [self cachedRelease];
-    NSError *error = nil;
-    return [cachedRelease fetchSynchronouslyIfAble:&error] && nil == error ? cachedRelease : nil;
-}
-
-- (OctoRelease *)latestRelease
-{
-    return [OctoRelease
-        releaseWithRepository:self.repository
-        targetBundles:self.targetBundles
-        session:self.session
-        cacheBaseURL:self.cacheBaseURL];
-}
-
 - (BOOL)activateWithInstallPolicy:(OctoFeedInstallPolicy)policy
 {
-    if (self.activated || 0 == [self.repository length])
+    if (0 == [self.repository length])
+        [NSException raise:NSInvalidArgumentException format:@"%s empty repository", __FUNCTION__];
+
+    if (self._activated)
         return NO;
 
     switch (policy)
     {
     case OctoFeedInstallNone:
+        if (![self _lockCache])
+            return NO;
         [self _activateWithInstallPolicy:policy];
-        self.activated = YES;
+        self._activated = YES;
         return YES;
 
     case OctoFeedInstallAtLaunch:
-        if (![self _installCachedRelease:OctoFeedInstallAtLaunch])
-            [self _activateWithInstallPolicy:policy];
-        self.activated = YES;
+        if (![self _lockCache])
+            return NO;
+        {
+            OctoRelease *cachedRelease = [self _cachedReleaseFetchSynchronously];
+            if (OctoReleaseReadyToInstall == cachedRelease.state)
+            {
+                [cachedRelease installAssets:^(
+                    NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+                {
+                    [cachedRelease clear];
+
+                    /*
+                     * If policy is InstallAtLaunch then during launch we delay full activation
+                     * and we first try to install any cached release instead. If this succeeds
+                     * we relaunch our app. If it fails we go ahead and fully activate ourselves.
+                     */
+
+                    if (0 < assets.count)
+                        /* +[NSTask relaunch] does not return! */
+                        [NSTask relaunchWithURL:[[assets allValues] firstObject]];
+
+                    [self _activateWithInstallPolicy:policy];
+                }];
+            }
+            else
+                [self _activateWithInstallPolicy:policy];
+        }
+        self._activated = YES;
         return YES;
 
     case OctoFeedInstallAtQuit:
+        if (![self _lockCache])
+            return NO;
         [[NSNotificationCenter defaultCenter]
             addObserver:self
             selector:@selector(_willTerminate:)
             name:@"NSApplicationWillTerminateNotification"
             object:nil];
         [self _activateWithInstallPolicy:policy];
-        self.activated = YES;
+        self._activated = YES;
         return YES;
 
     case OctoFeedInstallWhenReady:
+        if (![self _lockCache])
+            return NO;
         [self _activateWithInstallPolicy:policy];
-        self.activated = YES;
+        self._activated = YES;
         return YES;
 
     default:
@@ -129,12 +141,57 @@
     }
 }
 
+- (void)deactivate
+{
+    [self._timer invalidate];
+    [[NSNotificationCenter defaultCenter]
+        removeObserver:self
+        name:@"NSApplicationWillTerminateNotification"
+        object:nil];
+    [self _unlockCache];
+
+    self._installPolicy = OctoFeedInstallNone;
+    self._timer = nil;
+    self._activated = NO;
+    self._currentRelease = nil;
+}
+
+- (OctoRelease *)currentRelease
+{
+    return self._currentRelease;
+}
+
+- (BOOL)_lockCache
+{
+    const char *dir = [self.cacheBaseURL.path cStringUsingEncoding:NSUTF8StringEncoding];
+
+    int dirfd = open(dir, O_RDONLY);
+    if (-1 == dirfd)
+        return NO;
+
+    if (-1 == flock(dirfd, LOCK_EX | LOCK_NB))
+    {
+        close(dirfd);
+        return NO;
+    }
+
+    self._dirfd = dirfd;
+
+    return YES;
+}
+
+- (void)_unlockCache
+{
+    close(self._dirfd);
+    self._dirfd = -1;
+}
+
 - (void)_activateWithInstallPolicy:(OctoFeedInstallPolicy)policy
 {
-    self.installPolicy = policy;
+    self._installPolicy = policy;
 
     /* schedule a timer that fires every hour */
-    self.timer = [NSTimer
+    self._timer = [NSTimer
         scheduledTimerWithTimeInterval:60.0 * 60.0
         target:self
         selector:@selector(_tick:)
@@ -145,54 +202,20 @@
     [self performSelector:@selector(_tick:) withObject:nil afterDelay:0];
 }
 
-- (void)deactivate
-{
-    [self.timer invalidate];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-    self.timer = nil;
-    self.installPolicy = OctoFeedInstallNone;
-    self.activated = NO;
-}
-
-- (BOOL)_installCachedRelease:(OctoFeedInstallPolicy)policy
-{
-    OctoRelease *cachedRelease = [self cachedReleaseFetchSynchronously];
-    if (OctoReleaseReadyToInstall != cachedRelease.state)
-        return NO;
-
-    [cachedRelease installAssets:^(
-        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-    {
-        [cachedRelease clear];
-
-        if (OctoFeedInstallAtLaunch == policy)
-        {
-            /*
-             * If policy is InstallAtLaunch then during launch we delay full activation and
-             * we first try to install any cached release instead. If this succeeds we relaunch
-             * our app. If it fails we go ahead and fully activate ourselves.
-             */
-
-            if (0 < assets.count)
-                /* +[NSTask relaunch] does not return! */
-                [NSTask relaunchWithURL:[[assets allValues] firstObject]];
-
-            [self _activateWithInstallPolicy:policy];
-        }
-        /* if unable to install anything fully activate ourselves */
-    }];
-
-    return YES;
-}
-
 - (void)_willTerminate:(NSNotification *)notification
 {
-    [self _installCachedRelease:OctoFeedInstallAtQuit];
+    [self.currentRelease installAssets:^(
+        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+    {
+        [self.currentRelease clear];
+    }];
 }
 
 - (void)_tick:(NSTimer *)sender
 {
+    if (!self._activated || nil != self._currentRelease)
+        return;
+
     /* checkPeriod must be at least 1 hour */
     NSTimeInterval checkPeriod = self.checkPeriod;
     checkPeriod = MAX(checkPeriod, 60.0 * 60.0);
@@ -210,9 +233,12 @@
     if (NSOrderedAscending == [now compare:checkTime])
         return;
 
-    OctoRelease *latestRelease = [self latestRelease];
+    OctoRelease *latestRelease = [self _latestRelease];
     [latestRelease fetch:^(NSError *error)
     {
+        if (!self._activated || nil != self._currentRelease)
+            return;
+
         if (nil != error)
             return;
 
@@ -229,8 +255,8 @@
             return;
 
         /* if latest-release-version matches cached-release-version, use cached release */
-        OctoRelease *release = latestRelease;
-        OctoRelease *cachedRelease = [self cachedReleaseFetchSynchronously];
+        OctoRelease *release;
+        OctoRelease *cachedRelease = [self _cachedReleaseFetchSynchronously];
         switch ([cachedRelease.releaseVersion versionCompare:latestReleaseVersion])
         {
         case NSOrderedSame:
@@ -238,52 +264,58 @@
             break;
         default:
             [cachedRelease clear];
+            [latestRelease commit];
+            release = latestRelease;
             break;
         }
 
-        [self _postNotificationWithRelease:release];
+        self._currentRelease = release;
 
         /* should we download and prepare this release? */
-        if (OctoFeedInstallNone != self.installPolicy)
-        {
-            switch (release.state)
-            {
-            case OctoReleaseFetched:
-                [release downloadAssets:^(
-                    NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-                {
-                    if (0 < errors.count)
-                        return;
-
-                    [self _postNotificationWithRelease:release];
-
-                    [release extractAssets:^(
-                        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-                    {
-                        if (0 < errors.count)
-                            return;
-
-                        [self _postNotificationWithRelease:release];
-                    }];
-                }];
-                break;
-
-            case OctoReleaseDownloaded:
-                [release extractAssets:^(
-                    NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-                {
-                    if (0 < errors.count)
-                        return;
-
-                    [self _postNotificationWithRelease:release];
-                }];
-                break;
-
-            default:
-                break;
-            }
-        }
+        if (OctoFeedInstallNone != self._installPolicy)
+            [self _advanceReleaseState:release assets:nil errors:nil];
+        else
+            [self _postNotificationWithRelease:release];
     }];
+}
+
+- (void)_advanceReleaseState:(OctoRelease *)release
+    assets:(NSDictionary<NSURL *, NSURL *> *)assets
+    errors:(NSDictionary<NSURL *, NSError *> *)errors
+{
+    if (!self._activated || release != self._currentRelease)
+        return;
+
+    if (0 < errors.count)
+    {
+        [release clear];
+        self._currentRelease = nil;
+        return;
+    }
+
+    [self _postNotificationWithRelease:release];
+
+    switch (release.state)
+    {
+    case OctoReleaseFetched:
+        [release downloadAssets:^(
+            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+        {
+            [self _advanceReleaseState:release assets:assets errors:errors];
+        }];
+        break;
+
+    case OctoReleaseDownloaded:
+        [release extractAssets:^(
+            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
+        {
+            [self _advanceReleaseState:release assets:assets errors:errors];
+        }];
+        break;
+
+    default:
+        break;
+    }
 }
 
 - (void)_postNotificationWithRelease:(OctoRelease *)release
@@ -297,7 +329,28 @@
                 [NSNumber numberWithUnsignedInteger:release.state], OctoNotificationReleaseStateKey,
                 nil]];
 }
+
+- (OctoRelease *)_cachedReleaseFetchSynchronously
+{
+    OctoRelease *cachedRelease = [OctoRelease
+        releaseWithRepository:nil
+        targetBundles:self.targetBundles
+        session:self.session
+        cacheBaseURL:self.cacheBaseURL];
+    NSError *error = nil;
+    return [cachedRelease fetchSynchronouslyIfAble:&error] && nil == error ? cachedRelease : nil;
+}
+
+- (OctoRelease *)_latestRelease
+{
+    return [OctoRelease
+        releaseWithRepository:self.repository
+        targetBundles:self.targetBundles
+        session:self.session
+        cacheBaseURL:self.cacheBaseURL];
+}
 @end
+
 
 NSString *OctoNotification = @"OctoNotification";
 NSString *OctoNotificationReleaseKey = @"OctoNotificationRelease";
