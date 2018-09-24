@@ -19,16 +19,7 @@
 @implementation OctoReleaseTest
 - (void)testGitHubFetchInvalid
 {
-    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
-    NSURLSession *session = [NSURLSession
-        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-        delegate:nil
-        delegateQueue:[NSOperationQueue mainQueue]];
-    OctoRelease *release = [OctoRelease
-        releaseWithRepository:@"github.com/billziss-gh"
-        targetBundles:bundles
-        session:session
-        cacheBaseURL:nil];
+    OctoRelease *release = [OctoRelease releaseWithRepository:@"github.com/billziss-gh"];
 
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
@@ -44,16 +35,8 @@
 
 - (void)testGitHubFetchUnknown
 {
-    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
-    NSURLSession *session = [NSURLSession
-        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-        delegate:nil
-        delegateQueue:[NSOperationQueue mainQueue]];
     OctoRelease *release = [OctoRelease
-        releaseWithRepository:@"github.com/billziss-gh/NONEXISTENT-4dca3ed744f421f3187e54dc10e7e6b8"
-        targetBundles:bundles
-        session:session
-        cacheBaseURL:nil];
+        releaseWithRepository:@"github.com/billziss-gh/NONEXISTENT-4dca3ed744f421f3187e54dc10e7e6b8"];
 
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
@@ -69,16 +52,7 @@
 
 - (OctoRelease *)_githubRelease
 {
-    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
-    NSURLSession *session = [NSURLSession
-        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-        delegate:nil
-        delegateQueue:[NSOperationQueue mainQueue]];
-    OctoRelease *release = [OctoRelease
-        releaseWithRepository:@"github.com/billziss-gh/EnergyBar"
-        targetBundles:bundles
-        session:session
-        cacheBaseURL:nil];
+    OctoRelease *release = [OctoRelease releaseWithRepository:@"github.com/billziss-gh/EnergyBar"];
 
     BOOL res = [release fetchSynchronouslyIfAble:0];
     XCTAssertFalse(res);
@@ -193,17 +167,7 @@
 - (void)testCachedFetch
 {
     OctoRelease *release = [self _githubRelease];
-
-    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
-    NSURLSession *session = [NSURLSession
-        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-        delegate:nil
-        delegateQueue:[NSOperationQueue mainQueue]];
-    OctoRelease *cachedRelease = [OctoRelease
-        releaseWithRepository:nil
-        targetBundles:bundles
-        session:session
-        cacheBaseURL:nil];
+    OctoRelease *cachedRelease = [OctoRelease releaseWithRepository:nil];
 
     XCTestExpectation *exp = [self expectationWithDescription:@"fetch:"];
 
@@ -235,17 +199,7 @@
 - (void)testCachedFetchSynchronously
 {
     OctoRelease *release = [self _githubRelease];
-
-    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
-    NSURLSession *session = [NSURLSession
-        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-        delegate:nil
-        delegateQueue:[NSOperationQueue mainQueue]];
-    OctoRelease *cachedRelease = [OctoRelease
-        releaseWithRepository:nil
-        targetBundles:bundles
-        session:session
-        cacheBaseURL:nil];
+    OctoRelease *cachedRelease = [OctoRelease releaseWithRepository:nil];
 
     NSError *error = nil;
     BOOL res = [cachedRelease fetchSynchronouslyIfAble:&error];
@@ -306,16 +260,7 @@
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
 
-    NSArray *bundles = [NSArray arrayWithObject:[NSBundle mainBundle]];
-    NSURLSession *session = [NSURLSession
-        sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-        delegate:nil
-        delegateQueue:[NSOperationQueue mainQueue]];
-    OctoRelease *cachedRelease = [OctoRelease
-        releaseWithRepository:nil
-        targetBundles:bundles
-        session:session
-        cacheBaseURL:nil];
+    OctoRelease *cachedRelease = [OctoRelease releaseWithRepository:nil];
 
     XCTestExpectation *exp1 = [self expectationWithDescription:@"fetch:"];
 

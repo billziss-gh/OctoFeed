@@ -29,10 +29,12 @@ typedef void (^OctoReleaseCompletion)(
 + (void)registerClass:(NSString *)service;
 + (void)requireCodeSignature:(BOOL)require matchesTarget:(BOOL)matches;
 + (NSURL *)defaultCacheBaseURL;
++ (OctoRelease *)releaseWithRepository:(NSString *)repository;
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
     session:(NSURLSession *)session
     cacheBaseURL:(NSURL *)cacheBaseURL;
+- (id)initWithRepository:(NSString *)repository;
 - (id)initWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
     session:(NSURLSession *)session

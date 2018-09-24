@@ -62,6 +62,14 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 }
 
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
+{
+    return [[self class] releaseWithRepository:repository
+        targetBundles:nil
+        session:nil
+        cacheBaseURL:nil];
+}
+
++ (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
     session:(NSURLSession *)session
     cacheBaseURL:(NSURL *)cacheBaseURL
@@ -76,6 +84,14 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 }
 
 - (id)initWithRepository:(NSString *)repository
+{
+    return [self initWithRepository:repository
+        targetBundles:nil
+        session:nil
+        cacheBaseURL:nil];
+}
+
+- (id)initWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
     session:(NSURLSession *)session
     cacheBaseURL:(NSURL *)cacheBaseURL;
@@ -85,9 +101,18 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
         return nil;
 
     self._repository = repository;
-    self._targetBundles = bundles;
-    self._session = session;
-    self._cacheBaseURL = nil != cacheBaseURL ? cacheBaseURL : [[self class] defaultCacheBaseURL];
+    self._targetBundles = nil != bundles ?
+        bundles :
+        [NSArray arrayWithObject:[NSBundle mainBundle]];
+    self._session = nil != session ?
+        session :
+        [NSURLSession
+            sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+            delegate:nil
+            delegateQueue:[NSOperationQueue mainQueue]];
+    self._cacheBaseURL = nil != cacheBaseURL ?
+        cacheBaseURL :
+        [[self class] defaultCacheBaseURL];
 
     return self;
 }
