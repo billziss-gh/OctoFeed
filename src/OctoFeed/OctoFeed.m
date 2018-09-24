@@ -96,18 +96,15 @@
                 [cachedRelease installAssets:^(
                     NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
                 {
-                    [cachedRelease clear];
-
                     /*
                      * If policy is InstallAtLaunch then during launch we delay full activation
                      * and we first try to install any cached release instead. If this succeeds
                      * we relaunch our app. If it fails we go ahead and fully activate ourselves.
                      */
-
+                    [cachedRelease clear];
                     if (0 < assets.count)
                         /* +[NSTask relaunch] does not return! */
                         [NSTask relaunchWithURL:[[assets allValues] firstObject]];
-
                     [self _activateWithInstallPolicy:policy];
                 }];
             }
