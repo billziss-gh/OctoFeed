@@ -17,6 +17,7 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSTextField *versionLabel;
 @property (assign) IBOutlet NSTextField *pidLabel;
+@property (assign) IBOutlet NSTextField *octoLabel;
 @end
 
 @implementation AppController
@@ -35,7 +36,9 @@
     [OctoRelease requireCodeSignature:NO matchesTarget:NO];
     OctoFeedInstallPolicy policy = [[NSUserDefaults standardUserDefaults]
         integerForKey:@"TestAppInstallPolicy"];
-    [[OctoFeed mainBundleFeed] activateWithInstallPolicy:policy];
+    BOOL res = [[OctoFeed mainBundleFeed] activateWithInstallPolicy:policy];
+
+    self.octoLabel.stringValue = res ? @"OctoFeed activated" : @"";
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification

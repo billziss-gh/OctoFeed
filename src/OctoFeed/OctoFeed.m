@@ -196,7 +196,7 @@
         error:0];
 
     const char *dir = [cacheBaseURL.path cStringUsingEncoding:NSUTF8StringEncoding];
-    int dirfd = open(dir, O_RDONLY);
+    int dirfd = open(dir, O_RDONLY | O_CLOEXEC);
     if (-1 == dirfd)
         return NO;
 
