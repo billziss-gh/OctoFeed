@@ -14,6 +14,10 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppController">
             <connections>
+                <outlet property="installAtLaunchRadio" destination="K1g-nD-2Pg" id="0G5-kq-BAU"/>
+                <outlet property="installAtQuitRadio" destination="MDf-Mn-rqZ" id="qS4-UB-IDb"/>
+                <outlet property="installNoneRadio" destination="J8g-oD-zh5" id="gW8-N6-1jr"/>
+                <outlet property="installWhenReadyRadio" destination="wkt-hR-swE" id="bhs-9N-tKL"/>
                 <outlet property="octoLabel" destination="IFA-Bu-wfK" id="5Bi-By-6m8"/>
                 <outlet property="pidLabel" destination="L4a-SI-GNA" id="bwh-5i-cfL"/>
                 <outlet property="versionLabel" destination="cpO-Vl-QTM" id="5YV-8j-hBx"/>
@@ -685,10 +689,10 @@
         <window title="TestApp" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="400" height="200"/>
+            <rect key="contentRect" x="335" y="390" width="400" height="340"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="400" height="200"/>
+                <rect key="frame" x="0.0" y="0.0" width="400" height="340"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rBw-ZT-r09">
@@ -703,8 +707,8 @@
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cpO-Vl-QTM">
-                        <rect key="frame" x="18" y="116" width="364" height="17"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="18" y="303" width="364" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="VERSION" id="Rpj-TL-uPY">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -712,8 +716,8 @@
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L4a-SI-GNA">
-                        <rect key="frame" x="18" y="91" width="364" height="17"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="18" y="278" width="364" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="PID" id="4aa-9t-YQZ">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -721,17 +725,85 @@
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IFA-Bu-wfK">
-                        <rect key="frame" x="18" y="66" width="364" height="17"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="18" y="253" width="364" height="17"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="OCTOFEED STATUS" id="vtW-Ky-75Z">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Us8-gU-uwK">
+                        <rect key="frame" x="12" y="237" width="376" height="5"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </box>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yj6-3g-gbt">
+                        <rect key="frame" x="18" y="217" width="364" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Following settings require relaunch to take effect." id="ibc-VW-DTX">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J8g-oD-zh5">
+                        <rect key="frame" x="106" y="192" width="150" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="OctoFeedInstallNone" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Zbd-gs-dni">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="installRadioAction:" target="Voe-Tx-rLC" id="Oon-Vc-e1L"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="76" translatesAutoresizingMaskIntoConstraints="NO" id="K1g-nD-2Pg">
+                        <rect key="frame" x="106" y="170" width="175" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="OctoFeedInstallAtLaunch" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ONP-wF-R4l">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="installRadioAction:" target="Voe-Tx-rLC" id="HXN-7d-qWD"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="81" translatesAutoresizingMaskIntoConstraints="NO" id="MDf-Mn-rqZ">
+                        <rect key="frame" x="106" y="148" width="156" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="OctoFeedInstallAtQuit" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7aD-Kg-Eph">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="installRadioAction:" target="Voe-Tx-rLC" id="Wf6-1V-grr"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" tag="82" translatesAutoresizingMaskIntoConstraints="NO" id="wkt-hR-swE">
+                        <rect key="frame" x="106" y="126" width="190" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="OctoFeedInstallWhenReady" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="vGa-n3-maU">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="installRadioAction:" target="Voe-Tx-rLC" id="gkq-IZ-6Y2"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ru5-Rw-4zh">
+                        <rect key="frame" x="112" y="79" width="177" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Clear Last Check Time" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uhf-gR-hk7">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="clearLastCheckTimeAction:" target="Voe-Tx-rLC" id="R9e-WV-bgP"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="139" y="-173.5"/>
+            <point key="canvasLocation" x="139" y="-104"/>
         </window>
     </objects>
 </document>
