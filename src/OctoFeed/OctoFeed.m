@@ -258,22 +258,26 @@
     if (!self._activated || nil != self._currentRelease)
         return;
 
-    /* checkPeriod must be at least 1 hour */
-    NSTimeInterval checkPeriod = self.checkPeriod;
-    checkPeriod = MAX(checkPeriod, 60.0 * 60.0);
+    OctoRelease *cachedRelease = [self _cachedReleaseFetchSynchronously];
+    if (nil == cachedRelease.releaseVersion)
+    {
+        /* checkPeriod must be at least 1 hour */
+        NSTimeInterval checkPeriod = self.checkPeriod;
+        checkPeriod = MAX(checkPeriod, 60.0 * 60.0);
 
-    /* compute check time */
-    NSDate *now = [NSDate date];
-    NSDate *checkTime = [[NSUserDefaults standardUserDefaults]
-        objectForKey:OctoLastCheckTimeKey];
-    if (nil != checkTime)
-        checkTime = [checkTime dateByAddingTimeInterval:checkPeriod];
-    else
-        checkTime = now;
+        /* compute check time */
+        NSDate *now = [NSDate date];
+        NSDate *checkTime = [[NSUserDefaults standardUserDefaults]
+            objectForKey:OctoLastCheckTimeKey];
+        if (nil != checkTime)
+            checkTime = [checkTime dateByAddingTimeInterval:checkPeriod];
+        else
+            checkTime = now;
 
-    /* if the check time is in the future there is nothing to do */
-    if (NSOrderedAscending == [now compare:checkTime])
-        return;
+        /* if the check time is in the future there is nothing to do */
+        if (NSOrderedAscending == [now compare:checkTime])
+            return;
+    }
 
     OctoRelease *latestRelease = [self _latestRelease];
     [latestRelease fetch:^(NSError *error)
@@ -298,7 +302,6 @@
 
         /* if latest-release-version matches cached-release-version, use cached release */
         OctoRelease *release;
-        OctoRelease *cachedRelease = [self _cachedReleaseFetchSynchronously];
         if (nil == cachedRelease.releaseVersion ||
             NSOrderedSame != [cachedRelease.releaseVersion versionCompare:latestReleaseVersion])
         {
