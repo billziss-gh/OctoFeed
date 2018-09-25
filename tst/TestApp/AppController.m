@@ -15,7 +15,8 @@
 
 @interface AppController ()
 @property (assign) IBOutlet NSWindow *window;
-@property (assign) IBOutlet NSTextField *label;
+@property (assign) IBOutlet NSTextField *versionLabel;
+@property (assign) IBOutlet NSTextField *pidLabel;
 @end
 
 @implementation AppController
@@ -27,7 +28,9 @@
         name:OctoNotification
         object:nil];
 
-    self.label.stringValue = [NSString stringWithFormat:@"PID %d", (int)getpid()];
+    self.versionLabel.stringValue = [[NSBundle mainBundle]
+        objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    self.pidLabel.stringValue = [NSString stringWithFormat:@"PID %d", (int)getpid()];
 
     [OctoRelease requireCodeSignature:NO matchesTarget:NO];
     OctoFeedInstallPolicy policy = [[NSUserDefaults standardUserDefaults]

@@ -302,9 +302,8 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     });
 }
 
-- (void)installAssets:(OctoReleaseCompletion)completion
+- (void)installAssetsSynchronously:(OctoReleaseCompletion)completion
 {
-    dispatch_group_t group = dispatch_group_create();
     NSMutableDictionary *installedAssets = [NSMutableDictionary dictionary];
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
@@ -405,20 +404,15 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
             [errors setObject:error forKey:extractedAsset];
     }
 
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^
+    if (0 < installedAssets.count && 0 == errors.count)
     {
-        if (0 < installedAssets.count && 0 == errors.count)
-        {
-            self._state = OctoReleaseInstalled;
-            [self commit];
-        }
+        self._state = OctoReleaseInstalled;
+        [self commit];
+    }
 
-        completion(
-            0 < installedAssets.count ? installedAssets : nil,
-            0 < errors.count ? errors : nil);
-
-        dispatch_release(group);
-    });
+    completion(
+        0 < installedAssets.count ? installedAssets : nil,
+        0 < errors.count ? errors : nil);
 }
 
 - (NSError *)clear

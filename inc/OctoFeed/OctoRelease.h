@@ -43,7 +43,7 @@ typedef void (^OctoReleaseCompletion)(
 - (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp;
 - (void)downloadAssets:(OctoReleaseCompletion)completion;
 - (void)extractAssets:(OctoReleaseCompletion)completion;
-- (void)installAssets:(OctoReleaseCompletion)completion;
+- (void)installAssetsSynchronously:(OctoReleaseCompletion)completion;
 - (NSError *)clear;
 - (NSString *)repository;
 - (NSArray<NSBundle *> *)targetBundles;

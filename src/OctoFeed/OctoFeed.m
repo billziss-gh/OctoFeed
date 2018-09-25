@@ -93,7 +93,7 @@
             OctoRelease *cachedRelease = [self _cachedReleaseFetchSynchronously];
             if (OctoReleaseReadyToInstall == cachedRelease.state)
             {
-                [cachedRelease installAssets:^(
+                [cachedRelease installAssetsSynchronously:^(
                     NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
                 {
                     /*
@@ -244,7 +244,7 @@
     OctoRelease *currentRelease = self._currentRelease;
     if (OctoReleaseReadyToInstall == currentRelease.state)
     {
-        [currentRelease installAssets:^(
+        [currentRelease installAssetsSynchronously:^(
             NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
         {
             [self clearThisAndPriorReleases:currentRelease];
