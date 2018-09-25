@@ -14,9 +14,9 @@
 
 @interface OctoFeed ()
 @property (assign) int _dirfd;
+@property (assign) BOOL _activated;
 @property (assign) OctoFeedInstallPolicy _installPolicy;
 @property (retain) NSTimer *_timer;
-@property (assign) BOOL _activated;
 @property (retain) OctoRelease *_currentRelease;
 @end
 
@@ -83,7 +83,6 @@
         if (![self _lockCache])
             return NO;
         [self _activateWithInstallPolicy:policy];
-        self._activated = YES;
         return YES;
 
     case OctoFeedInstallAtLaunch:
@@ -99,19 +98,16 @@
                     /*
                      * If policy is InstallAtLaunch then during launch we delay full activation
                      * and we first try to install any cached release instead. If this succeeds
-                     * we relaunch our app. If it fails we go ahead and fully activate ourselves.
+                     * we relaunch our app.
                      */
                     [self clearThisAndPriorReleases:cachedRelease];
                     if (0 < assets.count)
                         /* +[NSTask relaunch] does not return! */
                         [NSTask relaunchWithURL:[[assets allValues] firstObject]];
-                    [self _activateWithInstallPolicy:policy];
                 }];
             }
-            else
-                [self _activateWithInstallPolicy:policy];
         }
-        self._activated = YES;
+        [self _activateWithInstallPolicy:policy];
         return YES;
 
     case OctoFeedInstallAtQuit:
@@ -123,14 +119,12 @@
             name:@"NSApplicationWillTerminateNotification"
             object:nil];
         [self _activateWithInstallPolicy:policy];
-        self._activated = YES;
         return YES;
 
     case OctoFeedInstallWhenReady:
         if (![self _lockCache])
             return NO;
         [self _activateWithInstallPolicy:policy];
-        self._activated = YES;
         return YES;
 
     default:
@@ -147,9 +141,9 @@
         object:nil];
     [self _unlockCache];
 
+    self._activated = NO;
     self._installPolicy = OctoFeedInstallNone;
     self._timer = nil;
-    self._activated = NO;
     self._currentRelease = nil;
 }
 
@@ -225,6 +219,7 @@
 
 - (void)_activateWithInstallPolicy:(OctoFeedInstallPolicy)policy
 {
+    self._activated = YES;
     self._installPolicy = policy;
 
     /* schedule a timer that fires every hour */
