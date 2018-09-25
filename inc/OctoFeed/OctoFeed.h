@@ -31,7 +31,7 @@ typedef NS_ENUM(NSUInteger, OctoFeedInstallPolicy)
      * Releases will be downloaded and prepared for installation.
      * During activation a release will be installed if it is ready to install.
      */
-    OctoFeedInstallAtLaunch             = 'L',
+    OctoFeedInstallAtActivation         = 'A',
 
     /**
      * Releases will be downloaded and prepared for installation.

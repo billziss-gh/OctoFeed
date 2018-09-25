@@ -85,7 +85,7 @@
         [self _activateWithInstallPolicy:policy];
         return YES;
 
-    case OctoFeedInstallAtLaunch:
+    case OctoFeedInstallAtActivation:
         if (![self _lockCache])
             return NO;
         {
@@ -95,11 +95,6 @@
                 [cachedRelease installAssetsSynchronously:^(
                     NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
                 {
-                    /*
-                     * If policy is InstallAtLaunch then during launch we delay full activation
-                     * and we first try to install any cached release instead. If this succeeds
-                     * we relaunch our app.
-                     */
                     [self clearThisAndPriorReleases:cachedRelease];
                     if (0 < assets.count)
                         /* +[NSTask relaunch] does not return! */

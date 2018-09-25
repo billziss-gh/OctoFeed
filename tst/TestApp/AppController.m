@@ -19,7 +19,7 @@
 @property (assign) IBOutlet NSTextField *pidLabel;
 @property (assign) IBOutlet NSTextField *octoLabel;
 @property (assign) IBOutlet NSButton *installNoneRadio;
-@property (assign) IBOutlet NSButton *installAtLaunchRadio;
+@property (assign) IBOutlet NSButton *installAtActivationRadio;
 @property (assign) IBOutlet NSButton *installAtQuitRadio;
 @property (assign) IBOutlet NSButton *installWhenReadyRadio;
 @end
@@ -46,8 +46,8 @@
     case OctoFeedInstallNone:
         self.installNoneRadio.state = NSOnState;
         break;
-    case OctoFeedInstallAtLaunch:
-        self.installAtLaunchRadio.state = NSOnState;
+    case OctoFeedInstallAtActivation:
+        self.installAtActivationRadio.state = NSOnState;
         break;
     case OctoFeedInstallAtQuit:
         self.installAtQuitRadio.state = NSOnState;
