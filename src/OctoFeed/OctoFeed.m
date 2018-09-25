@@ -25,7 +25,7 @@
 {
     static OctoFeed *instance = 0;
 
-    if (0 == instance)
+    if (nil == instance)
         instance = [[OctoFeed alloc] initWithBundle:[NSBundle mainBundle]];
 
     return instance;
@@ -194,8 +194,14 @@
 
 - (BOOL)_lockCache
 {
-    const char *dir = [self.cacheBaseURL.path cStringUsingEncoding:NSUTF8StringEncoding];
+    NSURL *cacheBaseURL = self.cacheBaseURL;
+    [[NSFileManager defaultManager]
+        createDirectoryAtURL:cacheBaseURL
+        withIntermediateDirectories:YES
+        attributes:nil
+        error:0];
 
+    const char *dir = [cacheBaseURL.path cStringUsingEncoding:NSUTF8StringEncoding];
     int dirfd = open(dir, O_RDONLY);
     if (-1 == dirfd)
         return NO;
@@ -293,17 +299,15 @@
         /* if latest-release-version matches cached-release-version, use cached release */
         OctoRelease *release;
         OctoRelease *cachedRelease = [self _cachedReleaseFetchSynchronously];
-        switch ([cachedRelease.releaseVersion versionCompare:latestReleaseVersion])
+        if (nil == cachedRelease.releaseVersion ||
+            NSOrderedSame != [cachedRelease.releaseVersion versionCompare:latestReleaseVersion])
         {
-        case NSOrderedSame:
-            release = cachedRelease;
-            break;
-        default:
             [self clearThisAndPriorReleases:cachedRelease];
             [latestRelease commit];
             release = latestRelease;
-            break;
         }
+        else
+            release = cachedRelease;
 
         self._currentRelease = release;
 

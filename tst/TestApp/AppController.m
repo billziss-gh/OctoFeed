@@ -21,11 +21,31 @@
 @implementation AppController
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(octoNotification:)
+        name:OctoNotification
+        object:nil];
+
     self.label.stringValue = [NSString stringWithFormat:@"PID %d", (int)getpid()];
 
+    [OctoRelease requireCodeSignature:NO matchesTarget:NO];
     OctoFeedInstallPolicy policy = [[NSUserDefaults standardUserDefaults]
         integerForKey:@"TestAppInstallPolicy"];
     [[OctoFeed mainBundleFeed] activateWithInstallPolicy:policy];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+    [[NSNotificationCenter defaultCenter]
+        removeObserver:self
+        name:OctoNotification
+        object:nil];
+}
+
+- (void)octoNotification:(NSNotification *)notification
+{
+    NSLog(@"%@", notification);
 }
 
 - (IBAction)relaunchAction:(id)sender

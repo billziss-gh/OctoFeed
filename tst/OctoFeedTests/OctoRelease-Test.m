@@ -52,7 +52,7 @@
 
 - (OctoRelease *)_githubRelease
 {
-    OctoRelease *release = [OctoRelease releaseWithRepository:@"github.com/billziss-gh/EnergyBar"];
+    OctoRelease *release = [OctoRelease releaseWithRepository:@"github.com/billziss-gh/OctoFeed"];
 
     BOOL res = [release fetchSynchronouslyIfAble:0];
     XCTAssertFalse(res);
