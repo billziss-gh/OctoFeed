@@ -13,6 +13,14 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (Version)
+
+/**
+ * Checks whether a version string is a valid version.
+ */
 - (BOOL)versionValidate;
+
+/**
+ * Compares two version strings.
+ */
 - (NSComparisonResult)versionCompare:(NSString *)other;
 @end

@@ -13,7 +13,19 @@
 #import <Foundation/Foundation.h>
 
 @interface NSTask (Relaunch)
+
+/**
+ * Relaunches the currently running application.
+ */
 + (void)relaunch;
+
+/**
+ * Relaunches the currently running application with the specified path.
+ */
 + (void)relaunchWithPath:(NSString *)path;
+
+/**
+ * Relaunches the currently running application with the specified URL.
+ */
 + (void)relaunchWithURL:(NSURL *)url;
 @end

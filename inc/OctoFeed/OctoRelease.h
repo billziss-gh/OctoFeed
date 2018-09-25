@@ -12,53 +12,249 @@
 
 #import <Foundation/Foundation.h>
 
+/*
+ * OctoRelease state.
+ */
 typedef NS_ENUM(NSUInteger, OctoReleaseState)
 {
+    /**
+     * Release is empty and has not been fetched.
+     */
     OctoReleaseEmpty                    = 0,
+
+    /**
+     * Release has been fetched. Information such as the release version and the release assets
+     * is available.
+     */
     OctoReleaseFetched                  = 'F',
+
+    /**
+     * Release assets have been downloaded, but not extracted.
+     */
     OctoReleaseDownloaded               = 'D',
+
+    /**
+     * Release assets have been extracted, but not installed.
+     * This value is the same as OctoReleaseReadyToInstall.
+     */
     OctoReleaseExtracted                = 'R',
+
+    /**
+     * Release is ready to be installed.
+     * This value is the same as OctoReleaseExtracted.
+     */
     OctoReleaseReadyToInstall           = OctoReleaseExtracted,
+
+    /**
+     * Release has been installed.
+     */
     OctoReleaseInstalled                = 'I',
 };
 
 typedef void (^OctoReleaseCompletion)(
     NSDictionary<NSURL *, NSURL *> *, NSDictionary<NSURL *, NSError *> *);
 
+/**
+ * OctoRelease encapsulates a single release of a product or project.
+ *
+ * OctoRelease provides functionality such as fetching cached and new releases, downloading and
+ * extracting assets associated with a release and installing those assets.
+ */
 @interface OctoRelease : NSObject
+
+/**
+ * Registers a class to handle a specific service.
+ * For example, the service "github.com" is handled by a class that knows how to fetch GitHub
+ * releases.
+ *
+ * The special service value of "" is used to fetch cached releases (releases that have already
+ * been downloaded to some extent).
+ */
 + (void)registerClass:(NSString *)service;
+
+/**
+ * Specifies whether code signatures are required for new releases to be installed.
+ *
+ * The default is to require signatures and to have those signatures match the signatures
+ * of the target bundles.
+ */
 + (void)requireCodeSignature:(BOOL)require matchesTarget:(BOOL)matches;
+
+/**
+ * The default base directory where cached information for all releases is stored.
+ *
+ * The default value is a location under ~/Library/Caches.
+ */
 + (NSURL *)defaultCacheBaseURL;
+
+/**
+ * Returns a release for the specified repository. The new release will have a state of
+ * OctoReleaseEmpty until the first fetch call.
+ */
 + (OctoRelease *)releaseWithRepository:(NSString *)repository;
+
+/**
+ * Returns a release for the specified repository. The new release will have a state of
+ * OctoReleaseEmpty until the first fetch call.
+ *
+ * Allows the specification of multiple target bundles (to update bundles other than the main
+ * bundle), a custom URL session or a custom cache location. Specify nil for default values.
+ *
+ * If you specify a custom URL session you MUST use [NSOperationQueue mainQueue] as its
+ * delegateQueue.
+ */
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
     session:(NSURLSession *)session
     cacheBaseURL:(NSURL *)cacheBaseURL;
+
+/**
+ * Initializes a release for the specified repository. The new release will have a state of
+ * OctoReleaseEmpty until the first fetch call.
+ */
 - (id)initWithRepository:(NSString *)repository;
+
+/**
+ * Initializes a release for the specified repository. The new release will have a state of
+ * OctoReleaseEmpty until the first fetch call.
+ *
+ * Allows the specification of multiple target bundles (to update bundles other than the main
+ * bundle), a custom URL session or a custom cache location. Specify nil for default values.
+ *
+ * If you specify a custom URL session you MUST use [NSOperationQueue mainQueue] as its
+ * delegateQueue.
+ */
 - (id)initWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
     session:(NSURLSession *)session
     cacheBaseURL:(NSURL *)cacheBaseURL;
+
+/**
+ * Fetches information about a release. This is an asynchronous call.
+ *
+ * Depending on the repository associated with this release, this call may fetch information
+ * from a remote location or from the local cache if any. If information is successfully fetched
+ * the state of this instance will change to OctoReleaseFetched.
+ *
+ * Subclasses of this class may override this call to implement support for additional remote
+ * repositories.
+ */
 - (void)fetch:(void (^)(NSError *))completion;
+
+/**
+ * Fetches information about a release synchronously.
+ *
+ * Only cached release objects (i.e. those created with an empty repository ("")) support this call.
+ * Other release objects will return NO.
+ *
+ * If information is successfully fetched the state of this instance will change to
+ * OctoReleaseFetched.
+ */
 - (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp;
+
+/**
+ * Downloads assets associated with a release. This is an asynchronous call.
+ *
+ * The state of the release prior to this call must be OctoReleaseFetched. If all assets are
+ * successfully downloaded the state of this instance will change to OctoReleaseDownloaded.
+ */
 - (void)downloadAssets:(OctoReleaseCompletion)completion;
+
+/**
+ * Extracts assets associated with a release. This is an asynchronous call.
+ *
+ * The state of the release prior to this call must be OctoReleaseDownloaded. If all assets are
+ * successfully extracted the state of this instance will change to OctoReleaseReadyToInstall.
+ */
 - (void)extractAssets:(OctoReleaseCompletion)completion;
+
+/**
+ * Installs assets associated with a release. This is a synchronous call.
+ *
+ * The state of the release prior to this call must be OctoReleaseReadyToInstall. If all assets are
+ * successfully extracted the state of this instance will change to OctoReleaseInstalled.
+ *
+ * If this call is used to update the main bundle, the application should be relaunched ASAP.
+ */
 - (void)installAssetsSynchronously:(OctoReleaseCompletion)completion;
+
+/**
+ * Clears any cached information (downloaded files, etc.) and resets the release state to
+ * OctoReleaseEmpty.
+ */
 - (NSError *)clear;
+
+/**
+ * The repository to check for new releases.
+ */
 - (NSString *)repository;
+
+/**
+ * The bundles that can be updated by a new release.
+ *
+ * It is possible to update multiple bundles with a single release.
+ */
 - (NSArray<NSBundle *> *)targetBundles;
+
+/**
+ * The base directory where cached information for all releases is stored.
+ */
 - (NSURL *)cacheBaseURL;
+
+/**
+ * The base directory where cached information for this release is stored.
+ */
 - (NSURL *)cacheURL;
+
+/**
+ * The URL sesssion used for downloading releases.
+ */
 - (NSURLSession *)session;
+
+/**
+ * The version of this release.
+ * Valid after a successful call to fetch: or fetchSynchronouslyIfAble:.
+ */
 - (NSString *)releaseVersion;
+
+/**
+ * Flag that determines whether this is a "pre-release".
+ * Valid after a successful call to fetch: or fetchSynchronouslyIfAble:.
+ */
 - (BOOL)prerelease;
+
+/**
+ * Assets associated with a release.
+ * Valid after a successful call to fetch: or fetchSynchronouslyIfAble:.
+ */
 - (NSArray<NSURL *> *)releaseAssets;
+
+/**
+ * Downloaded assets associated with a release.
+ * Valid after a successful call to downloadAssets:.
+ */
 - (NSArray<NSURL *> *)downloadedAssets;
+
+/**
+ * Extracted assets associated with a release.
+ * Valid after a successful call to extractAssets:.
+ */
 - (NSArray<NSURL *> *)extractedAssets;
+
+/**
+ * Release state.
+ */
 - (OctoReleaseState)state;
+
+/**
+ * Commits (writes) the current release state to the cache.
+ */
 - (NSError *)commit;
 @end
 
+/**
+ * Extensions for OctoRelease subclasses.
+ */
 @interface OctoRelease (Extensions)
 @property (copy) NSString *_releaseVersion;
 @property (assign) BOOL _prerelease;
