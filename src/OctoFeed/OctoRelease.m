@@ -18,6 +18,7 @@
 static NSMutableDictionary *classDictionary;
 static BOOL requireCodeSignature = YES;
 static BOOL requireCodeSignatureMatchesTarget = YES;
+static int progressKey;
 
 @interface OctoRelease ()
 @property (copy) NSString *_repository;
@@ -29,6 +30,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 @property (copy) NSArray<NSURL *> *_releaseAssets;
 @property (copy) NSArray<NSURL *> *_preparedAssets;
 @property (assign) OctoReleaseState _state;
+@property (retain) NSProgress *_progress;
 @end
 
 @implementation OctoRelease
@@ -113,6 +115,13 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
         cacheBaseURL :
         [[self class] defaultCacheBaseURL];
 
+    self._progress = [NSProgress discreteProgressWithTotalUnitCount:100];
+    [self._progress
+        addObserver:self
+        forKeyPath:@"fractionCompleted"
+        options:0
+        context:&progressKey];
+
     return self;
 }
 
@@ -125,6 +134,12 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     self._releaseVersion = nil;
     self._releaseAssets = nil;
     self._preparedAssets = nil;
+
+    [self._progress
+        removeObserver:self
+        forKeyPath:@"fractionCompleted"
+        context:&progressKey];
+    self._progress = nil;
 
     [super dealloc];
 }
@@ -165,11 +180,17 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     if (0 < newReleaseAssets.count)
         releaseAssets = newReleaseAssets;
 
+    NSProgress *prepareProgress = [NSProgress
+        progressWithTotalUnitCount:10 * releaseAssets.count
+        parent:self._progress
+        pendingUnitCount:99];
+
     NSURL *preparedAssetsDir = [[self cacheURL] URLByAppendingPathComponent:@"preparedAssets"];
     for (NSURL *releaseAsset in releaseAssets)
     {
         dispatch_group_enter(group);
 
+        NSProgress *extractProgress = [NSProgress discreteProgressWithTotalUnitCount:1];
         NSURLSessionDownloadTask *task = [self._session
             downloadTaskWithURL:releaseAsset
             completionHandler:^(NSURL *url, NSURLResponse *response, NSError *error)
@@ -213,6 +234,8 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
                                 toURL:preparedAsset
                                 completion:^(NSError *error)
                                 {
+                                    extractProgress.completedUnitCount = 1;
+
                                     if (nil == error)
                                         [preparedAssets setObject:preparedAsset forKey:releaseAsset];
                                     else
@@ -237,6 +260,8 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
                     dispatch_group_leave(group);
             }];
 
+        [prepareProgress addChild:task.progress withPendingUnitCount:9];
+        [prepareProgress addChild:extractProgress withPendingUnitCount:1];
         [task resume];
     }
 
@@ -389,6 +414,17 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     self._preparedAssets = nil;
     self._state = OctoReleaseEmpty;
 
+    [self._progress
+        removeObserver:self
+        forKeyPath:@"fractionCompleted"
+        context:&progressKey];
+    self._progress = [NSProgress discreteProgressWithTotalUnitCount:100];
+    [self._progress
+        addObserver:self
+        forKeyPath:@"fractionCompleted"
+        options:0
+        context:&progressKey];
+
     return nil;
 }
 
@@ -445,6 +481,16 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     return self._state;
 }
 
+- (NSProgress *)progress
+{
+    return self._progress;
+}
+
+- (double)progressValue
+{
+    return self._progress.fractionCompleted;
+}
+
 - (NSError *)commit
 {
     if (0 == [self._releaseVersion length])
@@ -468,5 +514,27 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
         encoding:NSUTF8StringEncoding
         error:&error];
     return res ? nil : error;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+    ofObject:(id)object
+    change:(NSDictionary<NSKeyValueChangeKey,id> *)change
+    context:(void *)context
+{
+    if (&progressKey != context ||
+        object != self._progress ||
+        ![keyPath isEqualToString:@"fractionCompleted"])
+        return;
+
+    [self
+        performSelectorOnMainThread:@selector(postProgressValueNotification)
+        withObject:nil
+        waitUntilDone:NO];
+}
+
+- (void)postProgressValueNotification
+{
+    [self willChangeValueForKey:@"progressValue"];
+    [self didChangeValueForKey:@"progressValue"];
 }
 @end

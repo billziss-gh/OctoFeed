@@ -223,6 +223,18 @@ typedef void (^OctoReleaseCompletion)(
 - (OctoReleaseState)state;
 
 /**
+ * Overall progress.
+ */
+- (NSProgress *)progress;
+
+/**
+ * Overall progress value as a number between 0 and 1.
+ *
+ * Posts KVO notifications in the main thread and is appropriate for use in UI elements.
+ */
+- (double)progressValue;
+
+/**
  * Commits (writes) the current release state to the cache.
  */
 - (NSError *)commit;
@@ -237,4 +249,5 @@ typedef void (^OctoReleaseCompletion)(
 @property (copy) NSArray<NSURL *> *_releaseAssets;
 @property (copy) NSArray<NSURL *> *_preparedAssets;
 @property (assign) OctoReleaseState _state;
+@property (retain) NSProgress *_progress;
 @end

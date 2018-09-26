@@ -42,7 +42,7 @@
         URLWithString:[NSString stringWithFormat:@"https://api.github.com/repos/%@/%@/releases/latest",
             [parts objectAtIndex:1],
             [parts objectAtIndex:2]]];
-    [[self.session
+    NSURLSessionDataTask *task = [self.session
         dataTaskWithURL:releaseURL
         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
         {
@@ -137,7 +137,8 @@
         fail:
             completion(error);
             return;
-        }]
-        resume];
+        }];
+    [self._progress addChild:task.progress withPendingUnitCount:1];
+    [task resume];
 }
 @end

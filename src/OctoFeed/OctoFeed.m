@@ -374,6 +374,11 @@
         session:self.session
         cacheBaseURL:self.cacheBaseURL];
 }
+
++ (NSSet *)keyPathsForValuesAffectingCurrentRelease
+{
+    return [NSSet setWithObject:@"_currentRelease"];
+}
 @end
 
 

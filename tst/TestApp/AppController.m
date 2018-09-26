@@ -22,6 +22,7 @@
 @property (assign) IBOutlet NSButton *installAtActivationRadio;
 @property (assign) IBOutlet NSButton *installAtQuitRadio;
 @property (assign) IBOutlet NSButton *installWhenReadyRadio;
+@property (assign) OctoFeed *feed;
 @end
 
 @implementation AppController
@@ -57,8 +58,10 @@
         break;
     }
 
+    self.feed = [OctoFeed mainBundleFeed];
+
     [OctoRelease requireCodeSignature:NO matchesTarget:NO];
-    BOOL res = [[OctoFeed mainBundleFeed] activateWithInstallPolicy:policy];
+    BOOL res = [self.feed activateWithInstallPolicy:policy];
 
     self.octoLabel.stringValue = res ? @"Activated" : @"";
 }
@@ -102,7 +105,7 @@
                 [release installAssetsSynchronously:^(
                     NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
                 {
-                    [[OctoFeed mainBundleFeed] clearThisAndPriorReleases:release];
+                    [self.feed clearThisAndPriorReleases:release];
                     if (0 < assets.count)
                         /* +[NSTask relaunch] does not return! */
                         [NSTask relaunchWithURL:[[assets allValues] firstObject]];

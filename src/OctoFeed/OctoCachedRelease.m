@@ -34,6 +34,7 @@
 
 - (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp
 {
+    int64_t pendingUnitCount = 0;
     NSError *error = nil;
     NSArray<NSURL *> *urls = [[NSFileManager defaultManager]
         contentsOfDirectoryAtURL:self.cacheBaseURL
@@ -90,6 +91,7 @@
                 {
                 case OctoReleaseInstalled:
                 case OctoReleaseReadyToInstall:
+                    pendingUnitCount = 100;
                     preparedAssets = [[NSFileManager defaultManager]
                         contentsOfDirectoryAtURL:[[self.cacheBaseURL
                             URLByAppendingPathComponent:releaseVersion]
@@ -97,8 +99,14 @@
                         includingPropertiesForKeys:nil
                         options:0
                         error:0];
-                    /* fall through */
+                    self._releaseVersion = releaseVersion;
+                    self._prerelease = !!prerelease;
+                    self._releaseAssets = releaseAssets;
+                    self._preparedAssets = preparedAssets;
+                    self._state = c;
+                    break;
                 case OctoReleaseFetched:
+                    pendingUnitCount = 1;
                     self._releaseVersion = releaseVersion;
                     self._prerelease = !!prerelease;
                     self._releaseAssets = releaseAssets;
@@ -110,6 +118,7 @@
                     break;
                 }
             }
+
             if (!res)
                 error = [NSError errorWithDomain:NSPOSIXErrorDomain code:EINVAL userInfo:nil];
         }
@@ -117,6 +126,13 @@
 
     if (0 != errorp)
         *errorp = error;
+
+    if (nil == error && 0 < pendingUnitCount)
+    {
+        NSProgress *fetchProgress = [NSProgress
+            progressWithTotalUnitCount:1 parent:self._progress pendingUnitCount:pendingUnitCount];
+        fetchProgress.completedUnitCount = 1;
+    }
 
     return YES;
 }
