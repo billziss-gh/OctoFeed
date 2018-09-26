@@ -405,13 +405,14 @@
 			files = (
 			);
 			inputPaths = (
+				$TARGET_BUILD_DIR/$INFOPLIST_PATH,
 			);
 			name = "Set Build Number";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "plist=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nversion=$(/usr/libexec/PlistBuddy -c \"Print :CFBundleShortVersionString\" \"$plist\")\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $version.$(date +%y%j)\" \"$plist\"";
+			shellScript = "plist=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\nversion=$(/usr/libexec/PlistBuddy -c \"Print :CFBundleShortVersionString\" \"$plist\")\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $version.$(date +%y%j)\" \"$plist\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
