@@ -424,6 +424,7 @@ static int progressKey;
         forKeyPath:@"fractionCompleted"
         options:0
         context:&progressKey];
+    [self postProgressValueNotification];
 
     return nil;
 }
