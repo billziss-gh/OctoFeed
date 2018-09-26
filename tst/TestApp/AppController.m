@@ -134,10 +134,9 @@
         setInteger:[sender tag] forKey:@"TestAppInstallPolicy"];
 }
 
-- (IBAction)clearLastCheckTimeAction:(id)sender
+- (IBAction)checkForUpdatesAction:(id)sender
 {
-    [[NSUserDefaults standardUserDefaults]
-        removeObjectForKey:OctoLastCheckTimeKey];
+    [self.feed check];
 }
 
 - (IBAction)relaunchAction:(id)sender

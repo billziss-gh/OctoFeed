@@ -142,6 +142,14 @@
     self._currentRelease = nil;
 }
 
+- (void)check
+{
+    [[NSUserDefaults standardUserDefaults]
+        removeObjectForKey:OctoLastCheckTimeKey];
+
+    [self performSelector:@selector(_tick:) withObject:nil afterDelay:0];
+}
+
 - (OctoRelease *)currentRelease
 {
     return self._currentRelease;

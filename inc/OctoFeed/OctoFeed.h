@@ -84,6 +84,11 @@ typedef NS_ENUM(NSUInteger, OctoFeedInstallPolicy)
 - (void)deactivate;
 
 /**
+ * Check for new releases now.
+ */
+- (void)check;
+
+/**
  * Returns the current release, if any.
  *
  * When OctoFeed finds a new release, this method returns non-nil.
