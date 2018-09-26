@@ -381,7 +381,6 @@
 }
 @end
 
-
 NSString *OctoNotification = @"OctoNotification";
 NSString *OctoNotificationReleaseKey = @"OctoNotificationRelease";
 NSString *OctoNotificationReleaseStateKey = @"OctoNotificationReleaseState";
