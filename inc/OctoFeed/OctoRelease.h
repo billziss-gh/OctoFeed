@@ -119,6 +119,11 @@ typedef void (^OctoReleaseCompletion)(
     cacheBaseURL:(NSURL *)cacheBaseURL;
 
 /**
+ * Cancels any asynchronous operations.
+ */
+- (void)cancel;
+
+/**
  * Fetches information about a release. This is an asynchronous call.
  *
  * Depending on the repository associated with this release, this call may fetch information

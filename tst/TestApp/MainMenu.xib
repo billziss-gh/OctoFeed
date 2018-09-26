@@ -689,10 +689,10 @@
         </menu>
         <window title="TestApp" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
-            <rect key="contentRect" x="335" y="390" width="400" height="340"/>
+            <rect key="contentRect" x="335" y="390" width="400" height="400"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="400" height="340"/>
+                <rect key="frame" x="0.0" y="0.0" width="400" height="400"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rBw-ZT-r09">
@@ -707,7 +707,7 @@
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cpO-Vl-QTM">
-                        <rect key="frame" x="18" y="303" width="364" height="17"/>
+                        <rect key="frame" x="18" y="363" width="364" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="VERSION" id="Rpj-TL-uPY">
                             <font key="font" metaFont="system"/>
@@ -716,7 +716,7 @@
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L4a-SI-GNA">
-                        <rect key="frame" x="18" y="278" width="364" height="17"/>
+                        <rect key="frame" x="18" y="338" width="364" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="PID" id="4aa-9t-YQZ">
                             <font key="font" metaFont="system"/>
@@ -725,7 +725,7 @@
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IFA-Bu-wfK">
-                        <rect key="frame" x="18" y="253" width="364" height="17"/>
+                        <rect key="frame" x="18" y="313" width="364" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="OCTOFEED STATUS" id="vtW-Ky-75Z">
                             <font key="font" metaFont="system"/>
@@ -734,18 +734,32 @@
                         </textFieldCell>
                     </textField>
                     <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="coG-18-ba4">
-                        <rect key="frame" x="19" y="226" width="360" height="20"/>
+                        <rect key="frame" x="19" y="286" width="360" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <connections>
                             <binding destination="Voe-Tx-rLC" name="value" keyPath="feed.currentRelease.progressValue" id="XYW-Kw-eLS"/>
                         </connections>
                     </progressIndicator>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="evs-cH-qKw">
+                        <rect key="frame" x="159" y="239" width="82" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cTe-YJ-5R9">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cancelAction:" target="Voe-Tx-rLC" id="d5C-M8-60X"/>
+                        </connections>
+                    </button>
                     <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Us8-gU-uwK">
-                        <rect key="frame" x="11" y="216" width="376" height="5"/>
+                        <rect key="frame" x="11" y="223" width="376" height="5"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </box>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yj6-3g-gbt">
-                        <rect key="frame" x="17" y="196" width="364" height="14"/>
+                        <rect key="frame" x="17" y="203" width="364" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Following settings require relaunch to take effect." id="ibc-VW-DTX">
                             <font key="font" metaFont="smallSystem"/>
@@ -754,7 +768,7 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ru5-Rw-4zh">
-                        <rect key="frame" x="111" y="58" width="177" height="32"/>
+                        <rect key="frame" x="111" y="65" width="177" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Clear Last Check Time" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uhf-gR-hk7">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -765,7 +779,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J8g-oD-zh5">
-                        <rect key="frame" x="104" y="171" width="150" height="18"/>
+                        <rect key="frame" x="104" y="178" width="150" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="OctoFeedInstallNone" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Zbd-gs-dni">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -776,7 +790,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="65" translatesAutoresizingMaskIntoConstraints="NO" id="K1g-nD-2Pg">
-                        <rect key="frame" x="104" y="149" width="191" height="18"/>
+                        <rect key="frame" x="104" y="156" width="191" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="OctoFeedInstallAtActivation" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ONP-wF-R4l">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -787,7 +801,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="81" translatesAutoresizingMaskIntoConstraints="NO" id="MDf-Mn-rqZ">
-                        <rect key="frame" x="104" y="127" width="156" height="18"/>
+                        <rect key="frame" x="104" y="134" width="156" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="OctoFeedInstallAtQuit" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7aD-Kg-Eph">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -798,7 +812,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="82" translatesAutoresizingMaskIntoConstraints="NO" id="wkt-hR-swE">
-                        <rect key="frame" x="104" y="105" width="190" height="18"/>
+                        <rect key="frame" x="104" y="112" width="190" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="OctoFeedInstallWhenReady" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="vGa-n3-maU">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -810,7 +824,7 @@
                     </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="139" y="-126"/>
+            <point key="canvasLocation" x="139" y="-100"/>
         </window>
     </objects>
 </document>

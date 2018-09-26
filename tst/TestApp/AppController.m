@@ -123,6 +123,11 @@
     }
 }
 
+- (IBAction)cancelAction:(id)sender
+{
+    [self.feed.currentRelease cancel];
+}
+
 - (IBAction)installRadioAction:(id)sender
 {
     [[NSUserDefaults standardUserDefaults]

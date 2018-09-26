@@ -144,6 +144,11 @@ static int progressKey;
     [super dealloc];
 }
 
+- (void)cancel
+{
+    [self._progress cancel];
+}
+
 - (void)fetch:(void (^)(NSError *))completion
 {
 }
