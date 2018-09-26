@@ -27,8 +27,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
 @property (copy) NSString *_releaseVersion;
 @property (assign) BOOL _prerelease;
 @property (copy) NSArray<NSURL *> *_releaseAssets;
-@property (copy) NSArray<NSURL *> *_downloadedAssets;
-@property (copy) NSArray<NSURL *> *_extractedAssets;
+@property (copy) NSArray<NSURL *> *_preparedAssets;
 @property (assign) OctoReleaseState _state;
 @end
 
@@ -125,8 +124,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     self._cacheBaseURL = nil;
     self._releaseVersion = nil;
     self._releaseAssets = nil;
-    self._downloadedAssets = nil;
-    self._extractedAssets = nil;
+    self._preparedAssets = nil;
 
     [super dealloc];
 }
@@ -140,10 +138,10 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     return NO;
 }
 
-- (void)downloadAssets:(OctoReleaseCompletion)completion
+- (void)prepareAssets:(OctoReleaseCompletion)completion
 {
     dispatch_group_t group = dispatch_group_create();
-    NSMutableDictionary *downloadedAssets = [NSMutableDictionary dictionary];
+    NSMutableDictionary *preparedAssets = [NSMutableDictionary dictionary];
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
     NSMutableArray *releaseAssets = [NSMutableArray array];
@@ -167,135 +165,92 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     if (0 < newReleaseAssets.count)
         releaseAssets = newReleaseAssets;
 
+    NSURL *preparedAssetsDir = [[self cacheURL] URLByAppendingPathComponent:@"preparedAssets"];
     for (NSURL *releaseAsset in releaseAssets)
     {
         dispatch_group_enter(group);
 
-        [[self._session
+        NSURLSessionDownloadTask *task = [self._session
             downloadTaskWithURL:releaseAsset
             completionHandler:^(NSURL *url, NSURLResponse *response, NSError *error)
             {
+                BOOL leave = YES;
+
                 if (nil != url)
                 {
-                    NSURL *downloadedAssetDir = [[self cacheURL]
-                        URLByAppendingPathComponent:@"downloadedAssets"];
-                    NSURL *downloadedAsset = [downloadedAssetDir
+                    NSURL *downloadDirURL = [[NSFileManager defaultManager]
+                        URLForDirectory:NSItemReplacementDirectory
+                        inDomain:NSUserDomainMask
+                        appropriateForURL:url
+                        create:YES
+                        error:&error];
+                    NSURL *downloadFileURL = [downloadDirURL
                         URLByAppendingPathComponent:[releaseAsset lastPathComponent]];
-                    NSURL *replaceDirURL = nil;
-                    BOOL res = [[NSFileManager defaultManager]
-                        createDirectoryAtURL:downloadedAssetDir
-                        withIntermediateDirectories:YES
-                        attributes:0
-                        error:&error];
-                    id ident[2];
-                    if (res &&
-                        [url getResourceValue:&ident[0] forKey:NSURLVolumeIdentifierKey error:0] &&
-                        [downloadedAssetDir
-                            getResourceValue:&ident[1] forKey:NSURLVolumeIdentifierKey error:0] &&
-                        ![ident[0] isEqual:ident[1]])
+                    if (nil != downloadFileURL)
                     {
-                            replaceDirURL = [[NSFileManager defaultManager]
-                                URLForDirectory:NSItemReplacementDirectory
-                                inDomain:NSUserDomainMask
-                                appropriateForURL:url
-                                create:YES
-                                error:&error];
-                            NSURL *replaceFileURL = [replaceDirURL
-                                URLByAppendingPathComponent:[url lastPathComponent]];
-                            res = res && nil != replaceFileURL;
-                            res = res && [[NSFileManager defaultManager]
-                                moveItemAtURL:url
-                                toURL:replaceFileURL
-                                error:&error];
-                            if (res)
-                                url = replaceFileURL;
+                        NSURL *preparedAsset = [preparedAssetsDir
+                            URLByAppendingPathComponent:[releaseAsset lastPathComponent]
+                            isDirectory:YES];
+                        BOOL res = [[NSFileManager defaultManager]
+                            moveItemAtURL:url
+                            toURL:downloadFileURL
+                            error:&error];
+                        res && [[NSFileManager defaultManager]
+                            removeItemAtURL:preparedAsset
+                            error:0];
+                        res = res && [[NSFileManager defaultManager]
+                            createDirectoryAtURL:preparedAsset
+                            withIntermediateDirectories:YES
+                            attributes:0
+                            error:&error];
+
+                        if (res)
+                        {
+                            error = nil;
+                            leave = NO;
+                            [OctoExtractor
+                                extractURL:downloadFileURL
+                                toURL:preparedAsset
+                                completion:^(NSError *error)
+                                {
+                                    if (nil == error)
+                                        [preparedAssets setObject:preparedAsset forKey:releaseAsset];
+                                    else
+                                        [errors setObject:error forKey:releaseAsset];
+
+                                    [[NSFileManager defaultManager]
+                                        removeItemAtURL:downloadDirURL error:0];
+
+                                    dispatch_group_leave(group);
+                                }];
+                        }
+                        else
+                            [[NSFileManager defaultManager]
+                                removeItemAtURL:downloadDirURL error:0];
                     }
-                    res = res && [[NSFileManager defaultManager]
-                        replaceItemAtURL:downloadedAsset
-                        withItemAtURL:url
-                        backupItemName:nil
-                        options:0
-                        resultingItemURL:0
-                        error:&error];
-                    if (nil != replaceDirURL)
-                        [[NSFileManager defaultManager]
-                            removeItemAtURL:replaceDirURL error:0];
-                    if (res)
-                        [downloadedAssets setObject:downloadedAsset forKey:releaseAsset];
                 }
+
                 if (nil != error)
                     [errors setObject:error forKey:releaseAsset];
 
-                dispatch_group_leave(group);
-            }] resume];
-    }
-
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^
-    {
-        if (0 < downloadedAssets.count && 0 == errors.count)
-        {
-            self._downloadedAssets = [downloadedAssets allValues];
-            self._state = OctoReleaseDownloaded;
-            [self commit];
-        }
-
-        completion(
-            0 < downloadedAssets.count ? downloadedAssets : nil,
-            0 < errors.count ? errors : nil);
-
-        dispatch_release(group);
-    });
-}
-
-- (void)extractAssets:(OctoReleaseCompletion)completion
-{
-    dispatch_group_t group = dispatch_group_create();
-    NSMutableDictionary *extractedAssets = [NSMutableDictionary dictionary];
-    NSMutableDictionary *errors = [NSMutableDictionary dictionary];
-
-    for (NSURL *downloadedAsset in self._downloadedAssets)
-    {
-        NSURL *extractedAsset = [[[self cacheURL]
-            URLByAppendingPathComponent:@"extractedAssets"]
-            URLByAppendingPathComponent:[downloadedAsset lastPathComponent] isDirectory:YES];
-        NSError *error = nil;
-        [[NSFileManager defaultManager]
-            removeItemAtURL:extractedAsset
-            error:0];
-        BOOL res = [[NSFileManager defaultManager]
-            createDirectoryAtURL:extractedAsset
-            withIntermediateDirectories:YES
-            attributes:0
-            error:&error];
-        if (res)
-        {
-            dispatch_group_enter(group);
-
-            [OctoExtractor extractURL:downloadedAsset toURL:extractedAsset completion:^(NSError *error)
-            {
-                if (nil == error)
-                    [extractedAssets setObject:extractedAsset forKey:downloadedAsset];
-                else
-                    [errors setObject:error forKey:downloadedAsset];
-
-                dispatch_group_leave(group);
+                if (leave)
+                    dispatch_group_leave(group);
             }];
-        }
-        else
-            [errors setObject:error forKey:downloadedAsset];
+
+        [task resume];
     }
 
     dispatch_group_notify(group, dispatch_get_main_queue(), ^
     {
-        if (0 < extractedAssets.count && 0 == errors.count)
+        if (0 < preparedAssets.count && 0 == errors.count)
         {
-            self._extractedAssets = [extractedAssets allValues];
-            self._state = OctoReleaseExtracted;
+            self._preparedAssets = [preparedAssets allValues];
+            self._state = OctoReleaseReadyToInstall;
             [self commit];
         }
 
         completion(
-            0 < extractedAssets.count ? extractedAssets : nil,
+            0 < preparedAssets.count ? preparedAssets : nil,
             0 < errors.count ? errors : nil);
 
         dispatch_release(group);
@@ -307,11 +262,11 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     NSMutableDictionary *installedAssets = [NSMutableDictionary dictionary];
     NSMutableDictionary *errors = [NSMutableDictionary dictionary];
 
-    for (NSURL *extractedAsset in self._extractedAssets)
+    for (NSURL *preparedAsset in self._preparedAssets)
     {
         NSError *error = nil;
         NSArray<NSURL *> *urls = [[NSFileManager defaultManager]
-            contentsOfDirectoryAtURL:extractedAsset
+            contentsOfDirectoryAtURL:preparedAsset
             includingPropertiesForKeys:[NSArray arrayWithObject:NSURLIsPackageKey]
             options:0
             error:&error];
@@ -401,7 +356,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
             }
         }
         else
-            [errors setObject:error forKey:extractedAsset];
+            [errors setObject:error forKey:preparedAsset];
     }
 
     if (0 < installedAssets.count && 0 == errors.count)
@@ -431,8 +386,7 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     self._releaseVersion = nil;
     self._prerelease = NO;
     self._releaseAssets = nil;
-    self._downloadedAssets = nil;
-    self._extractedAssets = nil;
+    self._preparedAssets = nil;
     self._state = OctoReleaseEmpty;
 
     return nil;
@@ -481,14 +435,9 @@ static BOOL requireCodeSignatureMatchesTarget = YES;
     return self._releaseAssets;
 }
 
-- (NSArray<NSURL *> *)downloadedAssets
+- (NSArray<NSURL *> *)preparedAssets
 {
-    return self._downloadedAssets;
-}
-
-- (NSArray<NSURL *> *)extractedAssets
-{
-    return self._extractedAssets;
+    return self._preparedAssets;
 }
 
 - (OctoReleaseState)state

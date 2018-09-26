@@ -331,15 +331,7 @@
     switch (release.state)
     {
     case OctoReleaseFetched:
-        [release downloadAssets:^(
-            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-        {
-            [self _advanceReleaseState:release assets:assets errors:errors];
-        }];
-        break;
-
-    case OctoReleaseDownloaded:
-        [release extractAssets:^(
+        [release prepareAssets:^(
             NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
         {
             [self _advanceReleaseState:release assets:assets errors:errors];

@@ -85,9 +85,6 @@
     case OctoReleaseFetched:
         self.octoLabel.stringValue = @"OctoReleaseFetched";
         break;
-    case OctoReleaseDownloaded:
-        self.octoLabel.stringValue = @"OctoReleaseDownloaded";
-        break;
     case OctoReleaseReadyToInstall:
         if (OctoFeedInstallWhenReady == [[NSUserDefaults standardUserDefaults]
             integerForKey:@"TestAppInstallPolicy"])

@@ -23,27 +23,16 @@ typedef NS_ENUM(NSUInteger, OctoReleaseState)
     OctoReleaseEmpty                    = 0,
 
     /**
-     * Release has been fetched. Information such as the release version and the release assets
-     * is available.
+     * Release has been fetched. Information such as the release version and
+     * the release assets is available.
      */
     OctoReleaseFetched                  = 'F',
 
     /**
-     * Release assets have been downloaded, but not extracted.
-     */
-    OctoReleaseDownloaded               = 'D',
-
-    /**
-     * Release assets have been extracted, but not installed.
-     * This value is the same as OctoReleaseReadyToInstall.
-     */
-    OctoReleaseExtracted                = 'R',
-
-    /**
+     * Release assets have been downloaded and prepared for installation.
      * Release is ready to be installed.
-     * This value is the same as OctoReleaseExtracted.
      */
-    OctoReleaseReadyToInstall           = OctoReleaseExtracted,
+    OctoReleaseReadyToInstall           = 'R',
 
     /**
      * Release has been installed.
@@ -58,7 +47,7 @@ typedef void (^OctoReleaseCompletion)(
  * OctoRelease encapsulates a single release of a product or project.
  *
  * OctoRelease provides functionality such as fetching cached and new releases, downloading and
- * extracting assets associated with a release and installing those assets.
+ * preparing assets associated with a release and installing those assets.
  */
 @interface OctoRelease : NSObject
 
@@ -153,26 +142,19 @@ typedef void (^OctoReleaseCompletion)(
 - (BOOL)fetchSynchronouslyIfAble:(NSError **)errorp;
 
 /**
- * Downloads assets associated with a release. This is an asynchronous call.
+ * Prepare assets associated with a release for installation. This is an asynchronous call.
  *
  * The state of the release prior to this call must be OctoReleaseFetched. If all assets are
- * successfully downloaded the state of this instance will change to OctoReleaseDownloaded.
+ * successfully downloaded and prepared the state of this instance will change to
+ * OctoReleaseReadyToInstall.
  */
-- (void)downloadAssets:(OctoReleaseCompletion)completion;
-
-/**
- * Extracts assets associated with a release. This is an asynchronous call.
- *
- * The state of the release prior to this call must be OctoReleaseDownloaded. If all assets are
- * successfully extracted the state of this instance will change to OctoReleaseReadyToInstall.
- */
-- (void)extractAssets:(OctoReleaseCompletion)completion;
+- (void)prepareAssets:(OctoReleaseCompletion)completion;
 
 /**
  * Installs assets associated with a release. This is a synchronous call.
  *
  * The state of the release prior to this call must be OctoReleaseReadyToInstall. If all assets are
- * successfully extracted the state of this instance will change to OctoReleaseInstalled.
+ * successfully installed the state of this instance will change to OctoReleaseInstalled.
  *
  * If this call is used to update the main bundle, the application should be relaunched ASAP.
  */
@@ -230,16 +212,10 @@ typedef void (^OctoReleaseCompletion)(
 - (NSArray<NSURL *> *)releaseAssets;
 
 /**
- * Downloaded assets associated with a release.
- * Valid after a successful call to downloadAssets:.
+ * Prepared assets associated with a release.
+ * Valid after a successful call to prepareAssets:.
  */
-- (NSArray<NSURL *> *)downloadedAssets;
-
-/**
- * Extracted assets associated with a release.
- * Valid after a successful call to extractAssets:.
- */
-- (NSArray<NSURL *> *)extractedAssets;
+- (NSArray<NSURL *> *)preparedAssets;
 
 /**
  * Release state.
@@ -259,7 +235,6 @@ typedef void (^OctoReleaseCompletion)(
 @property (copy) NSString *_releaseVersion;
 @property (assign) BOOL _prerelease;
 @property (copy) NSArray<NSURL *> *_releaseAssets;
-@property (copy) NSArray<NSURL *> *_downloadedAssets;
-@property (copy) NSArray<NSURL *> *_extractedAssets;
+@property (copy) NSArray<NSURL *> *_preparedAssets;
 @property (assign) OctoReleaseState _state;
 @end

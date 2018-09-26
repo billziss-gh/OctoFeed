@@ -95,68 +95,27 @@
     [self _clearRelease:release];
 }
 
-- (void)testGitHubDownload
+- (void)testGitHubPrepare
 {
     OctoRelease *release = [self _githubRelease];
 
-    XCTestExpectation *exp = [self expectationWithDescription:@"downloadAssets:"];
+    XCTestExpectation *exp = [self expectationWithDescription:@"prepareAssets:"];
 
-    [release downloadAssets:^(
+    [release prepareAssets:^(
         NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
         XCTAssertEqual(1, assets.count);
         XCTAssertNil(errors);
 
-        XCTAssertEqual(OctoReleaseDownloaded, release.state);
+        XCTAssertEqual(OctoReleaseReadyToInstall, release.state);
 
-        NSSet *set0 = [NSSet setWithArray:release.downloadedAssets];
+        NSSet *set0 = [NSSet setWithArray:release.preparedAssets];
         NSSet *set1 = [NSSet setWithArray:[assets allValues]];
         XCTAssertEqualObjects(set0, set1);
 
         NSLog(@"%@", assets);
 
         [exp fulfill];
-    }];
-
-    [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
-
-    [self _clearRelease:release];
-}
-
-- (void)testGitHubDownloadAndExtract
-{
-    OctoRelease *release = [self _githubRelease];
-
-    XCTestExpectation *exp = [self expectationWithDescription:@"downloadAssets:"];
-
-    [release downloadAssets:^(
-        NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-    {
-        XCTAssertEqual(1, assets.count);
-        XCTAssertNil(errors);
-
-        XCTAssertEqual(OctoReleaseDownloaded, release.state);
-
-        NSSet *set0 = [NSSet setWithArray:release.downloadedAssets];
-        NSSet *set1 = [NSSet setWithArray:[assets allValues]];
-        XCTAssertEqualObjects(set0, set1);
-
-        [release extractAssets:^(
-            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-        {
-            XCTAssertEqual(1, assets.count);
-            XCTAssertNil(errors);
-
-            XCTAssertEqual(OctoReleaseExtracted, release.state);
-
-            NSSet *set0 = [NSSet setWithArray:release.extractedAssets];
-            NSSet *set1 = [NSSet setWithArray:[assets allValues]];
-            XCTAssertEqualObjects(set0, set1);
-
-            NSLog(@"%@", assets);
-
-            [exp fulfill];
-        }];
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
@@ -222,40 +181,27 @@
     [self _clearRelease:cachedRelease];
 }
 
-- (void)testGitHubDownloadAndExtractCachedFetch
+- (void)testGitHubPrepareCachedFetch
 {
     OctoRelease *release = [self _githubRelease];
 
-    XCTestExpectation *exp = [self expectationWithDescription:@"downloadAssets:"];
+    XCTestExpectation *exp = [self expectationWithDescription:@"prepareAssets:"];
 
-    [release downloadAssets:^(
+    [release prepareAssets:^(
         NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
         XCTAssertEqual(1, assets.count);
         XCTAssertNil(errors);
 
-        XCTAssertEqual(OctoReleaseDownloaded, release.state);
+        XCTAssertEqual(OctoReleaseReadyToInstall, release.state);
 
-        NSSet *set0 = [NSSet setWithArray:release.downloadedAssets];
+        NSSet *set0 = [NSSet setWithArray:release.preparedAssets];
         NSSet *set1 = [NSSet setWithArray:[assets allValues]];
         XCTAssertEqualObjects(set0, set1);
 
-        [release extractAssets:^(
-            NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
-        {
-            XCTAssertEqual(1, assets.count);
-            XCTAssertNil(errors);
+        NSLog(@"%@", assets);
 
-            XCTAssertEqual(OctoReleaseExtracted, release.state);
-
-            NSSet *set0 = [NSSet setWithArray:release.extractedAssets];
-            NSSet *set1 = [NSSet setWithArray:[assets allValues]];
-            XCTAssertEqualObjects(set0, set1);
-
-            NSLog(@"%@", assets);
-
-            [exp fulfill];
-        }];
+        [exp fulfill];
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
@@ -284,8 +230,7 @@
     XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
     XCTAssertEqual(release.prerelease, cachedRelease.prerelease);
     XCTAssertEqualObjects(release.releaseAssets, cachedRelease.releaseAssets);
-    XCTAssertEqualObjects(release.downloadedAssets, cachedRelease.downloadedAssets);
-    XCTAssertEqualObjects(release.extractedAssets, cachedRelease.extractedAssets);
+    XCTAssertEqualObjects(release.preparedAssets, cachedRelease.preparedAssets);
     XCTAssertEqual(release.state, cachedRelease.state);
 
     [self _clearRelease:cachedRelease];

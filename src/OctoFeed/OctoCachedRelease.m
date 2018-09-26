@@ -84,26 +84,16 @@
             }
             if (res)
             {
-                NSArray<NSURL *> *downloadedAssets = nil;
-                NSArray<NSURL *> *extractedAssets = nil;
+                NSArray<NSURL *> *preparedAssets = nil;
                 unichar c = [state characterAtIndex:0];
                 switch (c)
                 {
                 case OctoReleaseInstalled:
-                case OctoReleaseExtracted:
-                    extractedAssets = [[NSFileManager defaultManager]
+                case OctoReleaseReadyToInstall:
+                    preparedAssets = [[NSFileManager defaultManager]
                         contentsOfDirectoryAtURL:[[self.cacheBaseURL
                             URLByAppendingPathComponent:releaseVersion]
-                            URLByAppendingPathComponent:@"extractedAssets"]
-                        includingPropertiesForKeys:nil
-                        options:0
-                        error:0];
-                    /* fall through */
-                case OctoReleaseDownloaded:
-                    downloadedAssets = [[NSFileManager defaultManager]
-                        contentsOfDirectoryAtURL:[[self.cacheBaseURL
-                            URLByAppendingPathComponent:releaseVersion]
-                            URLByAppendingPathComponent:@"downloadedAssets"]
+                            URLByAppendingPathComponent:@"preparedAssets"]
                         includingPropertiesForKeys:nil
                         options:0
                         error:0];
@@ -112,8 +102,7 @@
                     self._releaseVersion = releaseVersion;
                     self._prerelease = !!prerelease;
                     self._releaseAssets = releaseAssets;
-                    self._downloadedAssets = downloadedAssets;
-                    self._extractedAssets = extractedAssets;
+                    self._preparedAssets = preparedAssets;
                     self._state = c;
                     break;
                 default:
