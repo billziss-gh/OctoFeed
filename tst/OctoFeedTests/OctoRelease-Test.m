@@ -104,14 +104,14 @@
     [release prepareAssets:^(
         NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
-        XCTAssertEqual(1, assets.count);
+        XCTAssert(1 == assets.count || 2 == assets.count);
         XCTAssertNil(errors);
 
         XCTAssertEqual(OctoReleaseReadyToInstall, release.state);
 
-        NSSet *set0 = [NSSet setWithArray:release.preparedAssets];
-        NSSet *set1 = [NSSet setWithArray:[assets allValues]];
-        XCTAssertEqualObjects(set0, set1);
+        XCTAssertEqualObjects(
+            [NSSet setWithArray:release.preparedAssets],
+            [NSSet setWithArray:[assets allValues]]);
 
         NSLog(@"%@", assets);
 
@@ -149,7 +149,9 @@
 
     XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
     XCTAssertEqual(release.prerelease, cachedRelease.prerelease);
-    XCTAssertEqualObjects(release.releaseAssets, cachedRelease.releaseAssets);
+    XCTAssertEqualObjects(
+        [NSSet setWithArray:release.releaseAssets],
+        [NSSet setWithArray:cachedRelease.releaseAssets]);
     XCTAssertEqual(release.state, cachedRelease.state);
 
     [self _clearRelease:cachedRelease];
@@ -175,7 +177,9 @@
 
     XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
     XCTAssertEqual(release.prerelease, cachedRelease.prerelease);
-    XCTAssertEqualObjects(release.releaseAssets, cachedRelease.releaseAssets);
+    XCTAssertEqualObjects(
+        [NSSet setWithArray:release.releaseAssets],
+        [NSSet setWithArray:cachedRelease.releaseAssets]);
     XCTAssertEqual(release.state, cachedRelease.state);
 
     [self _clearRelease:cachedRelease];
@@ -190,14 +194,14 @@
     [release prepareAssets:^(
         NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
-        XCTAssertEqual(1, assets.count);
+        XCTAssert(1 == assets.count || 2 == assets.count);
         XCTAssertNil(errors);
 
         XCTAssertEqual(OctoReleaseReadyToInstall, release.state);
 
-        NSSet *set0 = [NSSet setWithArray:release.preparedAssets];
-        NSSet *set1 = [NSSet setWithArray:[assets allValues]];
-        XCTAssertEqualObjects(set0, set1);
+        XCTAssertEqualObjects(
+            [NSSet setWithArray:release.preparedAssets],
+            [NSSet setWithArray:[assets allValues]]);
 
         NSLog(@"%@", assets);
 
@@ -229,8 +233,12 @@
 
     XCTAssertEqualObjects(release.releaseVersion, cachedRelease.releaseVersion);
     XCTAssertEqual(release.prerelease, cachedRelease.prerelease);
-    XCTAssertEqualObjects(release.releaseAssets, cachedRelease.releaseAssets);
-    XCTAssertEqualObjects(release.preparedAssets, cachedRelease.preparedAssets);
+    XCTAssertEqualObjects(
+        [NSSet setWithArray:release.releaseAssets],
+        [NSSet setWithArray:cachedRelease.releaseAssets]);
+    XCTAssertEqualObjects(
+        [NSSet setWithArray:release.preparedAssets],
+        [NSSet setWithArray:cachedRelease.preparedAssets]);
     XCTAssertEqual(release.state, cachedRelease.state);
 
     [self _clearRelease:cachedRelease];
