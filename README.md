@@ -1,5 +1,7 @@
 <h1 align="center">
-    OctoFeed &middot; Update framework for macOS with GitHub integration<br/>
+    OctoFeed<br/>
+    Update framework for macOS with GitHub integration<br/>
+    <br/>
     <a href="https://github.com/billziss-gh/OctoFeed/releases">
         <img src="https://img.shields.io/github/release/billziss-gh/OctoFeed/all.svg?label=download&style=for-the-badge"/>
     </a>
