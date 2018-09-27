@@ -1,5 +1,5 @@
 /**
- * @file OctoRelease.h
+ * @file OctoFeed/OctoRelease.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -12,29 +12,28 @@
 
 #import <Foundation/Foundation.h>
 
-/*
- * OctoRelease state.
+/**
+ * OctoReleaseState
  */
 typedef NS_ENUM(NSUInteger, OctoReleaseState)
 {
-    /**
+    /*
      * Release is empty and has not been fetched.
      */
     OctoReleaseEmpty                    = 0,
 
-    /**
-     * Release has been fetched. Information such as the release version and
+    /*
+     * Release has been fetched: information such as the release version and
      * the release assets is available.
      */
     OctoReleaseFetched                  = 'F',
 
-    /**
+    /*
      * Release assets have been downloaded and prepared for installation.
-     * Release is ready to be installed.
      */
     OctoReleaseReadyToInstall           = 'R',
 
-    /**
+    /*
      * Release has been installed.
      */
     OctoReleaseInstalled                = 'I',
@@ -44,20 +43,20 @@ typedef void (^OctoReleaseCompletion)(
     NSDictionary<NSURL *, NSURL *> *, NSDictionary<NSURL *, NSError *> *);
 
 /**
- * OctoRelease encapsulates a single release of a product or project.
+ * Encapsulates a single release of a product or project.
  *
- * OctoRelease provides functionality such as fetching cached and new releases, downloading and
- * preparing assets associated with a release and installing those assets.
+ * OctoRelease provides functionality to fetch new and cached releases, download their assets and
+ * install them.
  */
 @interface OctoRelease : NSObject
 
 /**
+ * @method registerClass:
  * Registers a class to handle a specific service.
- * For example, the service "github.com" is handled by a class that knows how to fetch GitHub
- * releases.
  *
- * The special service value of "" is used to fetch cached releases (releases that have already
- * been downloaded to some extent).
+ * @param service
+ *     The service to register this class for. For example, the service "github.com"
+ *     is registered by a class that knows how to fetch GitHub releases.
  */
 + (void)registerClass:(NSString *)service;
 
@@ -77,20 +76,22 @@ typedef void (^OctoReleaseCompletion)(
 + (NSURL *)defaultCacheBaseURL;
 
 /**
- * Returns a release for the specified repository. The new release will have a state of
- * OctoReleaseEmpty until the first fetch call.
+ * Returns a release for the specified repository.
+ *
+ * The new release will have a state of OctoReleaseEmpty until the first fetch call.
  */
 + (OctoRelease *)releaseWithRepository:(NSString *)repository;
 
 /**
- * Returns a release for the specified repository. The new release will have a state of
- * OctoReleaseEmpty until the first fetch call.
+ * Returns a release for the specified repository.
  *
  * Allows the specification of multiple target bundles (to update bundles other than the main
  * bundle), a custom URL session or a custom cache location. Specify nil for default values.
  *
  * If you specify a custom URL session you MUST use [NSOperationQueue mainQueue] as its
  * delegateQueue.
+ *
+ * The new release will have a state of OctoReleaseEmpty until the first fetch call.
  */
 + (OctoRelease *)releaseWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
@@ -98,20 +99,22 @@ typedef void (^OctoReleaseCompletion)(
     cacheBaseURL:(NSURL *)cacheBaseURL;
 
 /**
- * Initializes a release for the specified repository. The new release will have a state of
- * OctoReleaseEmpty until the first fetch call.
+ * Initializes a release for the specified repository.
+ *
+ * The new release will have a state of OctoReleaseEmpty until the first fetch call.
  */
 - (id)initWithRepository:(NSString *)repository;
 
 /**
- * Initializes a release for the specified repository. The new release will have a state of
- * OctoReleaseEmpty until the first fetch call.
+ * Initializes a release for the specified repository.
  *
  * Allows the specification of multiple target bundles (to update bundles other than the main
  * bundle), a custom URL session or a custom cache location. Specify nil for default values.
  *
  * If you specify a custom URL session you MUST use [NSOperationQueue mainQueue] as its
  * delegateQueue.
+ *
+ * The new release will have a state of OctoReleaseEmpty until the first fetch call.
  */
 - (id)initWithRepository:(NSString *)repository
     targetBundles:(NSArray<NSBundle *> *)bundles
@@ -246,13 +249,37 @@ typedef void (^OctoReleaseCompletion)(
 @end
 
 /**
- * Extensions for OctoRelease subclasses.
+ * Provides extensions useful to OctoRelease subclasses.
  */
 @interface OctoRelease (Extensions)
+
+/**
+ * Backing property for releaseVersion.
+ */
 @property (copy) NSString *_releaseVersion;
+
+/**
+ * Backing property for prerelease.
+ */
 @property (assign) BOOL _prerelease;
+
+/**
+ * Backing property for releaseAssets.
+ */
 @property (copy) NSArray<NSURL *> *_releaseAssets;
+
+/**
+ * Backing property for preparedAssets.
+ */
 @property (copy) NSArray<NSURL *> *_preparedAssets;
+
+/**
+ * Backing property for state.
+ */
 @property (assign) OctoReleaseState _state;
+
+/**
+ * Backing property for progress.
+ */
 @property (retain) NSProgress *_progress;
 @end

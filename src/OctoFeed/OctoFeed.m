@@ -1,5 +1,5 @@
 /**
- * @file OctoFeed.m
+ * @file OctoFeed/OctoFeed.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */

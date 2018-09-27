@@ -1,5 +1,5 @@
 /**
- * @file NSTask+Relaunch.h
+ * @file OctoFeed/NSTask+Relaunch.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -12,6 +12,9 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * Provides methods to relaunch the currently running application.
+ */
 @interface NSTask (Relaunch)
 
 /**

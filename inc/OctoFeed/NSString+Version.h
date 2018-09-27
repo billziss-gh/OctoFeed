@@ -1,5 +1,5 @@
 /**
- * @file NSString+Version.h
+ * @file OctoFeed/NSString+Version.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */
@@ -12,10 +12,13 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * Provides methods to validate and compare version strings.
+ */
 @interface NSString (Version)
 
 /**
- * Checks whether a version string is a valid version.
+ * Checks whether this is a valid version string.
  */
 - (BOOL)versionValidate;
 

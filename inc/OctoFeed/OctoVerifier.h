@@ -1,5 +1,5 @@
 /**
- * @file OctoVerifier.h
+ * @file OctoFeed/OctoVerifier.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */

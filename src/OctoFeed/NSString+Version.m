@@ -1,5 +1,5 @@
 /**
- * @file NSString+Version.m
+ * @file OctoFeed/NSString+Version.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */

@@ -1,5 +1,5 @@
 /**
- * @file NSObject+OctoExtensions.m
+ * @file OctoFeed/NSObject+OctoExtensions.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */

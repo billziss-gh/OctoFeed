@@ -1,5 +1,5 @@
 /**
- * @file OctoExtractor.h
+ * @file OctoFeed/OctoExtractor.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */

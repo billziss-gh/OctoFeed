@@ -1,5 +1,5 @@
 /**
- * @file OctoGitHubRelease.h
+ * @file OctoFeed/OctoGitHubRelease.h
  *
  * @copyright 2018 Bill Zissimopoulos
  */

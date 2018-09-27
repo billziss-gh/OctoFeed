@@ -1,5 +1,5 @@
 /**
- * @file NSTask+Relaunch.m
+ * @file OctoFeed/NSTask+Relaunch.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */

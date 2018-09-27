@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="html.css">
+</head>
+<body>
+<div class="page-container">
+<a id="//apple_ref/doc/header/OctoFeed.h" name="//apple_ref/doc/header/OctoFeed.h"></a>
+<a id="OctoFeed/OctoFeed.h" name="OctoFeed/OctoFeed.h"></a>
+<div class="summary">
+<h1 class="header-name">OctoFeed/OctoFeed.h</h1>
+<div class="header-abstract"><p>OctoFeed provides functionality for easily updating macOS applications. This functionality
+includes checking for new releases, downloading them and installing them. It also includes
+lower-level functionality such as relauncing an application.
+</p>
+</div>
+</div>
+<div class="header-desc">
+<p>The main 2 classes in this framework are OctoFeed and OctoRelease.
+</p>
+<ul>
+<li><p>OctoFeed acts as an orchestrator and manages the overall process of updating
+an application. Usually there is a single OctoFeed instance (accessible using
++mainBundleFeed) that manages updates for the main bundle.</p></li>
+<li><p>OctoRelease encapsulates a single release and provides functionality to fetch releases,
+download their assets and install them.
+</p></li></ul>
+
+<p>At a minimum the following steps are required to enable automatic updates for an application:
+</p>
+<ul>
+<li><p>Add an "OctoRepository" key to your Info.plist pointing to your GitHub repository
+(e.g. github.com/billziss-gh/OctoFeed).
+</p></li>
+<li><p>Add the following code in your applicationDidFinishLaunching: method. Either:
+ </p>
+<pre>
+ [[OctoFeed mainBundleFeed] activateWithInstallPolicy:OctoFeedInstallAtActivation];
+ </pre>
+<p>Or:
+ </p>
+<pre>
+ [[OctoFeed mainBundleFeed] activateWithInstallPolicy:OctoFeedInstallAtQuit];
+ </pre>
+<p>The code you choose depends on whether you want update installation to happen during launch
+time or quit time. It is also possible to have more control over the installation by using
+a different policy.
+</p></li>
+</ul></div>
+<h3 class="section">Classes</h3>
+<a id="//apple_ref/occ/cl/OctoFeed" name="//apple_ref/occ/cl/OctoFeed"></a>
+<a id="OctoFeed" name="OctoFeed"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="class-name">OctoFeed</h1>
+<div class="class-abstract"><p>Manages the overall update process.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<h2 class="class-desc">Discussion</h2>
+<div class="class-desc"><p>OctoFeed checks for new releases, downloads them and installs them according
+to specified policy.
+</p></div>
+<h3 class="section">Methods</h3>
+<a id="//apple_ref/occ/instm/OctoFeed/activateWithInstallPolicy:" name="//apple_ref/occ/instm/OctoFeed/activateWithInstallPolicy:"></a>
+<a id="activateWithInstallPolicy:" name="activateWithInstallPolicy:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- activateWithInstallPolicy:</h1>
+<div class="method-abstract"><p>Activates this instance with the specified install policy.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">BOOL</span>)<span class="dfun">activateWithInstallPolicy</span>:(<span class="dtyp">OctoFeedInstallPolicy</span>)<span class="dvar">policy</span>; 
+</pre>
+<h2 class="method-parameterlist">Parameters</h2>
+<table class="method-parameterlist">
+<tbody>
+<tr class="method-parameter">
+<td class="method-parameter-name"><p>policy</p></td>
+<td class="method-parameter-desc"><p>The install policy to use when activated.</p></td>
+</tr>
+</tbody>
+</table>
+<h2 class="method-result">Return Value</h2>
+<div class="method-result"><p>YES on success; NO on failure.
+</p></div>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>Depending on the policy the instance will check for new releases, download them,
+extract them and install them.
+</p>
+</div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoFeed/check" name="//apple_ref/occ/instm/OctoFeed/check"></a>
+<a id="check" name="check"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- check</h1>
+<div class="method-abstract"><p>Initiates a check for new releases.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">void</span>)<span class="dvar">check</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoFeed/clearThisAndPriorReleases:" name="//apple_ref/occ/instm/OctoFeed/clearThisAndPriorReleases:"></a>
+<a id="clearThisAndPriorReleases:" name="clearThisAndPriorReleases:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- clearThisAndPriorReleases:</h1>
+<div class="method-abstract"><p>Clears any cached information (downloaded files, etc.) for the specified release and
+any releases with earlier versions.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSError</span> <span class="dtyp">*</span>)<span class="dfun">clearThisAndPriorReleases</span>:(<span class="dtyp">OctoRelease</span> <span class="dtyp">*</span>)<span class="dvar">release</span>; 
+</pre>
+<h2 class="method-parameterlist">Parameters</h2>
+<table class="method-parameterlist">
+<tbody>
+<tr class="method-parameter">
+<td class="method-parameter-name"><p>release</p></td>
+<td class="method-parameter-desc"><p>The release to clear.</p></td>
+</tr>
+</tbody>
+</table>
+<h2 class="method-result">Return Value</h2>
+<div class="method-result"><p>Returns nil on success; NSError on failure.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoFeed/currentRelease" name="//apple_ref/occ/instm/OctoFeed/currentRelease"></a>
+<a id="currentRelease" name="currentRelease"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- currentRelease</h1>
+<div class="method-abstract"><p>Returns the current release, if any.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">OctoRelease</span> <span class="dtyp">*</span>)<span class="dvar">currentRelease</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>When OctoFeed finds a new release, this method returns non-nil.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoFeed/deactivate" name="//apple_ref/occ/instm/OctoFeed/deactivate"></a>
+<a id="deactivate" name="deactivate"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- deactivate</h1>
+<div class="method-abstract"><p>Deactivates this instance.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">void</span>)<span class="dvar">deactivate</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoFeed/initWithBundle:" name="//apple_ref/occ/instm/OctoFeed/initWithBundle:"></a>
+<a id="initWithBundle:" name="initWithBundle:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- initWithBundle:</h1>
+<div class="method-abstract"><p>Initializes an OctoFeed instance to manage updates for the specified bundle.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">id</span>)<span class="dfun">initWithBundle</span>:(<span class="dtyp">NSBundle</span> <span class="dtyp">*</span>)<span class="dvar">bundle</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The bundle must contain an "OctoRepository" key that points to the repository to check for
+new releases. For example, this project's own repository would be specified as
+"github.com/billziss-gh/OctoFeed."
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/OctoFeed/mainBundleFeed" name="//apple_ref/occ/clm/OctoFeed/mainBundleFeed"></a>
+<a id="mainBundleFeed" name="mainBundleFeed"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ mainBundleFeed</h1>
+<div class="method-abstract"><p>Returns the default OctoFeed instance, which manages updates for the main bundle.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">OctoFeed</span> <span class="dtyp">*</span>)<span class="dvar">mainBundleFeed</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The bundle must contain an "OctoRepository" key that points to the repository to check for
+new releases. For example, this project's own repository would be specified as
+"github.com/billziss-gh/OctoFeed."
+</p></div>
+</div>
+</details>
+<h3 class="section">Properties</h3>
+<a id="//apple_ref/occ/instp/OctoFeed/cacheBaseURL" name="//apple_ref/occ/instp/OctoFeed/cacheBaseURL"></a>
+<a id="cacheBaseURL" name="cacheBaseURL"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">cacheBaseURL</h1>
+<div class="property-abstract"><p>The base directory where cached information for all releases is stored.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">copy</span>) <span class="dtyp">NSURL</span> <span class="dtyp">*</span><span class="dvar">cacheBaseURL</span>; 
+</pre>
+<h2 class="property-desc">Discussion</h2>
+<div class="property-desc"><p>The default value is a location under ~/Library/Caches.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoFeed/checkPeriod" name="//apple_ref/occ/instp/OctoFeed/checkPeriod"></a>
+<a id="checkPeriod" name="checkPeriod"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">checkPeriod</h1>
+<div class="property-abstract"><p>How often to perform a release check.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">assign</span>) <span class="dtyp">NSTimeInterval</span> <span class="dvar">checkPeriod</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoFeed/repository" name="//apple_ref/occ/instp/OctoFeed/repository"></a>
+<a id="repository" name="repository"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">repository</h1>
+<div class="property-abstract"><p>The repository to check for new releases.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">copy</span>) <span class="dtyp">NSString</span> <span class="dtyp">*</span><span class="dvar">repository</span>; 
+</pre>
+<h2 class="property-desc">Discussion</h2>
+<div class="property-desc"><p>For example, this project's own repository would be specified as
+"github.com/billziss-gh/OctoFeed."
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoFeed/session" name="//apple_ref/occ/instp/OctoFeed/session"></a>
+<a id="session" name="session"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">session</h1>
+<div class="property-abstract"><p>A URL sesssion to use for downloading releases.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">retain</span>) <span class="dtyp">NSURLSession</span> <span class="dtyp">*</span><span class="dvar">session</span>; 
+</pre>
+<h2 class="property-desc">Discussion</h2>
+<div class="property-desc"><p>If a custom session is assigned, it MUST use [NSOperationQueue mainQueue] as its delegateQueue.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoFeed/targetBundles" name="//apple_ref/occ/instp/OctoFeed/targetBundles"></a>
+<a id="targetBundles" name="targetBundles"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">targetBundles</h1>
+<div class="property-abstract"><p>The bundles that can be updated by a new release.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">copy</span>) <span class="dtyp">NSArray</span>&lt;<span class="dtpl">NSBundle</span> <span class="dtpl">*</span>&gt; <span class="dtyp">*</span><span class="dvar">targetBundles</span>; 
+</pre>
+<h2 class="property-desc">Discussion</h2>
+<div class="property-desc"><p>Normally this array contains only the main bundle.
+</p></div>
+</div>
+</details>
+</div>
+</details>
+<a id="//apple_ref/occ/cl/OctoRelease" name="//apple_ref/occ/cl/OctoRelease"></a>
+<a id="OctoRelease" name="OctoRelease"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="class-name">OctoRelease</h1>
+<div class="class-abstract"><p>Encapsulates a single release of a product or project.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<h2 class="class-desc">Discussion</h2>
+<div class="class-desc"><p>OctoRelease provides functionality to fetch new and cached releases, download their assets and
+install them.
+</p></div>
+<h3 class="section">Methods</h3>
+<a id="//apple_ref/occ/instm/OctoRelease/cacheBaseURL" name="//apple_ref/occ/instm/OctoRelease/cacheBaseURL"></a>
+<a id="cacheBaseURL" name="cacheBaseURL"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- cacheBaseURL</h1>
+<div class="method-abstract"><p>The base directory where cached information for all releases is stored.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSURL</span> <span class="dtyp">*</span>)<span class="dvar">cacheBaseURL</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/cacheURL" name="//apple_ref/occ/instm/OctoRelease/cacheURL"></a>
+<a id="cacheURL" name="cacheURL"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- cacheURL</h1>
+<div class="method-abstract"><p>The base directory where cached information for this release is stored.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSURL</span> <span class="dtyp">*</span>)<span class="dvar">cacheURL</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/cancel" name="//apple_ref/occ/instm/OctoRelease/cancel"></a>
+<a id="cancel" name="cancel"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- cancel</h1>
+<div class="method-abstract"><p>Cancels any asynchronous operations.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">void</span>)<span class="dvar">cancel</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/clear" name="//apple_ref/occ/instm/OctoRelease/clear"></a>
+<a id="clear" name="clear"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- clear</h1>
+<div class="method-abstract"><p>Clears any cached information (downloaded files, etc.) and resets the release state to
+OctoReleaseEmpty.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSError</span> <span class="dtyp">*</span>)<span class="dvar">clear</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/commit" name="//apple_ref/occ/instm/OctoRelease/commit"></a>
+<a id="commit" name="commit"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- commit</h1>
+<div class="method-abstract"><p>Commits (writes) the current release state to the cache.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSError</span> <span class="dtyp">*</span>)<span class="dvar">commit</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/OctoRelease/defaultCacheBaseURL" name="//apple_ref/occ/clm/OctoRelease/defaultCacheBaseURL"></a>
+<a id="defaultCacheBaseURL" name="defaultCacheBaseURL"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ defaultCacheBaseURL</h1>
+<div class="method-abstract"><p>The default base directory where cached information for all releases is stored.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">NSURL</span> <span class="dtyp">*</span>)<span class="dvar">defaultCacheBaseURL</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The default value is a location under ~/Library/Caches.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/fetch:" name="//apple_ref/occ/instm/OctoRelease/fetch:"></a>
+<a id="fetch:" name="fetch:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- fetch:</h1>
+<div class="method-abstract"><p>Fetches information about a release. This is an asynchronous call.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">void</span>)<span class="dfun">fetch</span>:(void (^)(<span class="dtyp">NSError</span> <span class="dtyp">*</span>))<span class="dvar">completion</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>Depending on the repository associated with this release, this call may fetch information
+from a remote location or from the local cache if any. If information is successfully fetched
+the state of this instance will change to OctoReleaseFetched.
+</p>
+<p>Subclasses of this class may override this call to implement support for additional remote
+repositories.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/fetchSynchronouslyIfAble:" name="//apple_ref/occ/instm/OctoRelease/fetchSynchronouslyIfAble:"></a>
+<a id="fetchSynchronouslyIfAble:" name="fetchSynchronouslyIfAble:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- fetchSynchronouslyIfAble:</h1>
+<div class="method-abstract"><p>Fetches information about a release synchronously.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">BOOL</span>)<span class="dfun">fetchSynchronouslyIfAble</span>:(<span class="dtyp">NSError</span> <span class="dtyp">*</span><span class="dtyp">*</span>)<span class="dvar">errorp</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>Only cached release objects (i.e. those created with an empty repository ("")) support this call.
+Other release objects will return NO.
+</p>
+<p>If information is successfully fetched the state of this instance will change to
+OctoReleaseFetched.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/initWithRepository:" name="//apple_ref/occ/instm/OctoRelease/initWithRepository:"></a>
+<a id="initWithRepository:" name="initWithRepository:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- initWithRepository:</h1>
+<div class="method-abstract"><p>Initializes a release for the specified repository.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">id</span>)<span class="dfun">initWithRepository</span>:(<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dvar">repository</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The new release will have a state of OctoReleaseEmpty until the first fetch call.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/initWithRepository:targetBundles:session:cacheBaseURL:" name="//apple_ref/occ/instm/OctoRelease/initWithRepository:targetBundles:session:cacheBaseURL:"></a>
+<a id="initWithRepository:targetBundles:session:cacheBaseURL:" name="initWithRepository:targetBundles:session:cacheBaseURL:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- initWithRepository:targetBundles:session:cacheBaseURL:</h1>
+<div class="method-abstract"><p>Initializes a release for the specified repository.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">id</span>)<span class="dfun">initWithRepository</span>:(<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dpar">repository</span> <span class="dfun">targetBundles</span>:(<span class="dtyp">NSArray</span>&lt;<span class="dpar">NSBundle</span> <span class="dpar">*</span>&gt; <span class="dtyp">*</span>)<span class="dpar">bundles</span> 
+        <span class="dfun">session</span>:(<span class="dtyp">NSURLSession</span> <span class="dtyp">*</span>)<span class="dpar">session</span> <span class="dfun">cacheBaseURL</span>:(<span class="dtyp">NSURL</span> <span class="dtyp">*</span>)<span class="dvar">cacheBaseURL</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>Allows the specification of multiple target bundles (to update bundles other than the main
+bundle), a custom URL session or a custom cache location. Specify nil for default values.
+</p>
+<p>If you specify a custom URL session you MUST use [NSOperationQueue mainQueue] as its
+delegateQueue.
+</p>
+<p>The new release will have a state of OctoReleaseEmpty until the first fetch call.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/installAssetsSynchronously:" name="//apple_ref/occ/instm/OctoRelease/installAssetsSynchronously:"></a>
+<a id="installAssetsSynchronously:" name="installAssetsSynchronously:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- installAssetsSynchronously:</h1>
+<div class="method-abstract"><p>Installs assets associated with a release. This is a synchronous call.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">void</span>)<span class="dfun">installAssetsSynchronously</span>:(<span class="dtyp">OctoReleaseCompletion</span>)<span class="dvar">completion</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The state of the release prior to this call must be OctoReleaseReadyToInstall. If all assets are
+successfully installed the state of this instance will change to OctoReleaseInstalled.
+</p>
+<p>If this call is used to update the main bundle, the application should be relaunched ASAP.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/prepareAssets:" name="//apple_ref/occ/instm/OctoRelease/prepareAssets:"></a>
+<a id="prepareAssets:" name="prepareAssets:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- prepareAssets:</h1>
+<div class="method-abstract"><p>Prepare assets associated with a release for installation. This is an asynchronous call.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">void</span>)<span class="dfun">prepareAssets</span>:(<span class="dtyp">OctoReleaseCompletion</span>)<span class="dvar">completion</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The state of the release prior to this call must be OctoReleaseFetched. If all assets are
+successfully downloaded and prepared the state of this instance will change to
+OctoReleaseReadyToInstall.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/preparedAssets" name="//apple_ref/occ/instm/OctoRelease/preparedAssets"></a>
+<a id="preparedAssets" name="preparedAssets"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- preparedAssets</h1>
+<div class="method-abstract"><p>Prepared assets associated with a release.
+Valid after a successful call to prepareAssets:.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSArray</span>&lt;<span class="dpar">NSURL</span> <span class="dpar">*</span>&gt; <span class="dtyp">*</span>)<span class="dvar">preparedAssets</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/prerelease" name="//apple_ref/occ/instm/OctoRelease/prerelease"></a>
+<a id="prerelease" name="prerelease"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- prerelease</h1>
+<div class="method-abstract"><p>Flag that determines whether this is a "pre-release".
+Valid after a successful call to fetch: or fetchSynchronouslyIfAble:.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">BOOL</span>)<span class="dvar">prerelease</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/progress" name="//apple_ref/occ/instm/OctoRelease/progress"></a>
+<a id="progress" name="progress"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- progress</h1>
+<div class="method-abstract"><p>Overall progress.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSProgress</span> <span class="dtyp">*</span>)<span class="dvar">progress</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/progressValue" name="//apple_ref/occ/instm/OctoRelease/progressValue"></a>
+<a id="progressValue" name="progressValue"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- progressValue</h1>
+<div class="method-abstract"><p>Overall progress value as a number between 0 and 1.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">double</span>)<span class="dvar">progressValue</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>Posts KVO notifications in the main thread and is appropriate for use in UI elements.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/OctoRelease/registerClass:" name="//apple_ref/occ/clm/OctoRelease/registerClass:"></a>
+<a id="registerClass:" name="registerClass:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ registerClass:</h1>
+<div class="method-abstract"><p>Registers a class to handle a specific service.</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">void</span>)<span class="dfun">registerClass</span>:(<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dvar">service</span>; 
+</pre>
+<h2 class="method-parameterlist">Parameters</h2>
+<table class="method-parameterlist">
+<tbody>
+<tr class="method-parameter">
+<td class="method-parameter-name"><p>service</p></td>
+<td class="method-parameter-desc"><p>The service to register this class for. For example, the service "github.com"
+is registered by a class that knows how to fetch GitHub releases.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/releaseAssets" name="//apple_ref/occ/instm/OctoRelease/releaseAssets"></a>
+<a id="releaseAssets" name="releaseAssets"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- releaseAssets</h1>
+<div class="method-abstract"><p>Assets associated with a release.
+Valid after a successful call to fetch: or fetchSynchronouslyIfAble:.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSArray</span>&lt;<span class="dpar">NSURL</span> <span class="dpar">*</span>&gt; <span class="dtyp">*</span>)<span class="dvar">releaseAssets</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/releaseVersion" name="//apple_ref/occ/instm/OctoRelease/releaseVersion"></a>
+<a id="releaseVersion" name="releaseVersion"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- releaseVersion</h1>
+<div class="method-abstract"><p>The version of this release.
+Valid after a successful call to fetch: or fetchSynchronouslyIfAble:.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dvar">releaseVersion</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/OctoRelease/releaseWithRepository:" name="//apple_ref/occ/clm/OctoRelease/releaseWithRepository:"></a>
+<a id="releaseWithRepository:" name="releaseWithRepository:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ releaseWithRepository:</h1>
+<div class="method-abstract"><p>Returns a release for the specified repository.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">OctoRelease</span> <span class="dtyp">*</span>)<span class="dfun">releaseWithRepository</span>:(<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dvar">repository</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The new release will have a state of OctoReleaseEmpty until the first fetch call.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/OctoRelease/releaseWithRepository:targetBundles:session:cacheBaseURL:" name="//apple_ref/occ/clm/OctoRelease/releaseWithRepository:targetBundles:session:cacheBaseURL:"></a>
+<a id="releaseWithRepository:targetBundles:session:cacheBaseURL:" name="releaseWithRepository:targetBundles:session:cacheBaseURL:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ releaseWithRepository:targetBundles:session:cacheBaseURL:</h1>
+<div class="method-abstract"><p>Returns a release for the specified repository.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">OctoRelease</span> <span class="dtyp">*</span>)<span class="dfun">releaseWithRepository</span>:(<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dpar">repository</span> 
+        <span class="dfun">targetBundles</span>:(<span class="dtyp">NSArray</span>&lt;<span class="dpar">NSBundle</span> <span class="dpar">*</span>&gt; <span class="dtyp">*</span>)<span class="dpar">bundles</span> <span class="dfun">session</span>:(<span class="dtyp">NSURLSession</span> <span class="dtyp">*</span>)<span class="dpar">session</span> 
+        <span class="dfun">cacheBaseURL</span>:(<span class="dtyp">NSURL</span> <span class="dtyp">*</span>)<span class="dvar">cacheBaseURL</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>Allows the specification of multiple target bundles (to update bundles other than the main
+bundle), a custom URL session or a custom cache location. Specify nil for default values.
+</p>
+<p>If you specify a custom URL session you MUST use [NSOperationQueue mainQueue] as its
+delegateQueue.
+</p>
+<p>The new release will have a state of OctoReleaseEmpty until the first fetch call.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/repository" name="//apple_ref/occ/instm/OctoRelease/repository"></a>
+<a id="repository" name="repository"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- repository</h1>
+<div class="method-abstract"><p>The repository to check for new releases.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dvar">repository</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/OctoRelease/requireCodeSignature:matchesTarget:" name="//apple_ref/occ/clm/OctoRelease/requireCodeSignature:matchesTarget:"></a>
+<a id="requireCodeSignature:matchesTarget:" name="requireCodeSignature:matchesTarget:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ requireCodeSignature:matchesTarget:</h1>
+<div class="method-abstract"><p>Specifies whether code signatures are required for new releases to be installed.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">void</span>)<span class="dfun">requireCodeSignature</span>:(<span class="dtyp">BOOL</span>)<span class="dpar">require</span> <span class="dfun">matchesTarget</span>:(<span class="dtyp">BOOL</span>)<span class="dvar">matches</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>The default is to require signatures and to have those signatures match the signatures
+of the target bundles.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/session" name="//apple_ref/occ/instm/OctoRelease/session"></a>
+<a id="session" name="session"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- session</h1>
+<div class="method-abstract"><p>The URL sesssion used for downloading releases.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSURLSession</span> <span class="dtyp">*</span>)<span class="dvar">session</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/state" name="//apple_ref/occ/instm/OctoRelease/state"></a>
+<a id="state" name="state"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- state</h1>
+<div class="method-abstract"><p>Release state.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">OctoReleaseState</span>)<span class="dvar">state</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/OctoRelease/targetBundles" name="//apple_ref/occ/instm/OctoRelease/targetBundles"></a>
+<a id="targetBundles" name="targetBundles"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- targetBundles</h1>
+<div class="method-abstract"><p>The bundles that can be updated by a new release.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSArray</span>&lt;<span class="dpar">NSBundle</span> <span class="dpar">*</span>&gt; <span class="dtyp">*</span>)<span class="dvar">targetBundles</span>; 
+</pre>
+<h2 class="method-desc">Discussion</h2>
+<div class="method-desc"><p>It is possible to update multiple bundles with a single release.
+</p></div>
+</div>
+</details>
+</div>
+</details>
+<a id="//apple_ref/occ/cat/NSString(Version)" name="//apple_ref/occ/cat/NSString(Version)"></a>
+<a id="NSString(Version)" name="NSString(Version)"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="category-name">Category NSString(Version)</h1>
+<div class="category-abstract"><p>Provides methods to validate and compare version strings.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<h3 class="section">Methods</h3>
+<a id="//apple_ref/occ/instm/NSString(Version)/versionCompare:" name="//apple_ref/occ/instm/NSString(Version)/versionCompare:"></a>
+<a id="versionCompare:" name="versionCompare:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- versionCompare:</h1>
+<div class="method-abstract"><p>Compares two version strings.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">NSComparisonResult</span>)<span class="dfun">versionCompare</span>:(<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dvar">other</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instm/NSString(Version)/versionValidate" name="//apple_ref/occ/instm/NSString(Version)/versionValidate"></a>
+<a id="versionValidate" name="versionValidate"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">- versionValidate</h1>
+<div class="method-abstract"><p>Checks whether this is a valid version string.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
+- (<span class="dtyp">BOOL</span>)<span class="dvar">versionValidate</span>; 
+</pre>
+</div>
+</details>
+</div>
+</details>
+<a id="//apple_ref/occ/cat/NSTask(Relaunch)" name="//apple_ref/occ/cat/NSTask(Relaunch)"></a>
+<a id="NSTask(Relaunch)" name="NSTask(Relaunch)"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="category-name">Category NSTask(Relaunch)</h1>
+<div class="category-abstract"><p>Provides methods to relaunch the currently running application.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<h3 class="section">Methods</h3>
+<a id="//apple_ref/occ/clm/NSTask(Relaunch)/relaunch" name="//apple_ref/occ/clm/NSTask(Relaunch)/relaunch"></a>
+<a id="relaunch" name="relaunch"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ relaunch</h1>
+<div class="method-abstract"><p>Relaunches the currently running application.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">void</span>)<span class="dvar">relaunch</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/NSTask(Relaunch)/relaunchWithPath:" name="//apple_ref/occ/clm/NSTask(Relaunch)/relaunchWithPath:"></a>
+<a id="relaunchWithPath:" name="relaunchWithPath:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ relaunchWithPath:</h1>
+<div class="method-abstract"><p>Relaunches the currently running application with the specified path.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">void</span>)<span class="dfun">relaunchWithPath</span>:(<span class="dtyp">NSString</span> <span class="dtyp">*</span>)<span class="dvar">path</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/clm/NSTask(Relaunch)/relaunchWithURL:" name="//apple_ref/occ/clm/NSTask(Relaunch)/relaunchWithURL:"></a>
+<a id="relaunchWithURL:" name="relaunchWithURL:"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="method-name">+ relaunchWithURL:</h1>
+<div class="method-abstract"><p>Relaunches the currently running application with the specified URL.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="method-declaration">
++ (<span class="dtyp">void</span>)<span class="dfun">relaunchWithURL</span>:(<span class="dtyp">NSURL</span> <span class="dtyp">*</span>)<span class="dvar">url</span>; 
+</pre>
+</div>
+</details>
+</div>
+</details>
+<a id="//apple_ref/occ/cat/OctoRelease(Extensions)" name="//apple_ref/occ/cat/OctoRelease(Extensions)"></a>
+<a id="OctoRelease(Extensions)" name="OctoRelease(Extensions)"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="category-name">Category OctoRelease(Extensions)</h1>
+<div class="category-abstract"><p>Provides extensions useful to OctoRelease subclasses.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<h3 class="section">Properties</h3>
+<a id="//apple_ref/occ/instp/OctoRelease(Extensions)/_preparedAssets" name="//apple_ref/occ/instp/OctoRelease(Extensions)/_preparedAssets"></a>
+<a id="_preparedAssets" name="_preparedAssets"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">_preparedAssets</h1>
+<div class="property-abstract"><p>Backing property for preparedAssets.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">copy</span>) <span class="dtyp">NSArray</span>&lt;<span class="dtpl">NSURL</span> <span class="dtpl">*</span>&gt; <span class="dtyp">*</span><span class="dvar">_preparedAssets</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoRelease(Extensions)/_prerelease" name="//apple_ref/occ/instp/OctoRelease(Extensions)/_prerelease"></a>
+<a id="_prerelease" name="_prerelease"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">_prerelease</h1>
+<div class="property-abstract"><p>Backing property for prerelease.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">assign</span>) <span class="dtyp">BOOL</span> <span class="dvar">_prerelease</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoRelease(Extensions)/_progress" name="//apple_ref/occ/instp/OctoRelease(Extensions)/_progress"></a>
+<a id="_progress" name="_progress"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">_progress</h1>
+<div class="property-abstract"><p>Backing property for progress.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">retain</span>) <span class="dtyp">NSProgress</span> <span class="dtyp">*</span><span class="dvar">_progress</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoRelease(Extensions)/_releaseAssets" name="//apple_ref/occ/instp/OctoRelease(Extensions)/_releaseAssets"></a>
+<a id="_releaseAssets" name="_releaseAssets"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">_releaseAssets</h1>
+<div class="property-abstract"><p>Backing property for releaseAssets.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">copy</span>) <span class="dtyp">NSArray</span>&lt;<span class="dtpl">NSURL</span> <span class="dtpl">*</span>&gt; <span class="dtyp">*</span><span class="dvar">_releaseAssets</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoRelease(Extensions)/_releaseVersion" name="//apple_ref/occ/instp/OctoRelease(Extensions)/_releaseVersion"></a>
+<a id="_releaseVersion" name="_releaseVersion"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">_releaseVersion</h1>
+<div class="property-abstract"><p>Backing property for releaseVersion.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">copy</span>) <span class="dtyp">NSString</span> <span class="dtyp">*</span><span class="dvar">_releaseVersion</span>; 
+</pre>
+</div>
+</details>
+<a id="//apple_ref/occ/instp/OctoRelease(Extensions)/_state" name="//apple_ref/occ/instp/OctoRelease(Extensions)/_state"></a>
+<a id="_state" name="_state"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="property-name">_state</h1>
+<div class="property-abstract"><p>Backing property for state.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="property-declaration">
+@property (<span class="dpar">assign</span>) <span class="dtyp">OctoReleaseState</span> <span class="dvar">_state</span>; 
+</pre>
+</div>
+</details>
+</div>
+</details>
+<h3 class="section">Globals</h3>
+<a id="//apple_ref/c/data/OctoNotification" name="//apple_ref/c/data/OctoNotification"></a>
+<a id="OctoNotification" name="OctoNotification"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="variable-name">OctoNotification</h1>
+<div class="variable-abstract"><p>Notification posted whenever the state of a release changes.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="variable-declaration">
+<span class="dkwd">extern</span> <span class="dtyp">NSString</span> <span class="dtyp">*</span><span class="dvar">OctoNotification</span>;  
+</pre>
+<h2 class="variable-desc">Discussion</h2>
+<div class="variable-desc"><p>The notification object is the OctoFeed instance posting the notification.
+The userInfo dictionary contains an OctoNotificationReleaseKey that points
+to the corresponding release and an OctoNotificationReleaseStateKey that points
+to the release state at the time of posting.
+</p></div>
+</div>
+</details>
+<a id="//apple_ref/c/data/OctoRepositoryKey" name="//apple_ref/c/data/OctoRepositoryKey"></a>
+<a id="OctoRepositoryKey" name="OctoRepositoryKey"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="variable-name">OctoRepositoryKey</h1>
+<div class="variable-abstract"><p>Bundle key that points to the repository to check for new releases.
+</p>
+</div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="variable-declaration">
+<span class="dkwd">extern</span> <span class="dtyp">NSString</span> <span class="dtyp">*</span><span class="dvar">OctoRepositoryKey</span>;  
+</pre>
+<h2 class="variable-desc">Discussion</h2>
+<div class="variable-desc"><p>For example, this project's own repository would be specified as
+"github.com/billziss-gh/OctoFeed."
+</p></div>
+</div>
+</details>
+<h3 class="section">Typedefs</h3>
+<a id="//apple_ref/c/tdef/NS_ENUM" name="//apple_ref/c/tdef/NS_ENUM"></a>
+<a id="NS_ENUM" name="NS_ENUM"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="typedef-name">NS_ENUM</h1>
+<div class="typedef-abstract"><p>OctoReleaseState
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="typedef-declaration">
+<span class="dkwd">typedef</span> <span class="dfun">NS_ENUM</span>(<span class="dvar">NSUInteger</span>, <span class="dvar">OctoReleaseState</span>) { 
+    <span class="dcmt">/*
+     * Release is empty and has not been fetched.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoReleaseEmpty</span> = <span class="dnum">0</span>,  <span class="dcmt">/*
+     * Release has been fetched: information such as the release version and
+     * the release assets is available.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoReleaseFetched</span> = '<span class="dchr">F</span>',  <span class="dcmt">/*
+     * Release assets have been downloaded and prepared for installation.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoReleaseReadyToInstall</span> = '<span class="dchr">R</span>',  <span class="dcmt">/*
+     * Release has been installed.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoReleaseInstalled</span> = '<span class="dchr">I</span>', 
+};  
+</pre>
+</div>
+</details>
+<a id="//apple_ref/c/tdef/NS_ENUM_DONTLINK_1" name="//apple_ref/c/tdef/NS_ENUM_DONTLINK_1"></a>
+<a id="NS_ENUM" name="NS_ENUM"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="typedef-name">NS_ENUM</h1>
+<div class="typedef-abstract"><p>OctoFeedInstallPolicy
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="typedef-declaration">
+<span class="dkwd">typedef</span> <span class="dfun">NS_ENUM</span>(<span class="dvar">NSUInteger</span>, <span class="dvar">OctoFeedInstallPolicy</span>) { 
+    <span class="dcmt">/*
+     * Releases will be checked, but no installation will be performed.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoFeedInstallNone</span> = <span class="dnum">0</span>,  <span class="dcmt">/*
+     * Releases will be downloaded and prepared for installation.
+     * During activation a release will be installed if it is ready to install.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoFeedInstallAtActivation</span> = '<span class="dchr">A</span>',  <span class="dcmt">/*
+     * Releases will be downloaded and prepared for installation.
+     * During app termination a release will be installed if it is ready to install.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoFeedInstallAtQuit</span> = '<span class="dchr">Q</span>',  <span class="dcmt">/*
+     * Releases will be downloaded and prepared for installation.
+     * When the release is ready to install, a notification will be posted to allow
+     * the application to initiate an install if it so chooses.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoFeedInstallWhenReady</span> = '<span class="dchr">R</span>', 
+};  
+</pre>
+</div>
+</details>
+<div class="copyright">
+Copyright © 2018 Bill Zissimopoulos
+
+&nbsp;|&nbsp;
+Updated: 2018-09-27
+</div>
+</div>
+</body>
+</html>

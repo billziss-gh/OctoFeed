@@ -1,5 +1,5 @@
 /**
- * @file OctoVerifier.m
+ * @file OctoFeed/OctoVerifier.m
  *
  * @copyright 2018 Bill Zissimopoulos
  */
