@@ -80,7 +80,10 @@ exit:
         CFRelease(matchCode);
 
     if (errSecSuccess != status && nil == error)
-        error = (CFErrorRef)[NSError errorWithDomain:NSOSStatusErrorDomain code:status userInfo:nil];
+        error = (CFErrorRef)[NSError
+            errorWithDomain:NSOSStatusErrorDomain
+            code:status
+            userInfo:nil];
 
     return (NSError *)error;
 }

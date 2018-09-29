@@ -12,6 +12,7 @@
 
 #import "OctoExtractor.h"
 #import "NSObject+OctoExtensions.h"
+#import "OctoError.h"
 
 @interface OctoExtractor ()
 @property (copy) NSURL *url;
@@ -97,8 +98,8 @@
         int status = task.terminationStatus;
         if (NSTaskTerminationReasonExit != reason || 0 != status)
             error = [NSError
-                errorWithDomain:[[NSBundle bundleForClass:[self class]] bundleIdentifier]
-                code:'exit'
+                errorWithDomain:OctoErrorDomain
+                code:OctoErrorExtractorTaskExit
                 userInfo:nil];
         completion(error);
     };
@@ -118,8 +119,8 @@
     [self octoPerformBlock:^
     {
         NSError *error = [NSError
-            errorWithDomain:NSPOSIXErrorDomain
-            code:EINVAL
+            errorWithDomain:OctoErrorDomain
+            code:OctoErrorExtractorTaskLaunch
             userInfo:nil];
         completion(error);
     } afterDelay:0];

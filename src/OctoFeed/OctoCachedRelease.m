@@ -13,6 +13,7 @@
 #import "OctoCachedRelease.h"
 #import "NSObject+OctoExtensions.h"
 #import "NSString+Version.h"
+#import "OctoError.h"
 
 @implementation OctoCachedRelease
 + (void)load
@@ -120,7 +121,10 @@
             }
 
             if (!res)
-                error = [NSError errorWithDomain:NSPOSIXErrorDomain code:EINVAL userInfo:nil];
+                error = [NSError
+                    errorWithDomain:OctoErrorDomain
+                    code:OctoErrorReleaseStateCorrupted
+                    userInfo:nil];
         }
     }
 

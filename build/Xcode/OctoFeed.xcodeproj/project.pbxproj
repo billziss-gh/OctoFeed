@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C065061215EFF58002F6A1E /* OctoError.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C065060215EFF58002F6A1E /* OctoError.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3C065063215EFF9E002F6A1E /* OctoError.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C065062215EFF9E002F6A1E /* OctoError.m */; };
 		3C32FBC42155F4E000DBE49C /* NSTask+Relaunch.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C32FBC32155F4E000DBE49C /* NSTask+Relaunch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3C32FBC62155F52E00DBE49C /* NSTask+Relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C32FBC52155F52E00DBE49C /* NSTask+Relaunch.m */; };
 		3C39AFC721540CD400604505 /* OctoFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C73E23D2152E1740053CC38 /* OctoFeed.framework */; };
@@ -72,6 +74,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3C065060215EFF58002F6A1E /* OctoError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoError.h; sourceTree = "<group>"; };
+		3C065062215EFF9E002F6A1E /* OctoError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OctoError.m; sourceTree = "<group>"; };
 		3C32FBC32155F4E000DBE49C /* NSTask+Relaunch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTask+Relaunch.h"; sourceTree = "<group>"; };
 		3C32FBC52155F52E00DBE49C /* NSTask+Relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTask+Relaunch.m"; sourceTree = "<group>"; };
 		3C39AFC221540CD400604505 /* OctoFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OctoFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +155,7 @@
 			children = (
 				3C4BCD34215590A900585C3C /* NSString+Version.h */,
 				3C32FBC32155F4E000DBE49C /* NSTask+Relaunch.h */,
+				3C065060215EFF58002F6A1E /* OctoError.h */,
 				3CDF7C902156EFD2001176D1 /* OctoExtractor.h */,
 				3C4BCD35215590A900585C3C /* OctoFeed.h */,
 				3C4BCD36215590A900585C3C /* OctoRelease.h */,
@@ -168,6 +173,7 @@
 				3C32FBC52155F52E00DBE49C /* NSTask+Relaunch.m */,
 				3C4BCD42215590D000585C3C /* OctoCachedRelease.h */,
 				3C4BCD46215590D100585C3C /* OctoCachedRelease.m */,
+				3C065062215EFF9E002F6A1E /* OctoError.m */,
 				3C4BCD3E215590D000585C3C /* OctoExtractor.m */,
 				3C4BCD44215590D000585C3C /* OctoFeed.m */,
 				3C4BCD3D215590D000585C3C /* OctoGitHubRelease.h */,
@@ -261,6 +267,7 @@
 			files = (
 				3C4BCD4A215590D100585C3C /* OctoGitHubRelease.h in Headers */,
 				3C4BCD52215590D100585C3C /* NSObject+OctoExtensions.h in Headers */,
+				3C065061215EFF58002F6A1E /* OctoError.h in Headers */,
 				3C4BCD38215590A900585C3C /* OctoFeed.h in Headers */,
 				3C4BCD37215590A900585C3C /* NSString+Version.h in Headers */,
 				3C4BCD4F215590D100585C3C /* OctoCachedRelease.h in Headers */,
@@ -440,6 +447,7 @@
 				3C4BCD47215590D100585C3C /* OctoRelease.m in Sources */,
 				3C32FBC62155F52E00DBE49C /* NSTask+Relaunch.m in Sources */,
 				3CDF7C8D2156C612001176D1 /* OctoVerifier.m in Sources */,
+				3C065063215EFF9E002F6A1E /* OctoError.m in Sources */,
 				3C4BCD51215590D100585C3C /* OctoFeed.m in Sources */,
 				3C4BCD4B215590D100585C3C /* OctoExtractor.m in Sources */,
 			);

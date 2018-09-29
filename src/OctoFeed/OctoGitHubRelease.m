@@ -13,6 +13,7 @@
 #import "OctoGitHubRelease.h"
 #import "NSObject+OctoExtensions.h"
 #import "NSString+Version.h"
+#import "OctoError.h"
 
 @implementation OctoGitHubRelease
 + (void)load
@@ -30,8 +31,8 @@
         [self octoPerformBlock:^
         {
             NSError *error = [NSError
-                errorWithDomain:NSPOSIXErrorDomain
-                code:EINVAL
+                errorWithDomain:OctoErrorDomain
+                code:OctoErrorRepositoryInvalid
                 userInfo:nil];
             completion(error);
         } afterDelay:0];
@@ -131,8 +132,8 @@
 
         corrupt_fail:
             error = [NSError
-                errorWithDomain:NSCocoaErrorDomain
-                code:NSPropertyListReadCorruptError
+                errorWithDomain:OctoErrorDomain
+                code:OctoErrorReleaseResponseCorrupted
                 userInfo:nil];
         fail:
             completion(error);

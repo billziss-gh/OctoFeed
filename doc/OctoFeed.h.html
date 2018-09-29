@@ -1126,6 +1126,23 @@ of the target bundles.
 </div>
 </details>
 <h3 class="section">Globals</h3>
+<a id="//apple_ref/c/data/OctoErrorDomain" name="//apple_ref/c/data/OctoErrorDomain"></a>
+<a id="OctoErrorDomain" name="OctoErrorDomain"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="variable-name">OctoErrorDomain</h1>
+<div class="variable-abstract"><p>OctoFeed error domain.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="variable-declaration">
+<span class="dkwd">extern</span> <span class="dtyp">NSString</span> <span class="dtyp">*</span><span class="dvar">OctoErrorDomain</span>;  
+</pre>
+</div>
+</details>
 <a id="//apple_ref/c/data/OctoNotification" name="//apple_ref/c/data/OctoNotification"></a>
 <a id="OctoNotification" name="OctoNotification"></a>
 <details>
@@ -1179,6 +1196,40 @@ to the release state at the time of posting.
 <summary>
 <div class="summary">
 <h1 class="typedef-name">NS_ENUM</h1>
+<div class="typedef-abstract"><p>OctoFeed error codes.
+</p></div>
+</div>
+</summary>
+<div class="collapsible">
+<div class="pointy-thing"></div>
+<pre class="typedef-declaration">
+<span class="dkwd">typedef</span> <span class="dfun">NS_ENUM</span>(<span class="dvar">NSInteger</span>, <span class="dvar">OctoErrorCode</span>) { 
+    <span class="dcmt">/*
+     * Repository is invalid.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoErrorRepositoryInvalid</span> = '<span class="dchr">repi</span>',  <span class="dcmt">/*
+     * Release state is corrupted.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoErrorReleaseStateCorrupted</span> = '<span class="dchr">rels</span>',  <span class="dcmt">/*
+     * Release response is corrupted.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoErrorReleaseResponseCorrupted</span> = '<span class="dchr">relr</span>',  <span class="dcmt">/*
+     * Extractor task failed to launch.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoErrorExtractorTaskLaunch</span> = '<span class="dchr">extl</span>',  <span class="dcmt">/*
+     * Extractor task exited with non-0 status.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoErrorExtractorTaskExit</span> = '<span class="dchr">exte</span>', 
+};  
+</pre>
+</div>
+</details>
+<a id="//apple_ref/c/tdef/NS_ENUM_DONTLINK_2" name="//apple_ref/c/tdef/NS_ENUM_DONTLINK_2"></a>
+<a id="NS_ENUM" name="NS_ENUM"></a>
+<details>
+<summary>
+<div class="summary">
+<h1 class="typedef-name">NS_ENUM</h1>
 <div class="typedef-abstract"><p>OctoReleaseState
 </p></div>
 </div>
@@ -1205,7 +1256,7 @@ to the release state at the time of posting.
 </pre>
 </div>
 </details>
-<a id="//apple_ref/c/tdef/NS_ENUM_DONTLINK_1" name="//apple_ref/c/tdef/NS_ENUM_DONTLINK_1"></a>
+<a id="//apple_ref/c/tdef/NS_ENUM_DONTLINK_3" name="//apple_ref/c/tdef/NS_ENUM_DONTLINK_3"></a>
 <a id="NS_ENUM" name="NS_ENUM"></a>
 <details>
 <summary>
@@ -1244,7 +1295,7 @@ to the release state at the time of posting.
 Copyright © 2018 Bill Zissimopoulos
 
 &nbsp;|&nbsp;
-Updated: 2018-09-27
+Updated: 2018-09-28
 </div>
 </div>
 </body>
