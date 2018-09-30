@@ -136,7 +136,10 @@
 
 - (IBAction)checkForUpdatesAction:(id)sender
 {
-    [self.feed check];
+    [self.feed clearThisAndPriorReleases:self.feed.currentRelease];
+    [self.feed check:^(OctoRelease *release, NSError *error)
+    {
+    }];
 }
 
 - (IBAction)relaunchAction:(id)sender

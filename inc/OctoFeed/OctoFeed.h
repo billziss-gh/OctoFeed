@@ -80,6 +80,8 @@ typedef NS_ENUM(NSUInteger, OctoFeedInstallPolicy)
     OctoFeedInstallWhenReady            = 'R',
 };
 
+typedef void (^OctoFeedCompletion)(OctoRelease *, NSError *);
+
 /**
  * Manages the overall update process.
  *
@@ -127,7 +129,7 @@ typedef NS_ENUM(NSUInteger, OctoFeedInstallPolicy)
 /**
  * Initiates a check for new releases.
  */
-- (void)check;
+- (void)check:(OctoFeedCompletion)completion;
 
 /**
  * Returns the current release, if any.

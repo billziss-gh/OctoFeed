@@ -38,6 +38,11 @@ typedef NS_ENUM(NSInteger, OctoErrorCode)
     OctoErrorReleaseResponseCorrupted   = 'relr',
 
     /*
+     * Release version is not greater than target bundle version.
+     */
+    OctoErrorReleaseVersion             = 'relv',
+
+    /*
      * Extractor task failed to launch.
      */
     OctoErrorExtractorTaskLaunch        = 'extl',

@@ -142,12 +142,15 @@
     self._currentRelease = nil;
 }
 
-- (void)check
+- (void)check:(OctoFeedCompletion)completion
 {
-    [[NSUserDefaults standardUserDefaults]
-        removeObjectForKey:OctoLastCheckTimeKey];
+    if (nil != self._timer)
+        [self _rescheduleTimer];
 
-    [self performSelector:@selector(_tick:) withObject:nil afterDelay:0];
+    [self
+        performSelector:@selector(_check:)
+        withObject:[[completion copy] autorelease]
+        afterDelay:0];
 }
 
 - (OctoRelease *)currentRelease
@@ -186,6 +189,9 @@
         }
     }
 
+    if (/*nil == error && */self._currentRelease == release)
+        self._currentRelease = nil;
+
     return error;
 }
 
@@ -220,23 +226,6 @@
     self._dirfd = -1;
 }
 
-- (void)_activateWithInstallPolicy:(OctoFeedInstallPolicy)policy
-{
-    self._activated = YES;
-    self._installPolicy = policy;
-
-    /* schedule a timer that fires every hour */
-    self._timer = [NSTimer
-        scheduledTimerWithTimeInterval:60.0 * 60.0
-        target:self
-        selector:@selector(_tick:)
-        userInfo:nil
-        repeats:YES];
-
-    /* perform a check now */
-    [self performSelector:@selector(_tick:) withObject:nil afterDelay:0];
-}
-
 - (void)_willTerminate:(NSNotification *)notification
 {
     OctoRelease *currentRelease = self._currentRelease;
@@ -246,18 +235,50 @@
             NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
         {
             [self clearThisAndPriorReleases:currentRelease];
-            self._currentRelease = nil;
         }];
     }
 }
 
+- (void)_activateWithInstallPolicy:(OctoFeedInstallPolicy)policy
+{
+    self._activated = YES;
+    self._installPolicy = policy;
+
+    [self _rescheduleTimer];
+
+    [self
+        performSelector:@selector(_tick:)
+        withObject:nil
+        afterDelay:0];
+}
+
+- (void)_rescheduleTimer
+{
+    /* schedule a timer that fires every hour */
+    [self._timer invalidate];
+    self._timer = [NSTimer
+        scheduledTimerWithTimeInterval:60.0 * 60.0
+        target:self
+        selector:@selector(_tick:)
+        userInfo:nil
+        repeats:YES];
+}
+
 - (void)_tick:(NSTimer *)sender
 {
-    if (!self._activated || nil != self._currentRelease)
+    [self _check:nil];
+}
+
+- (void)_check:(OctoFeedCompletion)completion
+{
+    if (!(nil != completion || self._activated) || nil != self._currentRelease)
+    {
+        [self _performCompletion:completion error:nil];
         return;
+    }
 
     OctoRelease *cachedRelease = [self _cachedReleaseFetchSynchronously];
-    if (nil == cachedRelease.releaseVersion)
+    if (nil == completion && 0 == [cachedRelease.releaseVersion length])
     {
         /* checkPeriod must be at least 1 hour */
         NSTimeInterval checkPeriod = self.checkPeriod;
@@ -274,17 +295,26 @@
 
         /* if the check time is in the future there is nothing to do */
         if (NSOrderedAscending == [now compare:checkTime])
+        {
+            assert(nil == completion);
             return;
+        }
     }
 
     OctoRelease *latestRelease = [self _latestRelease];
     [latestRelease fetch:^(NSError *error)
     {
-        if (!self._activated || nil != self._currentRelease)
+        if (!(nil != completion || self._activated) || nil != self._currentRelease)
+        {
+            [self _performCompletion:completion error:nil];
             return;
+        }
 
         if (nil != error)
+        {
+            [self _performCompletion:completion error:error];
             return;
+        }
 
         /* remember last check time */
         [[NSUserDefaults standardUserDefaults]
@@ -295,12 +325,21 @@
         NSString *latestReleaseVersion = latestRelease.releaseVersion;
         NSString *version = [[self.targetBundles firstObject]
             objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-        if (NSOrderedAscending != [version versionCompare:latestReleaseVersion])
+        if (0 != [version length] &&
+            NSOrderedAscending != [version versionCompare:latestReleaseVersion])
+        {
+            [self
+                _performCompletion:completion
+                error:[NSError
+                    errorWithDomain:OctoErrorDomain
+                    code:OctoErrorReleaseVersion
+                    userInfo:nil]];
             return;
+        }
 
         /* if latest-release-version matches cached-release-version, use cached release */
         OctoRelease *release;
-        if (nil == cachedRelease.releaseVersion ||
+        if (0 == [cachedRelease.releaseVersion length] ||
             NSOrderedSame != [cachedRelease.releaseVersion versionCompare:latestReleaseVersion])
         {
             [self clearThisAndPriorReleases:cachedRelease];
@@ -311,13 +350,32 @@
             release = cachedRelease;
 
         self._currentRelease = release;
+        [self _performCompletion:completion error:nil];
 
-        /* should we download and prepare this release? */
-        if (OctoFeedInstallNone != self._installPolicy)
-            [self _advanceReleaseState:release assets:nil errors:nil];
-        else
-            [self _postNotificationWithRelease:release];
+        if (self._activated)
+        {
+            /* should we download and prepare this release? */
+            if (OctoFeedInstallNone != self._installPolicy)
+                [self _advanceReleaseState:release assets:nil errors:nil];
+            else
+                [self _postNotificationWithRelease:release];
+        }
     }];
+}
+
+- (void)_performCompletion:(OctoFeedCompletion)completion error:(NSError *)error
+{
+    if (nil == completion)
+        return;
+
+    OctoRelease *currentRelease = nil;
+    if (nil == error)
+    {
+        currentRelease = self._currentRelease;
+        assert(nil != currentRelease);
+    }
+
+    completion(currentRelease, error);
 }
 
 - (void)_advanceReleaseState:(OctoRelease *)release
@@ -330,7 +388,6 @@
     if (0 < errors.count)
     {
         [self clearThisAndPriorReleases:release];
-        self._currentRelease = nil;
         return;
     }
 

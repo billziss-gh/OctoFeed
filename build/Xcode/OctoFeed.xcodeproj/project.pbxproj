@@ -37,6 +37,7 @@
 		3CDF7C8F2156ED18001176D1 /* OctoVerifier-Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CDF7C8E2156ED18001176D1 /* OctoVerifier-Test.m */; };
 		3CDF7C922156EFDE001176D1 /* OctoExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CDF7C902156EFD2001176D1 /* OctoExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3CDF7C932156EFE3001176D1 /* OctoVerifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CDF7C912156EFDB001176D1 /* OctoVerifier.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3CE60F54216013AE00E6757C /* OctoFeed-Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE60F522160134500E6757C /* OctoFeed-Test.m */; };
 		3CFB51D02155B0E1009F8EB9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFB51C92155B0E1009F8EB9 /* main.m */; };
 		3CFB51D12155B0E1009F8EB9 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CFB51CC2155B0E1009F8EB9 /* AppController.m */; };
 		3CFB51D62155B133009F8EB9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CFB51D52155B133009F8EB9 /* MainMenu.xib */; };
@@ -105,6 +106,7 @@
 		3CDF7C8E2156ED18001176D1 /* OctoVerifier-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OctoVerifier-Test.m"; sourceTree = "<group>"; };
 		3CDF7C902156EFD2001176D1 /* OctoExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctoExtractor.h; sourceTree = "<group>"; };
 		3CDF7C912156EFDB001176D1 /* OctoVerifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OctoVerifier.h; sourceTree = "<group>"; };
+		3CE60F522160134500E6757C /* OctoFeed-Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OctoFeed-Test.m"; sourceTree = "<group>"; };
 		3CFB51B72155B0A9009F8EB9 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CFB51C92155B0E1009F8EB9 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3CFB51CA2155B0E1009F8EB9 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 			children = (
 				3C4BCD59215590F700585C3C /* NSString+Version-Test.m */,
 				3C4BCD5A215590F700585C3C /* OctoExtractor-Test.m */,
+				3CE60F522160134500E6757C /* OctoFeed-Test.m */,
 				3C4BCD55215590F700585C3C /* OctoRelease-Test.m */,
 				3CDF7C8E2156ED18001176D1 /* OctoVerifier-Test.m */,
 				3C4BCD54215590F700585C3C /* Info.plist */,
@@ -431,6 +434,7 @@
 			files = (
 				3CDF7C8F2156ED18001176D1 /* OctoVerifier-Test.m in Sources */,
 				3C4BCD60215590F700585C3C /* NSString+Version-Test.m in Sources */,
+				3CE60F54216013AE00E6757C /* OctoFeed-Test.m in Sources */,
 				3C4BCD5C215590F700585C3C /* OctoRelease-Test.m in Sources */,
 				3C4BCD61215590F700585C3C /* OctoExtractor-Test.m in Sources */,
 			);

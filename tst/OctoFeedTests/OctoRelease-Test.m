@@ -12,11 +12,23 @@
 
 #import <XCTest/XCTest.h>
 #import "OctoRelease.h"
+#import "OctoFeed.h" // for OctoLastCheckTimeKey
 
 @interface OctoReleaseTest : XCTestCase
 @end
 
 @implementation OctoReleaseTest
+- (void)setUp
+{
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:OctoLastCheckTimeKey];
+    [[NSFileManager defaultManager] removeItemAtURL:[OctoRelease defaultCacheBaseURL] error:0];
+}
+
+- (void)tearDown
+{
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:OctoLastCheckTimeKey];
+    [[NSFileManager defaultManager] removeItemAtURL:[OctoRelease defaultCacheBaseURL] error:0];
+}
 - (void)testGitHubFetchInvalid
 {
     OctoRelease *release = [OctoRelease releaseWithRepository:@"github.com/billziss-gh"];
@@ -33,7 +45,7 @@
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
 }
 
-- (void)testGitHubFetchUnknown
+- (void)testGitHubFetchNonExistent
 {
     OctoRelease *release = [OctoRelease
         releaseWithRepository:@"github.com/billziss-gh/NONEXISTENT-4dca3ed744f421f3187e54dc10e7e6b8"];
