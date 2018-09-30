@@ -102,12 +102,12 @@ extract them and install them.
 </div>
 </div>
 </details>
-<a id="//apple_ref/occ/instm/OctoFeed/check" name="//apple_ref/occ/instm/OctoFeed/check"></a>
-<a id="check" name="check"></a>
+<a id="//apple_ref/occ/instm/OctoFeed/check:" name="//apple_ref/occ/instm/OctoFeed/check:"></a>
+<a id="check:" name="check:"></a>
 <details>
 <summary>
 <div class="summary">
-<h1 class="method-name">- check</h1>
+<h1 class="method-name">- check:</h1>
 <div class="method-abstract"><p>Initiates a check for new releases.
 </p></div>
 </div>
@@ -115,7 +115,7 @@ extract them and install them.
 <div class="collapsible">
 <div class="pointy-thing"></div>
 <pre class="method-declaration">
-- (<span class="dtyp">void</span>)<span class="dvar">check</span>; 
+- (<span class="dtyp">void</span>)<span class="dfun">check</span>:(<span class="dtyp">OctoFeedCompletion</span>)<span class="dvar">completion</span>; 
 </pre>
 </div>
 </details>
@@ -1214,6 +1214,9 @@ to the release state at the time of posting.
      * Release response is corrupted.</span>
         <span class="dcmt">*/</span>
     <span class="dtyp">OctoErrorReleaseResponseCorrupted</span> = '<span class="dchr">relr</span>',  <span class="dcmt">/*
+     * Release version is not greater than target bundle version.</span>
+        <span class="dcmt">*/</span>
+    <span class="dtyp">OctoErrorReleaseVersion</span> = '<span class="dchr">relv</span>',  <span class="dcmt">/*
      * Extractor task failed to launch.</span>
         <span class="dcmt">*/</span>
     <span class="dtyp">OctoErrorExtractorTaskLaunch</span> = '<span class="dchr">extl</span>',  <span class="dcmt">/*
@@ -1295,7 +1298,7 @@ to the release state at the time of posting.
 Copyright © 2018 Bill Zissimopoulos
 
 &nbsp;|&nbsp;
-Updated: 2018-09-28
+Updated: 2018-09-30
 </div>
 </div>
 </body>
