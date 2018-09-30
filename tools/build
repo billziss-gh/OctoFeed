@@ -1,0 +1,18 @@
+#!/bin/bash
+
+CONFIGURATION=Release
+
+cd "$(dirname "$0")"/../build/Xcode
+set -ex
+
+rm -rf build/$CONFIGURATION
+xcodebuild -configuration $CONFIGURATION -alltargets
+openssl rand 1000000 -out build/$CONFIGURATION/random.data
+
+cd build/$CONFIGURATION
+mkdir -p Distribution
+cp -R OctoFeed.framework Distribution
+cp -R TestApp.app Distribution
+zip Distribution/testrand.zip random.data
+
+echo Distribution directory: $(PWD)/Distribution
