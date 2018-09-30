@@ -14,8 +14,8 @@ mkdir -p Distribution
 
 frmver="$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "OctoFeed.framework/Resources/Info.plist")"
 
-zip -r Distribution/OctoFeed-${frmver}.zip OctoFeed.framework
-zip -r Distribution/TestApp-UsedForTesting-NoNeedToDownload.zip TestApp.app
+ditto -ck --keepParent OctoFeed.framework Distribution/OctoFeed-${frmver}.zip
+ditto -ck --keepParent TestApp.app Distribution/TestApp-UsedForTesting-NoNeedToDownload.zip
 zip Distribution/RandomData-UsedForTesting-NoNeedToDownload.zip random.data
 
 echo Distribution directory: $(PWD)/Distribution
