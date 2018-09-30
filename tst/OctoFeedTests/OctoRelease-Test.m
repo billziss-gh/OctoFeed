@@ -116,7 +116,7 @@
     [release prepareAssets:^(
         NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
-        XCTAssert(1 == assets.count || 2 == assets.count);
+        XCTAssert(1 <= assets.count);
         XCTAssertNil(errors);
 
         XCTAssertEqual(OctoReleaseReadyToInstall, release.state);
@@ -206,7 +206,7 @@
     [release prepareAssets:^(
         NSDictionary<NSURL *, NSURL *> *assets, NSDictionary<NSURL *, NSError *> *errors)
     {
-        XCTAssert(1 == assets.count || 2 == assets.count);
+        XCTAssert(1 <= assets.count);
         XCTAssertNil(errors);
 
         XCTAssertEqual(OctoReleaseReadyToInstall, release.state);
