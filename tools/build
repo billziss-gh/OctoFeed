@@ -13,10 +13,9 @@ cd build/$CONFIGURATION
 mkdir -p Distribution
 
 frmver="$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "OctoFeed.framework/Resources/Info.plist")"
-appver="$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "TestApp.app/Contents/Info.plist")"
 
 zip -r Distribution/OctoFeed-${frmver}.zip OctoFeed.framework
-zip -r Distribution/TestApp-${appver}.zip TestApp.app
-zip Distribution/testrand.zip random.data
+zip -r Distribution/TestApp-UsedForTesting-NoNeedToDownload.zip TestApp.app
+zip Distribution/RandomData-UsedForTesting-NoNeedToDownload.zip random.data
 
 echo Distribution directory: $(PWD)/Distribution
