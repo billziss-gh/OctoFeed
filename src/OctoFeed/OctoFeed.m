@@ -129,6 +129,9 @@
 
 - (void)deactivate
 {
+    if (!self._activated)
+        return;
+
     [self._timer invalidate];
     [[NSNotificationCenter defaultCenter]
         removeObserver:self
@@ -222,8 +225,12 @@
 
 - (void)_unlockCache
 {
-    close(self._dirfd);
-    self._dirfd = -1;
+    int dirfd = self._dirfd;
+    if (-1 != dirfd)
+    {
+        close(dirfd);
+        self._dirfd = -1;
+    }
 }
 
 - (void)_willTerminate:(NSNotification *)notification

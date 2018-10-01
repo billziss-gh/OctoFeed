@@ -90,6 +90,8 @@
     [feed activateWithInstallPolicy:OctoFeedInstallNone];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    [feed deactivate];
 }
 
 - (void)testActivateInstallWhenReady
@@ -124,6 +126,8 @@
     [feed activateWithInstallPolicy:OctoFeedInstallWhenReady];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp] timeout:10];
+
+    [feed deactivate];
 }
 
 - (void)testActivateInstallCheck
@@ -163,6 +167,8 @@
     }];
 
     [self waitForExpectations:[NSArray arrayWithObject:exp2] timeout:10];
+
+    [feed deactivate];
 }
 
 @end
